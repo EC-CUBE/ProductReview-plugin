@@ -1,0 +1,10 @@
+name: 商品レビュープラグイン
+code: ProductReview
+version: 0.0.1
+service:
+    - ProductReviewServiceProvider
+orm.path:
+    - /Resource/doctrine
+migration.path:
+    - /Migration
+event: Event

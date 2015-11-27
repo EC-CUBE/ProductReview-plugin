@@ -1,0 +1,105 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'product_page' %}
+
+{% block main %}
+<h1 class="page-heading">お客様の声書き込み</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <h2>商品について、お客様のご意見、ご感想をどしどしお寄せください。</h2>
+            <form method="post" action="{{ url('products_detail_review', { id : Product.id }) }}">
+                <input type="hidden" name="mode" value="confirm">
+                {{ form_widget(form._token) }}
+                <div class="dl_table">
+                    <dl>
+                        <dt>商品名</dt>
+                        <dd class="form-group">
+                            {{ Product.name }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.reviewer_name) }}<span class="required">必須</span></dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.reviewer_name) }}
+                            {{ form_errors(form.reviewer_name) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.reviewer_url) }}</dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.reviewer_url) }}
+                            {{ form_errors(form.reviewer_url) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.recommend_level) }}<span class="required">必須</span></dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.recommend_level) }}
+                            {{ form_errors(form.recommend_level) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.sex) }}</dt>
+                        <dd>
+                            <div class="form-group form-inline">
+                                {{ form_widget(form.sex) }}
+                                {{ form_errors(form.sex) }}
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.title) }}<span class="required">必須</span></dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.title) }}
+                            {{ form_errors(form.title) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.comment) }}<span class="required">必須</span></dt>
+                        <dd class="form-group">
+                            <div class="column">
+                            {{ form_widget(form.comment, {'attr': {'rows': '6'}}) }}
+                            {{ form_errors(form.comment) }}
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="row no-padding">
+                    <div class="btn_group col-sm-offset-4 col-sm-4">
+                        <p>
+                            <button type="submit" class="btn btn-primary btn-block">確認ページヘ</button>
+                        </p>
+                        <p>
+                            <a href="{{ url('product_detail', {'id':Product.id}) }}" class="btn btn-info btn-block">戻る</a>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div>
+{% endblock %}
+

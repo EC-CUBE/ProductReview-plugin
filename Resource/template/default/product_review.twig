@@ -1,0 +1,53 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+
+<divs id="review_area" xmlns="http://www.w3.org/1999/html">
+    <div class="btn_area">
+        <ul class="row">
+            <li class="col-xs-12 col-sm-8">
+                <a href="{{ url('products_detail_review', {'id' : id}) }}" class="btn btn-success btn-block">新規コメントを書き込む</a>
+            </li>
+        </ul>
+    </div>
+    {% if ProductReviews %}
+        <div>この商品に対するお客様の声</div>
+        <ul class="review_list">
+        {% for ProductReview in ProductReviews %}
+            <li>
+                <h3>{{ ProductReview.title }}</h3>
+                <p>
+                    <span>
+                        投稿日：{{ ProductReview.create_date|date_format }}
+                    </span>
+                    <span>
+                    投稿者：<a href="{{ ProductReview.reviewer_url }}">{{ ProductReview.reviewer_name }}</a>
+                    </span>
+                    <span class="recommend_level">おすすめレベル：
+                        <span>{% for i in 1..ProductReview.recommend_level %}★{% endfor %}</span>
+                    </span>
+                </p>
+                <p>{{ ProductReview.comment }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</divs>

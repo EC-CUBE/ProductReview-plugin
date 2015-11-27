@@ -1,0 +1,137 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{#
+[商品管理]-[商品レビュー]-[編集]画面
+#}
+
+{% extends 'default_frame.twig' %}
+
+{% set menus = ['product', 'product_review'] %}
+
+{% block title %}商品管理{% endblock %}
+{% block sub_title %}商品レビュー管理{% endblock %}
+
+{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block main %}
+    <div class="row" id="aside_wrap">
+        <form name="customer_form" role="form" id="customer_form" method="post" action="{{ url('admin_product_review_edit', { id : form.id.vars.value }) }}">
+            {{ form_widget(form._token) }}
+            {{ form_widget(form.id) }}
+            <div class="col-md-9">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">商品レビュー</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body accpanel" style="display: block;">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-lg-2 control-label">商品名</label>
+                                <div class="col-sm-9 col-lg-10">{{ Product.name }}</div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.create_date) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    <div class="form-inline">
+                                        {{ form.create_date.vars.value|date('Y/m/d H:i') }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.reviewer_name) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    {{ form_widget(form.reviewer_name) }}
+                                    {{ form_errors(form.reviewer_name) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.reviewer_url) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    {{ form_widget(form.reviewer_url) }}
+                                    {{ form_errors(form.reviewer_url) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.sex) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    {{ form_widget(form.sex) }}
+                                    {{ form_errors(form.sex) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.recommend_level) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    {{ form_widget(form.recommend_level) }}
+                                    {{ form_errors(form.recommend_level) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.title) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    {{ form_widget(form.title) }}
+                                    {{ form_errors(form.title) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.comment) }}
+                                <div class="col-sm-9 col-lg-10">
+                                    {{ form_widget(form.comment, {'attr': {'rows': '6'}}) }}
+                                    {{ form_errors(form.comment) }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+
+                <div class="row hidden-xs hidden-sm">
+                    <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 text-center btn_area">
+                        <p><a href="{{ url('admin_product_review') }}">検索画面に戻る</a></p>
+                    </div>
+                </div>
+
+            </div><!-- /.col -->
+
+            <div class="col-md-3" id="aside_column">
+                <div class="col_inner">
+                    <div class="box no-header">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        {{ form_widget(form.status) }}
+                                        {{ form_errors(form.status) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                    <button class="btn btn-primary btn-block btn-lg" type="submit">登録</button>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div>
+            </div><!-- /.col -->
+        </form>
+    </div>
+{% endblock %}

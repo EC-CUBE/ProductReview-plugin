@@ -1,0 +1,70 @@
+Plugin\ProductReview\Entity\ProductReview:
+    type: entity
+    table: plg_product_review
+    repositoryClass: Plugin\ProductReview\Repository\ProductReviewRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            column: product_review_id
+            generator:
+                strategy: AUTO
+    fields:
+        reviewer_name:
+            type: text
+            nullable: false
+        reviewer_url:
+            type: text
+            nullable: true
+        recommend_level:
+            type: smallint
+            nullable: false
+            unsigned: false
+        title:
+            type: text
+            nullable: false
+        comment:
+            type: text
+            nullable: false
+        del_flg:
+            type: smallint
+            nullable: false
+            unsigned: false
+            options:
+                default: '0'
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        Product:
+            targetEntity: Eccube\Entity\Product
+            inversedBy: ProductReviews
+            joinColumn:
+                name: product_id
+                referencedColumnName: product_id
+                nullable: false
+        Sex:
+            targetEntity: Eccube\Entity\Master\Sex
+            joinColumn:
+                name: sex
+                referencedColumnName: id
+                nullable: true
+        Customer:
+            targetEntity: Eccube\Entity\Customer
+            inversedBy: ProductReviews
+            joinColumn:
+                name: customer_id
+                referencedColumnName: customer_id
+                nullable: true
+        Status:
+            targetEntity: Eccube\Entity\Master\Disp
+            joinColumn:
+                name: status
+                referencedColumnName: id
+                default: 2
+    lifecycleCallbacks: {  }

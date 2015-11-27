@@ -1,0 +1,5 @@
+admin.product_review.save.complete: 商品レビューを保存しました。
+admin.product_review.save.error: 商品レビューを保存できませんでした。
+admin.product_review.delete.complete: 商品レビューを削除しました。
+admin.product_review.delete.error: 商品レビューを削除できませんでした。
+front.product_review.system.error: 登録処理でシステムエラーが発生しました。大変お手数ですが、サイト管理者までご連絡ください。

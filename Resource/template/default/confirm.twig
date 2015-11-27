@@ -1,0 +1,97 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'product_page' %}
+
+{% block main %}
+<h1 class="page-heading">お客様の声書き込み</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <form method="post" action="{{ url('products_detail_review', { id : Product.id }) }}">
+                <input type="hidden" name="mode" value="complete">
+                {{ form_widget(form._token) }}
+                <div class="dl_table">
+                    <dl>
+                        <dt>商品名</dt>
+                        <dd class="form-group">
+                            {{ Product.name }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.reviewer_name) }}</dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.reviewer_name) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.reviewer_url) }}</dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.reviewer_url) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.recommend_level) }}</dt>
+                        <dd class="form-group">
+                            {% for i in 1..form.recommend_level.vars.value %}★{% endfor %}
+                            {{ form_widget(form.recommend_level, {freeze_display_text:false}) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.sex) }}</dt>
+                        <dd>
+                            <div class="form-group form-inline">
+                                {{ form_widget(form.sex) }}
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.title) }}</dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.title) }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.comment) }}</dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.comment) }}
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="row no-padding">
+                    <div class="btn_group col-sm-offset-4 col-sm-4">
+                        <p>
+                            <button type="submit" class="btn btn-primary btn-block">完了ページヘ</button>
+                        </p>
+                        <p>
+                            <button type="submit" class="btn btn-info btn-block" name="mode" value="back">戻る</button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div>
+{% endblock %}
+
