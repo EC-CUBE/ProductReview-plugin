@@ -28,7 +28,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\CssSelector\CssSelector;
 use Symfony\Component\DomCrawler\Crawler;
 
-class ProductReview
+class Event
 {
 
     private $app;
