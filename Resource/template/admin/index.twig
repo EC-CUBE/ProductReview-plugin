@@ -174,7 +174,7 @@ function fnChangeActionSubmit(action) {
                             <ul class="sort-dd">
                                 <li class="dropdown">
                                     {% for pageMax in pageMaxis if pageMax.name == page_count %}
-                                        <a class="dropdown-toggle" data-toggle="dropdown">{{ pageMax.name|e }}件<svg class="cb cb-angle-down icon_down"><use xlink:href="#cb-angle-down"></svg></a>
+                                        <a class="dropdown-toggle" data-toggle="dropdown">{{ pageMax.name|e }}件<svg class="cb cb-angle-down icon_down"><use xlink:href="#cb-angle-down" /></svg></a>
                                     {% endfor %}
                                     <ul class="dropdown-menu">
                                     {% for pageMax in pageMaxis if pageMax.name != page_count %}
