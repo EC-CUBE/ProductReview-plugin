@@ -29,37 +29,9 @@ use Silex\ServiceProviderInterface;
 class ProductReviewServiceProvider implements ServiceProviderInterface
 {
 
-    /**
-     * ナビに新しい項目を追加します.
-     * @param array $nav ナビの配列参照
-     * @param array $addNavi 追加するナビ配列
-     * @param array $ids 追加するナビのid配列
-     */
-    private static function addNavi(array &$nav, array $addNavi, array $ids = array())
-    {
-        $targetId = array_shift($ids);
-        if (!$targetId) {
-            // IDが無ければトップレベルの最後に追加
-            $nav[] = $addNavi;
-        }
-
-        foreach ($nav as $key => $val) {
-            if (strcmp($targetId, $val["id"]) == 0) {
-                if (count($ids) > 0) {
-                    return self::addNavi($nav[$key]['child'], $addNavi, $ids);
-                }
-                // 最後に追加
-                $nav[$key]['child'][] = $addNavi;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function register(BaseApplication $app)
     {
-        // メーカーテーブル用リポジトリ
+        // 商品レビュー用リポジトリ
         $app['eccube.plugin.product_review.repository.product_review'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReview');
         });
@@ -123,7 +95,7 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
             $addNavi['url'] = 'admin_product_review';
             $nav = $config['nav'];
             foreach ($nav as $key => $val) {
-                if ('content' == $val['id']) {
+                if ('product' == $val['id']) {
                     $nav[$key]['child'][] = $addNavi;
                 }
             }

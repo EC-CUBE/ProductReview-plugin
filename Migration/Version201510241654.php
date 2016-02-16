@@ -124,9 +124,14 @@ class Version201510241654 extends AbstractMigration
     }
 
     protected function createPageLayout() {
-        $app = new \Eccube\Application();
-        $app->initialize();
-        $app->boot();
+
+        if (version_compare(\Eccube\Common\Constant::VERSION, '3.0.8', '<=')) {
+            $app = new \Eccube\Application();
+            $app->initialize();
+            $app->boot();
+        } else {
+            $app = \Eccube\Application::getInstance();
+        }
         $em = $app['orm.em'];
 
         $DeviceType = $app['eccube.repository.master.device_type']
@@ -159,9 +164,14 @@ class Version201510241654 extends AbstractMigration
     }
 
     protected function deletePageLayout() {
-        $app = new \Eccube\Application();
-        $app->initialize();
-        $app->boot();
+        if (version_compare(\Eccube\Common\Constant::VERSION, '3.0.8', '<=')) {
+            $app = new \Eccube\Application();
+            $app->initialize();
+            $app->boot();
+        } else {
+            $app = \Eccube\Application::getInstance();
+        }
+
         $em = $app['orm.em'];
 
         /** @var $repos \Eccube\Repository\PageLayoutRepository */
