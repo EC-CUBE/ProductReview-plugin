@@ -118,11 +118,16 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
 
         // メニュー登録
         $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "product_review";
-            $addNavi['name'] = "レビュー管理";
-            $addNavi['url'] = "admin_product_review";
-
-            self::addNavi($config['nav'], $addNavi, array('product'));
+            $addNavi['id'] = 'product_review';
+            $addNavi['name'] = 'レビュー管理';
+            $addNavi['url'] = 'admin_product_review';
+            $nav = $config['nav'];
+            foreach ($nav as $key => $val) {
+                if ('content' == $val['id']) {
+                    $nav[$key]['child'][] = $addNavi;
+                }
+            }
+            $config['nav'] = $nav;
 
             return $config;
         }));
