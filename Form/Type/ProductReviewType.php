@@ -77,6 +77,7 @@ class ProductReviewType extends AbstractType
                 ),
                 'expanded' => true,
                 'multiple' => false,
+                'placeholder' => false,
             ))
             ->add('title', 'text', array(
                 'label' => 'タイトル',
