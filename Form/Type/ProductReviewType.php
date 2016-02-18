@@ -48,7 +48,7 @@ class ProductReviewType extends AbstractType
         $builder
             ->add('reviewer_name', 'text', array(
                 'label' => '投稿者名',
-                'required' => true,
+                'required' => false,
                 'constraints' => array(
                     new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['stext_len'])),
@@ -66,6 +66,7 @@ class ProductReviewType extends AbstractType
                 'required' => false,
             ))
             ->add('recommend_level', 'choice', array(
+                'required' => false,
                 'label' => 'おすすめレベル',
                 'choices' => array(
                     '5' => '★★★★★',
@@ -79,7 +80,7 @@ class ProductReviewType extends AbstractType
             ))
             ->add('title', 'text', array(
                 'label' => 'タイトル',
-                'required' => true,
+                'required' => false,
                 'constraints' => array(
                     new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['stext_len'])),
@@ -87,14 +88,13 @@ class ProductReviewType extends AbstractType
             ))
             ->add('comment', 'textarea', array(
                 'label' => 'コメント',
-                'required' => true,
+                'required' => false,
                 'constraints' => array(
                     new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['ltext_len'])),
                 ),
             ))
             ->addEventSubscriber(new \Eccube\Event\FormEventSubscriber());
-        ;
     }
 
     /**
