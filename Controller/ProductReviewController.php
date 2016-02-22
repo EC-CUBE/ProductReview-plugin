@@ -230,10 +230,11 @@ class ProductReviewController extends AbstractController
                         } else {
                             return $app->redirect($app->url('products_detail_review_complete', array('id' => $Product->getId())));
                         }
-                    break;
+                        break;
+                    case 'back':
+                        // do nothing
+                        break;
                 }
-
-                return $app->redirect($app->url('admin_product_review'));
             }
         }
 
