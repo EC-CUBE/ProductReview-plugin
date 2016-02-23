@@ -79,14 +79,31 @@ class Event
                 ->filter('#item_detail_area .item_detail');
 
             $oldHtml = $oldElement->html();
+            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
             $newHtml = $oldHtml.$twig;
 
-            $html = $crawler->html();
+            $html = $this->getHtml($crawler);
             $html = str_replace($oldHtml, $newHtml, $html);
 
             $response->setContent($html);
             $event->setResponse($response);
         }
+    }
+
+    /**
+     * 解析用HTMLを取得
+     *
+     * @param Crawler $crawler
+     * @return string
+     */
+    private function getHtml(Crawler $crawler)
+    {
+        $html = '';
+        foreach ($crawler as $domElement) {
+            $domElement->ownerDocument->formatOutput = true;
+            $html .= $domElement->ownerDocument->saveHTML();
+        }
+        return html_entity_decode($html, ENT_NOQUOTES, 'UTF-8');
     }
 
 }
