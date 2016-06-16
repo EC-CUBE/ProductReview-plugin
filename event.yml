@@ -1,2 +1,12 @@
+#
+# Event fock
+#
+# new event (for v3.0.9 - late )
+eccube.event.route.product_detail.response:
+    - [onRouterProductsDetailResponse, NORMAL]
+
+# deprecated event (for v3.0.0 - 3.0.8)
 eccube.event.render.product_detail.before:
     - [onRenderProductsDetailBefore, NORMAL]
+
+
