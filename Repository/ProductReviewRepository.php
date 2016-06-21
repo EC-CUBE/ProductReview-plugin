@@ -33,22 +33,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductReviewRepository extends EntityRepository
 {
-    /**
-     * find all
-     *
-     * @return type
-     */
-    public function findAll()
-    {
-
-        $query = $this->_em
-            ->createQuery('SELECT m FROM Plugin\ProductReview\Entity\ProductReview m');
-        $result = $query
-            ->getResult(Query::HYDRATE_ARRAY);
-
-        return $result;
-    }
-
+    
     /**
      * @param  \Plugin\ProductReview\Entity\ProductReview $ProductReview
      * @return bool
