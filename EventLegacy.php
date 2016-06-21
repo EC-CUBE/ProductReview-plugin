@@ -76,7 +76,7 @@ class EventLegacy
             $crawler = new Crawler($html);
 
             $oldElement = $crawler
-                ->filter('#item_detail_area .item_detail');
+                ->filter('#item_detail');
 
             $oldHtml = $oldElement->html();
             $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
