@@ -23,19 +23,21 @@
 
 namespace Plugin\ProductReview;
 
+use Eccube\Common\Constant;
 use Eccube\Event\RenderEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\CssSelector\CssSelector;
-use Symfony\Component\DomCrawler\Crawler;
+use Plugin\ProductReview\EventLegacy;
 
 class Event
 {
 
     private $app;
+    private $legacyEvent;
 
     public function __construct($app)
     {
         $this->app = $app;
+        $this->legacyEvent = new EventLegacy($app);
     }
 
     /**
@@ -44,66 +46,22 @@ class Event
      */
     public function onRenderProductsDetailBefore(FilterResponseEvent $event)
     {
-        // カート内でも呼ばれるためGETに限定
-        if ($event->getRequest()->getMethod() === 'GET') {
-            $app = $this->app;
-
-            $limit = $app['config']['review_regist_max'];
-            $id = $app['request']->attributes->get('id');
-            $Product = $app['eccube.repository.product']->find($id);
-            $Disp = $app['eccube.repository.master.disp']
-                ->find(\Eccube\Entity\Master\Disp::DISPLAY_SHOW);
-            $ProductReviews = $app['eccube.plugin.product_review.repository.product_review']
-                ->findBy(array(
-                    'Product' => $Product,
-                    'Status' => $Disp
-                ),
-                array('create_date' => 'DESC'),
-                $limit === null ? 5 : $limit
-            );
-
-            $twig = $app->renderView(
-                'ProductReview/Resource/template/default/product_review.twig',
-                array(
-                    'id' => $id,
-                    'ProductReviews' => $ProductReviews,
-                )
-            );
-
-            $response = $event->getResponse();
-
-            $html = $response->getContent();
-            $crawler = new Crawler($html);
-
-            $oldElement = $crawler
-                ->filter('#item_detail_area .item_detail');
-
-            $oldHtml = $oldElement->html();
-            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
-            $newHtml = $oldHtml.$twig;
-
-            $html = $this->getHtml($crawler);
-            $html = str_replace($oldHtml, $newHtml, $html);
-
-            $response->setContent($html);
-            $event->setResponse($response);
+        if ($this->supportNewHookPoint()) {
+            return;
         }
+        $this->legacyEvent->onRenderProductsDetailBefore($event);
+    }
+
+    public function onRouterProductsDetailResponse(FilterResponseEvent $event)
+    {
+        $this->legacyEvent->onRenderProductsDetailBefore($event);
     }
 
     /**
-     * 解析用HTMLを取得
-     *
-     * @param Crawler $crawler
-     * @return string
+     * @return bool v3.0.9以降のフックポイントに対応しているか？
      */
-    private function getHtml(Crawler $crawler)
+    private function supportNewHookPoint()
     {
-        $html = '';
-        foreach ($crawler as $domElement) {
-            $domElement->ownerDocument->formatOutput = true;
-            $html .= $domElement->ownerDocument->saveHTML();
-        }
-        return html_entity_decode($html, ENT_NOQUOTES, 'UTF-8');
+        return version_compare('3.0.9', Constant::VERSION, '<=');
     }
-
 }
