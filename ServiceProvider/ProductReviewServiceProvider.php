@@ -31,9 +31,15 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
 
     public function register(BaseApplication $app)
     {
+        $app->match('/' . $app['config']['admin_route'] . '/plugin/ProductReview/config', 'Plugin\ProductReview\Controller\ConfigController::index')->bind('plugin_ProductReview_config');
+
         // 商品レビュー用リポジトリ
         $app['eccube.plugin.product_review.repository.product_review'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReview');
+        });
+
+        $app['eccube.plugin.product_review.repository.product_review_plugin'] = $app->share(function () use ($app) {
+            return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReviewPlugin');
         });
         
         // 一覧
@@ -73,6 +79,7 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
             $types[] = new \Plugin\ProductReview\Form\Type\ProductReviewType($app);
             $types[] = new \Plugin\ProductReview\Form\Type\Admin\ProductReviewType($app);
             $types[] = new \Plugin\ProductReview\Form\Type\Admin\ProductReviewSerchType($app);
+            $types[] = new \Plugin\ProductReview\Form\Type\Admin\ProductReviewConfigType($app);
             return $types;
         }));
 

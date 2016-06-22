@@ -71,12 +71,13 @@ class EventLegacy
             );
 
             $response = $event->getResponse();
+            $ProductReviewPlugin = $app["eccube.plugin.product_review.repository.product_review_plugin"]->find(1);
+            $cssSelector = $ProductReviewPlugin->getCssSelector();
 
             $html = $response->getContent();
             $crawler = new Crawler($html);
 
-            $oldElement = $crawler
-                ->filter('#item_detail');
+            $oldElement = $crawler->filter($cssSelector);
 
             $oldHtml = $oldElement->html();
             $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');

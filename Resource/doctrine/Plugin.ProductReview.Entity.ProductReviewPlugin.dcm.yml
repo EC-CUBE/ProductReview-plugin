@@ -1,0 +1,25 @@
+Plugin\ProductReview\Entity\ProductReviewPlugin:
+    type: entity
+    table: plg_product_review_plugin
+    repositoryClass: Plugin\ProductReview\Repository\ProductReviewPluginRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            column: plugin_id
+            generator:
+                strategy: NONE
+    fields:
+        css_selector:
+            type: text
+            nullable: true
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+
+    lifecycleCallbacks: {  }

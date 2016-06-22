@@ -24,7 +24,7 @@
 namespace Plugin\ProductReview;
 
 use Eccube\Plugin\AbstractPluginManager;
-
+use Plugin\ProductReview\Entity\ProductReviewPlugin;
 class PluginManager extends AbstractPluginManager
 {
 
@@ -44,17 +44,33 @@ class PluginManager extends AbstractPluginManager
 
     public function enable($config, $app)
     {
-
+        $this->insertDataPlugin($app);
     }
 
     public function disable($config, $app)
     {
-
+        $this->removeDataPlugin($app);
     }
 
     public function update($config, $app)
     {
 
+    }
+
+    private function insertDataPlugin($app) {
+        $em = $app['orm.em'];
+        $ProductReviewPlugin = new ProductReviewPlugin();
+        $ProductReviewPlugin->setCssSelector('#item_detail');
+        $ProductReviewPlugin->setId(1);
+        $em->persist($ProductReviewPlugin);
+        $em->flush($ProductReviewPlugin);
+    }
+
+    private function removeDataPlugin($app) {
+        $em = $app['orm.em'];
+        $ProductReviewPlugin = $app["eccube.plugin.product_review.repository.product_review_plugin"]->find(1);
+        $em->remove($ProductReviewPlugin);
+        $em->flush($ProductReviewPlugin);
     }
 
 }
