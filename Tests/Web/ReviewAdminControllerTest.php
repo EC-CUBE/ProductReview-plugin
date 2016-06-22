@@ -66,15 +66,14 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $form = $crawler->selectButton('検索する')->form();
         $crawlerSearch = $this->client->submit($form);
         $this->assertContains('検索結果 ', $crawlerSearch->html());
-        $crawlerSearch->filter('.table-striped tbody tr')->each(function ($tr) {
-            while (count($this->dummyData)) {
-                $Review = array_shift($this->dummyData);
-                if (!$Review->getDelFlg()) {
-                    break;
-                }
+
+        $tr = $crawlerSearch->filter('.table-striped tbody');
+        foreach($this->dummyData as $dummy) { //echo '=='.$dummy->getDelFlg();
+            if ($dummy->getDelFlg()) {
+                continue;
             }
-            $this->assertContains($Review->getReviewerName(), $tr->html());
-        });
+            $this->assertContains($dummy->getReviewerName(), $tr->html());
+        }
     }
 
     public function testReviewDelete()
@@ -129,12 +128,10 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             $numberResult = $crawler->filter('.box-title span strong');
             $this->assertContains($expectNumber, $numberResult->html());
         }
-
     }
 
     public function dataRoutingProvider()
     {
-
         return array(
             array('', '', '', '', '', '', '', '2'),
             array($this->commonTitle, '', '', '', '', '', '', null),
