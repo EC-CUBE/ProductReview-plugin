@@ -19,8 +19,34 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #}
+<script type="text/javascript">
+    $(function () {
+        var show_more = "<a href='#' id='show_more' style='text-decoration: underline;'>Show more</a>";
+        var close = "<a href='#' id='close' style='text-decoration: underline;'>Close</a>";
+        var review = $("ul.review_list li");
+        if(review.size() > 1){
+            review.hide();
+            review.first().append(show_more).show();
+            review.first().append(close);
+            $("#close").hide();
+        }
+        $("#show_more").click(function () {
+            review.show();
+            $(this).hide();
+            $("#close").show();
+            return false;
+        });
+        $("#close").click(function () {
+            review.hide();
+            review.first().show();
+            $(this).hide();
+            $("#show_more").show();
+            return false;
+        });
+    });
+</script>
 
-<divs id="review_area" xmlns="http://www.w3.org/1999/html">
+<div id="review_area" xmlns="http://www.w3.org/1999/html" class="col-sm-6" style="float: right;">
     <div class="btn_area">
         <ul class="row">
             <li class="col-xs-12 col-sm-8">
@@ -50,4 +76,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         {% endfor %}
         </ul>
     {% endif %}
-</divs>
+</div>
