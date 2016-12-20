@@ -10,24 +10,25 @@
 namespace Plugin\ProductReview;
 
 use Eccube\Common\Constant;
-use Eccube\Event\RenderEvent;
+use Eccube\Event\TemplateEvent;
+use Plugin\ProductReview\Util\Version;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Plugin\ProductReview\EventLegacy;
 
+/**
+ * Class Event.
+ *
+ */
 class Event
 {
-
-    private $app;
-    private $legacyEvent;
-
-    public function __construct($app)
+    /**
+     * @param TemplateEvent $event
+     */
+    public function onProductDetailRender(TemplateEvent $event)
     {
-        $this->app = $app;
-        $this->legacyEvent = new EventLegacy($app);
+
     }
 
     /**
-     * フロント：商品詳細画面に商品レビューを表示します.
      * @param FilterResponseEvent $event
      */
     public function onRenderProductsDetailBefore(FilterResponseEvent $event)
@@ -35,19 +36,14 @@ class Event
         if ($this->supportNewHookPoint()) {
             return;
         }
-        $this->legacyEvent->onRenderProductsDetailBefore($event);
-    }
-
-    public function onRouterProductsDetailResponse(FilterResponseEvent $event)
-    {
-        $this->legacyEvent->onRenderProductsDetailBefore($event);
     }
 
     /**
+     *
      * @return bool v3.0.9以降のフックポイントに対応しているか？
      */
     private function supportNewHookPoint()
     {
-        return version_compare('3.0.9', Constant::VERSION, '<=');
+        return Version::isSupportVersion();
     }
 }

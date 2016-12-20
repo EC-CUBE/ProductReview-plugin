@@ -21,7 +21,7 @@ use Eccube\Entity\Product;
 class ProductReview extends AbstractEntity
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 

@@ -7,23 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Plugin\ProductReview;
+namespace Plugin\ProductReview\Event;
 
-use Eccube\Event\RenderEvent;
+use Eccube\Entity\Master\Disp;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\CssSelector\CssSelector;
 use Symfony\Component\DomCrawler\Crawler;
 
-class EventLegacy
+/**
+ * Class ProductReviewEventLegacy.
+ *
+ * @deprecated since 3.0.0 - 3.0.8
+ */
+class ProductReviewEventLegacy extends CommonEvent
 {
-
-    private $app;
-
-    public function __construct($app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * フロント：商品詳細画面に商品レビューを表示します.
      * @param FilterResponseEvent $event
@@ -38,8 +34,8 @@ class EventLegacy
             $id = $app['request']->attributes->get('id');
             $Product = $app['eccube.repository.product']->find($id);
             $Disp = $app['eccube.repository.master.disp']
-                ->find(\Eccube\Entity\Master\Disp::DISPLAY_SHOW);
-            $ProductReviews = $app['eccube.plugin.product_review.repository.product_review']
+                ->find(Disp::DISPLAY_SHOW);
+            $ProductReviews = $app['product_review.repository.product_review']
                 ->findBy(array(
                     'Product' => $Product,
                     'Status' => $Disp
@@ -89,7 +85,7 @@ class EventLegacy
             $domElement->ownerDocument->formatOutput = true;
             $html .= $domElement->ownerDocument->saveHTML();
         }
+
         return html_entity_decode($html, ENT_NOQUOTES, 'UTF-8');
     }
-
 }

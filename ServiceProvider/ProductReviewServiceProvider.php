@@ -36,6 +36,10 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
         $app['product_review.repository.product_review'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReview');
         });
+
+        $app['product_review.repository.product_review_config'] = $app->share(function () use ($app) {
+            return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReviewConfig');
+        });
         // フロント画面定義
         $front = $app['controllers_factory'];
         // Admin
