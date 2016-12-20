@@ -1,98 +1,110 @@
 <?php
-/*
- * This file is part of EC-CUBE
- *
- * Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
- *
- * http://www.lockon.co.jp/
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-
+/**
+  * This file is part of the ProductReview plugin
+  *
+  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+  *
+  * For the full copyright and license information, please view the LICENSE
+  * file that was distributed with this source code.
+  */
 namespace Plugin\ProductReview\ServiceProvider;
 
+use Eccube\Common\Constant;
+use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
+use Plugin\ProductReview\Form\Type\ProductReviewType;
+use Plugin\ProductReview\Form\Type\Admin\ProductReviewType as AdminProductReviewType;
+use Plugin\ProductReview\Util\Version;
 use Silex\Application as BaseApplication;
 use Silex\ServiceProviderInterface;
 
+// include log functions (for 3.0.0 - 3.0.11)
+require_once __DIR__.'/../log.php';
+
+/**
+ * Class ProductReviewServiceProvider.
+ */
 class ProductReviewServiceProvider implements ServiceProviderInterface
 {
-
+    /**
+     * Register provider.
+     *
+     * @param BaseApplication $app
+     */
     public function register(BaseApplication $app)
     {
         // 商品レビュー用リポジトリ
-        $app['eccube.plugin.product_review.repository.product_review'] = $app->share(function () use ($app) {
+        $app['product_review.repository.product_review'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReview');
         });
-        
+        // フロント画面定義
+        $front = $app['controllers_factory'];
+        // Admin
+        $admin = $app['controllers_factory'];
+        // 強制SSL
+        if ($app['config']['force_ssl'] == Constant::ENABLED) {
+            $admin->requireHttps();
+            $front->requireHttps();
+        }
+
+        // プラグイン用設定画面
+        $admin->match('/plugin/product/review/config', 'Plugin\ProductReview\Controller\Admin\ConfigController::index')->bind('plugin_product_review_config');
+
         // 一覧
-        $app->match('/' . $app["config"]["admin_route"] . '/product/review/', '\\Plugin\\ProductReview\\Controller\\ProductReviewController::index')
-            ->bind('admin_product_review');
+        $admin->match('/plugin/product/review/', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::index')
+            ->bind('plugin_admin_product_review');
         // 一覧：表示件数変更
-        $app->match('/' . $app["config"]["admin_route"] . '/product/review/{page_no}', '\\Plugin\\ProductReview\\Controller\\ProductReviewController::index')
+        $admin->match('/plugin/product/review/{page_no}', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::index')
             ->assert('page_no', '\d+')
-            ->bind('admin_product_review_page');
+            ->bind('plugin_admin_product_review_page');
 
         // 編集
-        $app->match('/' . $app["config"]["admin_route"] . '/product/review/edit/{id}', '\\Plugin\\ProductReview\\Controller\\ProductReviewController::edit')
+        $admin->match('/plugin/product/review/{id}/edit', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::edit')
             ->assert('id', '\d+')
-            ->bind('admin_product_review_edit');
+            ->bind('plugin_admin_product_review_edit');
 
         // 削除
-        $app->match('/' . $app["config"]["admin_route"] . '/product/review/delete/{id}', '\\Plugin\\ProductReview\\Controller\\ProductReviewController::delete')
+        $admin->match('/plugin/product/review/{id}/delete', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::delete')
             ->assert('id', '\d+')
-            ->bind('admin_product_review_delete');
+            ->bind('plugin_admin_product_review_delete');
+
+        $app->mount('/'.trim($app['config']['admin_route'], '/').'/', $admin);
 
         // フロント：レビュー入力、確認
-        $app->match('/products/detail/{id}/review', '\\Plugin\\ProductReview\\Controller\\ProductReviewController::review')
+        $front->match('/plugin/products/detail/{id}/review', 'Plugin\ProductReview\Controller\ProductReviewController::review')
             ->value('id', null)->assert('id', '\d+|')
-            ->bind('products_detail_review');
+            ->bind('plugin_products_detail_review');
 
         // フロント：レビュー登録完了
-        $app->match('/products/detail/{id}/review/complete', '\\Plugin\\ProductReview\\Controller\\ProductReviewController::complete')
+        $front->match('/plugin/products/detail/{id}/review/complete', 'Plugin\ProductReview\Controller\ProductReviewController::complete')
             ->value('id', null)->assert('id', '\d+|')
-            ->bind('products_detail_review_complete');
+            ->bind('plugin_products_detail_review_complete');
 
         // フロント：システムエラー
-        $app->match('/products/detail/review_error', '\\Plugin\\ProductReview\\Controller\\ProductReviewController::frontError')
-            ->bind('products_detail_review_error');
+        $front->match('/plugin/products/detail/review/error', 'Plugin\ProductReview\Controller\ProductReviewController::frontError')
+            ->bind('plugin_products_detail_review_error');
+
+        $app->mount('', $front);
 
         // 型登録
         $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
-            $types[] = new \Plugin\ProductReview\Form\Type\ProductReviewType($app);
-            $types[] = new \Plugin\ProductReview\Form\Type\Admin\ProductReviewType($app);
-            $types[] = new \Plugin\ProductReview\Form\Type\Admin\ProductReviewSerchType($app);
+            $types[] = new ProductReviewType($app);
+            $types[] = new AdminProductReviewType($app);
+            $types[] = new ProductReviewSearchType($app);
+
             return $types;
         }));
 
         // メッセージ登録
-        $app['translator'] = $app->share($app->extend('translator', function ($translator, \Silex\Application $app) {
-            $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
-
-            $file = __DIR__ . '/../Resource/locale/message.' . $app['locale'] . '.yml';
-            if (file_exists($file)) {
-                $translator->addResource('yaml', $file, $app['locale']);
-            }
-
-            return $translator;
-        }));
+        $file = __DIR__.'/../Resource/locale/message.'.$app['locale'].'.yml';
+        if (file_exists($file)) {
+            $app['translator']->addResource('yaml', $file, $app['locale']);
+        }
 
         // メニュー登録
         $app['config'] = $app->share($app->extend('config', function ($config) {
             $addNavi['id'] = 'product_review';
             $addNavi['name'] = 'レビュー管理';
-            $addNavi['url'] = 'admin_product_review';
+            $addNavi['url'] = 'plugin_admin_product_review';
             $nav = $config['nav'];
             foreach ($nav as $key => $val) {
                 if ('product' == $val['id']) {
@@ -103,8 +115,16 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
 
             return $config;
         }));
+
+        // initialize logger (for 3.0.0 - 3.0.8)
+        if (!Version::isSupportMethod()) {
+            eccube_log_init($app);
+        }
     }
 
+    /**
+     * @param BaseApplication $app
+     */
     public function boot(BaseApplication $app)
     {
     }

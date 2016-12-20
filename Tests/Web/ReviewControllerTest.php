@@ -1,9 +1,8 @@
 <?php
 /**
- * This file is part of EC-CUBE
+ * This file is part of the ProductReview plugin
  *
- * Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
- * http://www.lockon.co.jp/
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.

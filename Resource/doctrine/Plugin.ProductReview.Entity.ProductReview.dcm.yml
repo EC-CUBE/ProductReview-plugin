@@ -23,7 +23,8 @@ Plugin\ProductReview\Entity\ProductReview:
             nullable: false
             unsigned: false
         title:
-            type: text
+            type: string
+            length: 50
             nullable: false
         comment:
             type: text
