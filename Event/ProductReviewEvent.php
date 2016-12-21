@@ -9,6 +9,7 @@
  */
 namespace Plugin\ProductReview\Event;
 
+use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Product;
 use Eccube\Event\TemplateEvent;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
@@ -43,12 +44,14 @@ class ProductReviewEvent extends CommonEvent
         $config = $this->app['product_review.repository.product_review_config']->find(1);
         $max = $config->getReviewMax();
 
+        $Disp = $this->app['eccube.repository.master.disp']->find(Disp::DISPLAY_SHOW);
+
         /**
          * @var $repository ProductReviewRepository
          */
         $repository = $this->app['product_review.repository.product_review'];
 
-        $arrProductReview = $repository->findBy(array('Product' => $Product), array('update_date' => 'DESC'), $max);
+        $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('update_date' => 'DESC'), $max);
 
         /**
          * @var $twig \Twig_Environment
@@ -66,6 +69,7 @@ class ProductReviewEvent extends CommonEvent
 
         $event->setSource($twigSource);
 
+        $parameters['id'] = $Product->getId();
         $parameters['ProductReviews'] = $arrProductReview;
         $event->setParameters($parameters);
 

@@ -10,6 +10,8 @@
 namespace Plugin\ProductReview\Event;
 
 use Eccube\Entity\Master\Disp;
+use Plugin\ProductReview\Entity\ProductReviewConfig;
+use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -22,53 +24,83 @@ class ProductReviewEventLegacy extends CommonEvent
 {
     /**
      * フロント：商品詳細画面に商品レビューを表示します.
+     *
      * @param FilterResponseEvent $event
      */
     public function onRenderProductsDetailBefore(FilterResponseEvent $event)
     {
+        log_info('EventLegacy: The product review hook into the product detail start');
         // カート内でも呼ばれるためGETに限定
         if ($event->getRequest()->getMethod() === 'GET') {
             $app = $this->app;
 
-            $limit = $app['config']['review_regist_max'];
+            // Get show max number.
+            /* @var $config ProductReviewConfig */
+            $config = $app['product_review.repository.product_review_config']->find(1);
+            $limit = $config->getReviewMax();
+
+            /**
+             * @var $repository ProductReviewRepository
+             */
+            $repository = $app['product_review.repository.product_review'];
+
+
             $id = $app['request']->attributes->get('id');
             $Product = $app['eccube.repository.product']->find($id);
             $Disp = $app['eccube.repository.master.disp']
                 ->find(Disp::DISPLAY_SHOW);
-            $ProductReviews = $app['product_review.repository.product_review']
-                ->findBy(array(
-                    'Product' => $Product,
-                    'Status' => $Disp
-                ),
-                array('create_date' => 'DESC'),
-                $limit === null ? 5 : $limit
-            );
+            $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('update_date' => 'DESC'), $limit);
 
             $twig = $app->renderView(
                 'ProductReview/Resource/template/default/product_review.twig',
                 array(
                     'id' => $id,
-                    'ProductReviews' => $ProductReviews,
+                    'ProductReviews' => $arrProductReview,
                 )
             );
 
             $response = $event->getResponse();
 
+            // Source
             $html = $response->getContent();
-            $crawler = new Crawler($html);
 
+            // Crawler
+            $crawler = new Crawler($html);
             $oldElement = $crawler
-                ->filter('#item_detail_area .item_detail');
+                ->filter('#item_detail')->last();
 
             $oldHtml = $oldElement->html();
-            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
+
+//            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
+
             $newHtml = $oldHtml.$twig;
 
             $html = $this->getHtml($crawler);
+
             $html = str_replace($oldHtml, $newHtml, $html);
 
             $response->setContent($html);
             $event->setResponse($response);
         }
+
+        log_info('EventLegacy: The product review hook into the product detail end');
+    }
+
+    /**
+     * 解析用HTMLを取得
+     *
+     * @param Crawler $crawler
+     *
+     * @return string
+     */
+    private function getHtml(Crawler $crawler)
+    {
+        $html = '';
+        foreach ($crawler as $domElement) {
+            $domElement->ownerDocument->formatOutput = true;
+            $html .= $domElement->ownerDocument->saveHTML();
+        }
+
+        return html_entity_decode($html, ENT_NOQUOTES, 'UTF-8');
     }
 }

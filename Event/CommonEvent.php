@@ -39,8 +39,8 @@ class CommonEvent
     /**
      * Render position
      *
-     * @param string $html
-     * @param string $part
+     * @param string $html twig code.
+     * @param string $part twig code.
      * @param string $markTag
      *
      * @return mixed
@@ -55,45 +55,19 @@ class CommonEvent
             $newHtml = $markTag.$part;
             $html = str_replace($markTag, $newHtml, $html);
         } else {
-            $html = $html->getContent();
-            $crawler = new Crawler($html);
+            // As request, the product review area will append bellow free area section.
+            $freeAreaStart = '{% if Product.freearea %}';
+            $pos = strpos($html, $freeAreaStart);
+            $endPart = substr($html, $pos);
 
-            $oldElement = $crawler
-                ->filter('#item_detail_area .item_detail');
+            // End of free area
+            $freeAreaEnd = '{% endif %}';
+            $from = '/'.preg_quote($freeAreaEnd, '/').'/';
+            $newEndPart = preg_replace($from, $freeAreaEnd.$part, $endPart, 1);
 
-            $oldHtml = $oldElement->html();
-            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
-            $newHtml = $oldHtml.$part;
-
-            $html = $this->getHtml($crawler);
-            $html = str_replace($oldHtml, $newHtml, $html);
-
-//            $response->setContent($html);
-//            $event->setResponse($response);
-
-            // For old and new ec-cube version
-//            $search = '/(<div id="relative_category_box")|(<div class="relative_cat")/';
-//            $newHtml = $part.'<div id="relative_category_box" class="relative_cat"';
-//            $html = preg_replace($search, $newHtml, $html);
+            $html = str_replace($endPart, $newEndPart, $html);
         }
 
         return $html;
-    }
-
-    /**
-     * 解析用HTMLを取得
-     *
-     * @param Crawler $crawler
-     * @return string
-     */
-    protected function getHtml(Crawler $crawler)
-    {
-        $html = '';
-        foreach ($crawler as $domElement) {
-            $domElement->ownerDocument->formatOutput = true;
-            $html .= $domElement->ownerDocument->saveHTML();
-        }
-
-        return html_entity_decode($html, ENT_NOQUOTES, 'UTF-8');
     }
 }

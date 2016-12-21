@@ -13,7 +13,7 @@ Plugin\ProductReview\Entity\ProductReviewConfig:
                  strategy: AUTO
     fields:
         review_max:
-            type: SMALLINT
+            type: smallint
             nullable: true
             unsigned: true
             options:
@@ -24,7 +24,8 @@ Plugin\ProductReview\Entity\ProductReviewConfig:
         update_date:
             type: datetime
             nullable: false
-    oneToOne:
+
+    manyToOne:
         CsvType:
             targetEntity: Eccube\Entity\Master\CsvType
             joinColumn:

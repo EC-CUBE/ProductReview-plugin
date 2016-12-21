@@ -10,11 +10,7 @@
 namespace Plugin\ProductReview\Entity;
 
 use Eccube\Entity\AbstractEntity;
-use Eccube\Entity\Customer;
 use Eccube\Entity\Master\CsvType;
-use Eccube\Entity\Master\Disp;
-use Eccube\Entity\Master\Sex;
-use Eccube\Entity\Product;
 
 /**
  * Class ProductReviewConfig Entity.
@@ -29,7 +25,7 @@ class ProductReviewConfig extends AbstractEntity
     /**
      * @var CsvType
      */
-    private $csv_type;
+    private $CsvType;
 
     /**
      * @var int
@@ -77,7 +73,7 @@ class ProductReviewConfig extends AbstractEntity
      */
     public function getCsvType()
     {
-        return $this->csv_type;
+        return $this->CsvType;
     }
 
     /**
@@ -88,7 +84,7 @@ class ProductReviewConfig extends AbstractEntity
      */
     public function setCsvType(CsvType $cid)
     {
-        $this->csv_type = $cid;
+        $this->CsvType = $cid;
 
         return $this;
     }
