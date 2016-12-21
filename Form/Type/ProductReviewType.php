@@ -9,6 +9,7 @@
  */
 namespace Plugin\ProductReview\Form\Type;
 
+use Eccube\Application;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,15 +20,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProductReviewType extends AbstractType
 {
+    /**
+     * @var Application
+     */
     private $app;
 
+    /**
+     * ProductReviewType constructor.
+     * @param object $app
+     */
     public function __construct($app)
     {
         $this->app = $app;
     }
 
     /**
-     * {@inheritdoc}
+     * build form.
+     *
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

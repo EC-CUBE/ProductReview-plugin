@@ -9,7 +9,7 @@
  */
 namespace Plugin\ProductReview;
 
-use Eccube\Common\Constant;
+use Eccube\Application;
 use Eccube\Event\TemplateEvent;
 use Plugin\ProductReview\Util\Version;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -21,11 +21,25 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 class Event
 {
     /**
+     * @var Application
+     */
+    private $app;
+
+    /**
+     * MakerEvent constructor.
+     * @param Application $app
+     */
+    public function __construct($app)
+    {
+        $this->app = $app;
+    }
+
+    /**
      * @param TemplateEvent $event
      */
     public function onProductDetailRender(TemplateEvent $event)
     {
-
+        $this->app['product_review.event.product_review']->onProductDetailRender($event);
     }
 
     /**
@@ -36,6 +50,8 @@ class Event
         if ($this->supportNewHookPoint()) {
             return;
         }
+
+        $this->app['product_review.event.product_review_legacy']->onRenderProductsDetailBefore($event);
     }
 
     /**

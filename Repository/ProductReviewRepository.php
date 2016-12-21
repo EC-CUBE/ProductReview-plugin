@@ -140,6 +140,21 @@ class ProductReviewRepository extends EntityRepository
                 ->andWhere('r.create_date < :review_end')
                 ->setParameter('review_end', $date);
         }
+        // status
+        if (!empty($searchData['status'])) {
+            $arrId = array();
+            $arrStatus = $searchData['sex'];
+            foreach ($arrStatus as $status) {
+                if ($status instanceof Sex) {
+                    $arrId[] = $status->getId();
+                } elseif (is_numeric($status)) {
+                    $arrId[] = $status;
+                }
+            }
+            $qb
+                ->andWhere($qb->expr()->in('r.Status', ':arrId'))
+                ->setParameter('arrId', $arrId);
+        }
 
         // Order By
         $qb->addOrderBy('r.update_date', 'DESC');

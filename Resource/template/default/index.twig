@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <h2>商品について、お客様のご意見、ご感想をどしどしお寄せください。</h2>
-            <form method="post" action="{{ url('products_detail_review', { id : Product.id }) }}">
+            <form method="post" action="{{ url('plugin_products_detail_review', { id : Product.id }) }}">
                 <input type="hidden" name="mode" value="confirm">
                 {{ form_widget(form._token) }}
                 <div class="dl_table">

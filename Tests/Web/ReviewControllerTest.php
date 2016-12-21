@@ -29,7 +29,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $fake = $this->getFaker();
         $crawler = $this->client->request(
             'POST',
-            $this->app->url('products_detail_review', array('id' => $productId)),
+            $this->app->url('plugin_products_detail_review', array('id' => $productId)),
             array('product_review' => array(
                 'comment' => $fake->word,
                 'title' => $fake->word,
@@ -45,7 +45,7 @@ class ReviewControllerTest extends AbstractWebTestCase
 
         $form = $crawler->selectButton('完了ページヘ')->form();
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('products_detail_review_complete', array('id' => $productId))));
+        $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('plugin_products_detail_review_complete', array('id' => $productId))));
 
     }
 
@@ -55,7 +55,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $fake = $this->getFaker();
         $crawler = $this->client->request(
             'POST',
-            $this->app->url('products_detail_review', array('id' => $productId)),
+            $this->app->url('plugin_products_detail_review', array('id' => $productId)),
             array('product_review' => array(
                 'comment' => $fake->word,
                 'title' => $fake->word,

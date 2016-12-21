@@ -10,6 +10,8 @@
 namespace Plugin\ProductReview\ServiceProvider;
 
 use Eccube\Common\Constant;
+use Plugin\ProductReview\Event\ProductReviewEvent;
+use Plugin\ProductReview\Event\ProductReviewEventLegacy;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
 use Plugin\ProductReview\Form\Type\ProductReviewType;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewType as AdminProductReviewType;
@@ -40,6 +42,17 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
         $app['product_review.repository.product_review_config'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReviewConfig');
         });
+
+        // Product Review event
+        $app['product_review.event.product_review'] = $app->share(function () use ($app) {
+            return new ProductReviewEvent($app);
+        });
+
+        // Product review legacy event
+        $app['product_review.event.product_review_legacy'] = $app->share(function () use ($app) {
+            return new ProductReviewEventLegacy($app);
+        });
+
         // フロント画面定義
         $front = $app['controllers_factory'];
         // Admin

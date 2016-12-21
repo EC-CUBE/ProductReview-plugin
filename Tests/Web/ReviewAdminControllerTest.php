@@ -59,7 +59,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
     public function testReviewList()
     {
-        $crawler = $this->client->request('GET', $this->app->url('admin_product_review')
+        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review')
         );
         $this->assertContains('検索する', $crawler->html());
         $form = $crawler->selectButton('検索する')->form();
@@ -80,9 +80,9 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $Review = array_shift($this->dummyData);
         $productId = $Review->getId();
         $this->client->request('DELETE',
-            $this->app->url('admin_product_review_delete', array('id' => $productId))
+            $this->app->url('plugin_admin_product_review_delete', array('id' => $productId))
         );
-        $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('admin_product_review')));
+        $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
         $ProductNew = $this->app['eccube.plugin.product_review.repository.product_review']->find($productId);
         $this->expected = 1;
         $this->actual = $ProductNew->getDelFlg();
@@ -97,7 +97,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $fakeTitle = $fake->word;
 
         $crawler = $this->client->request('GET',
-            $this->app->url('admin_product_review_edit', array('id' => $reviewId))
+            $this->app->url('plugin_admin_product_review_edit', array('id' => $reviewId))
         );
         $form = $crawler->selectButton('登録')->form();
         $form['admin_product_review[recommend_level]'] = 1;
@@ -117,7 +117,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     public function testReviewSearch($multi, $productName, $productCode, $sex, $recomendLevel, $postDateFrom, $postDateTo, $expectNumber)
     {
         $dataArray = $this->initForm($multi, $productName, $productCode, $sex, $recomendLevel, $postDateFrom, $postDateTo);
-        $crawler = $this->client->request('POST', $this->app->url('admin_product_review'), $dataArray
+        $crawler = $this->client->request('POST', $this->app->url('plugin_admin_product_review'), $dataArray
         );
 
         $this->assertContains('検索する', $crawler->html());

@@ -240,27 +240,29 @@ class Version201510241654 extends AbstractMigration
         $PageLayout = new PageLayout();
         $PageLayout->setDeviceType($DeviceType);
         $PageLayout->setName( 'お客様の声書き込み');
-        $PageLayout->setUrl('products_detail_review');
+        $PageLayout->setUrl('plugin_products_detail_review');
         $PageLayout->setMetaRobots('noindex');
         $PageLayout->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
         $em->persist($PageLayout);
+        $em->flush($PageLayout);
 
         $PageLayout = new PageLayout();
         $PageLayout->setDeviceType($DeviceType);
         $PageLayout->setName( 'お客様の声書き込み完了');
-        $PageLayout->setUrl('products_detail_review_complete');
+        $PageLayout->setUrl('plugin_products_detail_review_complete');
         $PageLayout->setMetaRobots('noindex');
         $PageLayout->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
         $em->persist($PageLayout);
+        $em->flush($PageLayout);
 
         $PageLayout = new PageLayout();
         $PageLayout->setDeviceType($DeviceType);
         $PageLayout->setName( 'お客様の声書き込みエラー');
-        $PageLayout->setUrl('products_detail_review_error');
+        $PageLayout->setUrl('plugin_products_detail_review_error');
         $PageLayout->setMetaRobots('noindex');
         $PageLayout->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
         $em->persist($PageLayout);
-        $em->flush();
+        $em->flush($PageLayout);
     }
 
     /**
@@ -283,14 +285,17 @@ class Version201510241654 extends AbstractMigration
         $DeviceType = $app['eccube.repository.master.device_type']
             ->find(DeviceType::DEVICE_TYPE_PC);
 
-        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'products_detail_review');
+        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review');
         $em->remove($PageLayout);
-        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'products_detail_review_complete');
-        $em->remove($PageLayout);
-        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'products_detail_review_error');
-        $em->remove($PageLayout);
+        $em->flush($PageLayout);
 
-        $em->flush();
+        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review_complete');
+        $em->remove($PageLayout);
+        $em->flush($PageLayout);
+
+        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review_error');
+        $em->remove($PageLayout);
+        $em->flush($PageLayout);
     }
 
     /**

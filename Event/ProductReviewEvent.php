@@ -11,6 +11,8 @@ namespace Plugin\ProductReview\Event;
 
 use Eccube\Entity\Product;
 use Eccube\Event\TemplateEvent;
+use Plugin\ProductReview\Entity\ProductReviewConfig;
+use Plugin\ProductReview\Repository\ProductReviewRepository;
 
 /**
  * Class Event
@@ -36,49 +38,38 @@ class ProductReviewEvent extends CommonEvent
         if (!$Product) {
             return;
         }
+        // Get show max number.
+        /* @var $config ProductReviewConfig */
+        $config = $this->app['product_review.repository.product_review_config']->find(1);
+        $max = $config->getReviewMax();
 
         /**
-         * @var ProductMakerRepository $repository
+         * @var $repository ProductReviewRepository
          */
-        $repository = $this->app['eccube.plugin.maker.repository.product_maker'];
-        /**
-         * @var ProductMaker $ProductMaker
-         */
-        $ProductMaker = $repository->find($Product);
-        if (!$ProductMaker) {
-            log_info('Event: product maker not found.', array('Product id' => $Product->getId()));
+        $repository = $this->app['product_review.repository.product_review'];
 
-            return;
-        }
-
-        $Maker = $ProductMaker->getMaker();
-
-        if (!$Maker) {
-            log_info('Event: maker not found.', array('Product maker id' => $ProductMaker->getId()));
-            // 商品メーカーマスタにデータが存在しないまたは削除されていれば無視する
-            return;
-        }
+        $arrProductReview = $repository->findBy(array('Product' => $Product), array('update_date' => 'DESC'), $max);
 
         /**
-         * @var \Twig_Environment $twig
+         * @var $twig \Twig_Environment
          */
         $twig = $this->app['twig'];
 
-        $twigAppend = $twig->getLoader()->getSource('Maker/Resource/template/default/maker.twig');
+        $twigAppend = $twig->getLoader()->getSource('ProductReview/Resource/template/default/product_review.twig');
 
         /**
          * @var string $twigSource twig template.
          */
         $twigSource = $event->getSource();
 
-        $twigSource = $this->renderPosition($twigSource, $twigAppend, $this->makerTag);
+        $twigSource = $this->renderPosition($twigSource, $twigAppend, $this->pluginTag);
 
         $event->setSource($twigSource);
 
-        $parameters['maker_name'] = $ProductMaker->getMaker()->getName();
-        $parameters['maker_url'] = $ProductMaker->getMakerUrl();
+        $parameters['ProductReviews'] = $arrProductReview;
         $event->setParameters($parameters);
-        log_info('Event: product maker render success.', array('Product id' => $ProductMaker->getId()));
-        log_info('Event: product maker hook into the product detail end.');
+
+        log_info('Event: product review render success.', array('Product id' => $Product->getId()));
+        log_info('Event: product review hook into the product detail end.');
     }
 }

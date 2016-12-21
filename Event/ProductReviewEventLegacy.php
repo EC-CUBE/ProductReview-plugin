@@ -71,21 +71,4 @@ class ProductReviewEventLegacy extends CommonEvent
             $event->setResponse($response);
         }
     }
-
-    /**
-     * 解析用HTMLを取得
-     *
-     * @param Crawler $crawler
-     * @return string
-     */
-    private function getHtml(Crawler $crawler)
-    {
-        $html = '';
-        foreach ($crawler as $domElement) {
-            $domElement->ownerDocument->formatOutput = true;
-            $html .= $domElement->ownerDocument->saveHTML();
-        }
-
-        return html_entity_decode($html, ENT_NOQUOTES, 'UTF-8');
-    }
 }

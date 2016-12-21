@@ -97,25 +97,25 @@ function fnChangeActionSubmit(action) {
 
                             <div class="row">
                                 <div class="col-xs-6">
-                                    <label>商品名</label>
+                                    <label>{{ searchForm.product_name.vars.label }}</label>
                                     <div class="form-group">
                                         {{ form_widget(searchForm.product_name) }}
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
-                                    <label>商品コード</label>
+                                    <label>{{ searchForm.product_code.vars.label }}</label>
                                     <div class="form-group">
                                         {{ form_widget(searchForm.product_code) }}
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label>性別</label>
+                                    <label>{{ searchForm.sex.vars.label }}</label>
                                     <div class="form-group">
                                         {{ form_widget(searchForm.sex) }}
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label>おすすめレベル</label>
+                                    <label>{{ searchForm.recommend_level.vars.label }}</label>
                                     <div class="form-group">
                                         {{ form_widget(searchForm.recommend_level) }}
                                     </div>
@@ -123,9 +123,15 @@ function fnChangeActionSubmit(action) {
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label>投稿日</label>
+                                    <label>{{ searchForm.review_start.vars.label }}</label>
                                     <div class="form-group range">
                                         {{ form_widget(searchForm.review_start, {'attr': {'class': 'input_cal'}}) }} ～ {{ form_widget(searchForm.review_end, {'attr': {'class': 'input_cal'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>{{ searchForm.status.vars.label }}</label>
+                                    <div class="form-group">
+                                        {{ form_widget(searchForm.status) }}
                                     </div>
                                 </div>
                             </div><!-- /.row -->
@@ -140,7 +146,7 @@ function fnChangeActionSubmit(action) {
         </div>
         <div class="row btn_area">
             <div class="col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-4 text-center">
-                <button class="btn btn-primary btn-block btn-lg" onclick="fnChangeActionSubmit('{{ url('admin_product_review') }}'); return false;">
+                <button class="btn btn-primary btn-block btn-lg" onclick="fnChangeActionSubmit('{{ url('plugin_admin_product_review') }}'); return false;">
                     検索する <svg class="cb cb-angle-right"><use xlink:href="#cb-angle-right"></use></svg>
                 </button>
             </div>
@@ -167,7 +173,7 @@ function fnChangeActionSubmit(action) {
                                     {% endfor %}
                                     <ul class="dropdown-menu">
                                     {% for pageMax in pageMaxis if pageMax.name != page_count %}
-                                        <li><a href="{{ path('admin_product_review_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{ pageMax.name|e }}件</a></li>
+                                        <li><a href="{{ url('plugin_admin_product_review_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{ pageMax.name|e }}件</a></li>
                                     {% endfor %}
                                     </ul>
                                 </li>
@@ -212,8 +218,8 @@ function fnChangeActionSubmit(action) {
                                         <div class="dropdown">
                                             <a class="dropdown-toggle" data-toggle="dropdown"><svg class="cb cb-ellipsis-h"> <use xlink:href="#cb-ellipsis-h" /></svg></a>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                            <li><a href="{{ url('admin_product_review_edit', { id : Review.id }) }}">編集</a></li>
-                                            <li><a href="{{ url('admin_product_review_delete', { id : Review.id }) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="このレビューを削除してもよろしいですか？">削除</a></li>
+                                            <li><a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}">編集</a></li>
+                                            <li><a href="{{ url('plugin_admin_product_review_delete', { id : Review.id }) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="このレビューを削除してもよろしいですか？">削除</a></li>
                                             </ul>
                                         </div>
                                     </td>
@@ -225,7 +231,7 @@ function fnChangeActionSubmit(action) {
                     </div>
                 </div><!-- /.box-body -->
                 {% if pagination.totalItemCount > 0 %}
-                    {% include "pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'admin_product_review_page' } %}
+                    {% include "pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'plugin_admin_product_review_page' } %}
                 {% endif %}
                 {% else %}
                     <div class="box-header with-arrow">
