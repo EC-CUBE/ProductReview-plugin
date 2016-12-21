@@ -1,0 +1,56 @@
+{#
+/*
+ * This file is part of the ProductReview plugin
+ *
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+#}
+{% extends 'default_frame.twig' %}
+
+{% set menus = ['product', 'product_review'] %}
+
+{% block title %}商品管理{% endblock %}
+{% block sub_title %}商品レビューの設定{% endblock %}
+
+{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block main %}
+    <form method="post" action="{{ url('plugin_ProductReview_config') }}">
+        {{ form_widget(form._token) }}
+        <div class="row" id="aside_wrap">
+            <div class="col-md-9">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">商品レビューの設定</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body form-horizontal">
+                        <div class="form-group">
+                            {{ form_label(form.review_max) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.review_max) }}
+                                {{ form_errors(form.review_max) }}
+                            </div>
+                        </div>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div><!-- /.col -->
+
+            <div class="col-md-3">
+                <div class="col_inner" id="aside_column">
+                    <div class="box no-header">
+                        <div class="box-body">
+                            <div class="row text-center">
+                                <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                    <button class="btn btn-primary btn-block btn-lg" type="submit">設定</button>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div>
+            </div><!-- /.col -->
+        </div>
+    </form>
+{% endblock %}

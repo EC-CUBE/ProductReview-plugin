@@ -4,3 +4,5 @@ plugin.admin.product_review.delete.complete: 商品レビューを削除しま�
 plugin.admin.product_review.delete.error: 商品レビューを削除できませんでした。
 plugin.front.product_review.system.error: 登録処理でシステムエラーが発生しました。大変お手数ですが、サイト管理者までご連絡ください。
 admin.product.not_found: 製品が見つかりません。
+plugin.admin.product_review_config.save.complete: 商品レビュー設定が保存されました。
+plugin.admin.product_review_config.save.error: 商品のレビュー設定を保存できませんでした。

@@ -12,6 +12,7 @@ namespace Plugin\ProductReview\ServiceProvider;
 use Eccube\Common\Constant;
 use Plugin\ProductReview\Event\ProductReviewEvent;
 use Plugin\ProductReview\Event\ProductReviewEventLegacy;
+use Plugin\ProductReview\Form\Type\Admin\ProductReviewConfigType;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
 use Plugin\ProductReview\Form\Type\ProductReviewType;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewType as AdminProductReviewType;
@@ -64,7 +65,7 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
         }
 
         // プラグイン用設定画面
-        $admin->match('/plugin/product/review/config', 'Plugin\ProductReview\Controller\Admin\ConfigController::index')->bind('plugin_product_review_config');
+        $admin->match('/plugin/product/review/config', 'Plugin\ProductReview\Controller\Admin\ConfigController::index')->bind('plugin_ProductReview_config');
 
         // 一覧
         $admin->match('/plugin/product/review/', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::index')
@@ -107,6 +108,7 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
             $types[] = new ProductReviewType($app);
             $types[] = new AdminProductReviewType($app);
             $types[] = new ProductReviewSearchType($app);
+            $types[] = new ProductReviewConfigType($app);
 
             return $types;
         }));
