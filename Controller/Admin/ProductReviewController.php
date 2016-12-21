@@ -10,6 +10,7 @@
 namespace Plugin\ProductReview\Controller\Admin;
 
 use Eccube\Application;
+use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
 use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
@@ -60,13 +61,21 @@ class ProductReviewController extends AbstractController
 
             // sessionのデータ保持
             $session->set('plugin.product_review.admin.product_review.search', $searchData);
+            $session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
         } else {
-            if (is_null($pageNo)) {
+            if (is_null($pageNo) && $request->get('resume') != Constant::ENABLED) {
                 // sessionを削除
                 $session->remove('plugin.product_review.admin.product_review.search');
+                $session->remove('plugin.product_review.admin.product_review.search.page_no');
                 $searchData = array();
             } else {
                 // pagingなどの処理
+                if (is_null($pageNo)) {
+                    $pageNo = intval($session->get('plugin.product_review.admin.product_review.search.page_no'));
+                } else {
+                    $session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
+                }
+
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
                 if (!is_null($searchData)) {
                     $qb = $app['product_review.repository.product_review']
@@ -124,13 +133,13 @@ class ProductReviewController extends AbstractController
             return $app->redirect($app->url('plugin_admin_product_review'));
         }
 
+        $postedDate = $ProductReview->getCreateDate();
         // formの作成
         /* @var $form FormInterface */
         $form = $app['form.factory']
             ->createBuilder('admin_product_review', $ProductReview)
             ->getForm();
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $status = $app['product_review.repository.product_review']
                 ->save($ProductReview);
@@ -139,13 +148,12 @@ class ProductReviewController extends AbstractController
             } else {
                 $app->addSuccess('plugin.admin.product_review.save.complete', 'admin');
             }
-
-            return $app->redirect($app->url('plugin_admin_product_review'));
         }
 
         return $app->render('ProductReview/Resource/template/admin/edit.twig', array(
             'form' => $form->createView(),
             'Product' => $Product,
+            'post_date' => $postedDate,
         ));
     }
 

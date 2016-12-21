@@ -197,6 +197,7 @@ function fnChangeActionSubmit(action) {
                                     <th>投稿日</th>
                                     <th>投稿者</th>
                                     <th>商品名</th>
+                                    <th>タイトル</th>
                                     <th>おすすめレベル</th>
                                     <th>公開・非公開</th>
                                     <th>&nbsp;</th>
@@ -208,6 +209,7 @@ function fnChangeActionSubmit(action) {
                                     <td>{{ Review.create_date|date('Y/m/d H:i') }}</td>
                                     <td>{{ Review.reviewer_name }}</td>
                                     <td>{{ Review.Product.name }}</td>
+                                    <td><a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a></td>
                                     <td>
                                         {% for i in 1..Review.recommend_level %}★{% endfor %}
                                     </td>

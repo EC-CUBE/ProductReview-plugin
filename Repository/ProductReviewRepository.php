@@ -12,6 +12,7 @@ namespace Plugin\ProductReview\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Eccube\Common\Constant;
+use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Master\Sex;
 use Plugin\ProductReview\Entity\ProductReview;
 
@@ -141,11 +142,11 @@ class ProductReviewRepository extends EntityRepository
                 ->setParameter('review_end', $date);
         }
         // status
-        if (!empty($searchData['status'])) {
+        if (!empty($searchData['status']) && count($searchData['status']) > 0) {
             $arrId = array();
-            $arrStatus = $searchData['sex'];
+            $arrStatus = $searchData['status'];
             foreach ($arrStatus as $status) {
-                if ($status instanceof Sex) {
+                if ($status instanceof Disp) {
                     $arrId[] = $status->getId();
                 } elseif (is_numeric($status)) {
                     $arrId[] = $status;

@@ -44,7 +44,6 @@ Plugin\ProductReview\Entity\ProductReview:
     manyToOne:
         Product:
             targetEntity: Eccube\Entity\Product
-            inversedBy: ProductReviews
             joinColumn:
                 name: product_id
                 referencedColumnName: product_id
@@ -57,7 +56,6 @@ Plugin\ProductReview\Entity\ProductReview:
                 nullable: true
         Customer:
             targetEntity: Eccube\Entity\Customer
-            inversedBy: ProductReviews
             joinColumn:
                 name: customer_id
                 referencedColumnName: customer_id

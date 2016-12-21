@@ -27,6 +27,7 @@ class ProductReviewType extends AbstractType
 
     /**
      * ProductReviewType constructor.
+     *
      * @param object $app
      */
     public function __construct($app)
@@ -87,7 +88,7 @@ class ProductReviewType extends AbstractType
             ))
             ->add('comment', 'textarea', array(
                 'label' => 'コメント',
-                'required' => false,
+                'required' => true,
                 'constraints' => array(
                     new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['ltext_len'])),
