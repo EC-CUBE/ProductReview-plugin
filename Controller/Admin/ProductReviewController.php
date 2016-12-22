@@ -251,12 +251,11 @@ class ProductReviewController extends AbstractController
             $csvService->exportData(function ($entity, $csvService) {
                 /* @var $csvService CsvExportService */
                 $arrCsv = $csvService->getCsvs();
-                $ProductReview = $entity;
                 $row = array();
                 // CSV出力項目と合致するデータを取得.
-                foreach ($arrCsv as $Csv) {
+                foreach ($arrCsv as $csv) {
                     // 受注データを検索.
-                    $data = $csvService->getData($Csv, $ProductReview);
+                    $data = $csvService->getData($csv, $entity);
                     $row[] = $data;
                 }
                 //$row[] = number_format(memory_get_usage(true));

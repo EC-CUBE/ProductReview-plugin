@@ -44,18 +44,24 @@ class ProductReviewEventLegacy extends CommonEvent
              */
             $repository = $app['product_review.repository.product_review'];
 
-
             $id = $app['request']->attributes->get('id');
             $Product = $app['eccube.repository.product']->find($id);
             $Disp = $app['eccube.repository.master.disp']
                 ->find(Disp::DISPLAY_SHOW);
             $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('update_date' => 'DESC'), $limit);
 
+            // Get rate
+            $rate = $repository->getAvgAll($Product, $Disp);
+            $avgRecommend = intval($rate['recommend_avg']);
+            $reviewNumber = intval($rate['review_num']);
+
             $twig = $app->renderView(
                 'ProductReview/Resource/template/default/product_review.twig',
                 array(
                     'id' => $id,
                     'ProductReviews' => $arrProductReview,
+                    'avg' => $avgRecommend,
+                    'number' => $reviewNumber,
                 )
             );
 

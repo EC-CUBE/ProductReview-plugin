@@ -16,6 +16,7 @@ use Eccube\Common\Constant;
 use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Master\Sex;
+use Eccube\Entity\Product;
 use Plugin\ProductReview\Entity\ProductReview;
 
 /**
@@ -186,6 +187,38 @@ class ProductReviewRepository extends EntityRepository
             } elseif ($conditions instanceof AbstractEntity) {
                 $conditions = $em->getRepository(get_class($conditions))->find($conditions->getId());
             }
+        }
+    }
+
+    /**
+     * Get Avg and count.
+     *
+     * @param Product $Product
+     * @param Disp    $Disp
+     *
+     * @return mixed
+     */
+    public function getAvgAll(Product $Product, Disp $Disp)
+    {
+        $arrTemp = array(
+            'recommend_avg' => 0,
+            'review_num' => 0,
+        );
+        try {
+            $qb = $this->createQueryBuilder('r')
+                ->select('avg(r.recommend_level) as recommend_avg, count(r.id) as review_num')
+                ->leftJoin('r.Product', 'p')
+                ->where('r.Product = :Product')
+                ->setParameter('Product', $Product)
+                ->andWhere('r.Status = :Status')
+                ->setParameter('Status', $Disp)
+                ->andWhere('r.del_flg = :del')
+                ->setParameter('del', Constant::DISABLED)
+                ->groupBy('r.Product');
+
+            return $qb->getQuery()->getSingleResult();
+        } catch (\Exception $exception) {
+            return $arrTemp;
         }
     }
 }

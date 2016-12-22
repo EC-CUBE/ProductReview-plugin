@@ -51,7 +51,13 @@ class ProductReviewEvent extends CommonEvent
          */
         $repository = $this->app['product_review.repository.product_review'];
 
+        // Get review
         $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('update_date' => 'DESC'), $max);
+
+        // Get rate
+        $rate = $repository->getAvgAll($Product, $Disp);
+        $avgRecommend = intval($rate['recommend_avg']);
+        $reviewNumber = intval($rate['review_num']);
 
         /**
          * @var $twig \Twig_Environment
@@ -71,6 +77,8 @@ class ProductReviewEvent extends CommonEvent
 
         $parameters['id'] = $Product->getId();
         $parameters['ProductReviews'] = $arrProductReview;
+        $parameters['avg'] = $avgRecommend;
+        $parameters['number'] = $reviewNumber;
         $event->setParameters($parameters);
 
         log_info('Event: product review render success.', array('Product id' => $Product->getId()));
