@@ -12,12 +12,15 @@ namespace Plugin\ProductReview\Controller\Admin;
 use Eccube\Application;
 use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
+use Eccube\Service\CsvExportService;
 use Plugin\ProductReview\Entity\ProductReview;
+use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -97,11 +100,17 @@ class ProductReviewController extends AbstractController
             $searchForm->setData($searchData);
         }
 
+        // Get product preview config.
+        /* @var $Config ProductReviewConfig */
+        $Config = $app['product_review.repository.product_review_config']->find(1);
+        $csvType = $Config->getCsvType()->getId();
+
         return $app->render('ProductReview/Resource/template/admin/index.twig', array(
             'searchForm' => $searchForm->createView(),
             'pagination' => $pagination,
             'pageMaxis' => $pageMaxis,
             'page_count' => $pageCount,
+            'csv_type' => $csvType,
         ));
     }
 
@@ -191,5 +200,79 @@ class ProductReviewController extends AbstractController
         }
 
         return $app->redirect($app->url('plugin_admin_product_review'));
+    }
+
+    /**
+     * 商品レビューCSVの出力.
+     *
+     * @param Application $app
+     * @param Request     $request
+     * @return StreamedResponse
+     */
+    public function download(Application $app, Request $request)
+    {
+        // タイムアウトを無効にする.
+        set_time_limit(0);
+
+        // sql loggerを無効にする.
+        $em = $app['orm.em'];
+        $em->getConfiguration()->setSQLLogger(null);
+
+        $response = new StreamedResponse();
+        $response->setCallback(function () use ($app, $request) {
+            // Get product preview config.
+            /* @var $Config ProductReviewConfig */
+            $Config = $app['product_review.repository.product_review_config']->find(1);
+            $csvType = $Config->getCsvType()->getId();
+
+            /* @var $csvService CsvExportService */
+            $csvService = $app['eccube.service.csv.export'];
+
+            /* @var $repo ProductReviewRepository */
+            $repo = $app['product_review.repository.product_review'];
+
+            // CSV種別を元に初期化.
+            $csvService->initCsvType($csvType);
+
+            // ヘッダ行の出力.
+            $csvService->exportHeader();
+
+            $session = $request->getSession();
+            $searchData = array();
+            if ($session->has('plugin.product_review.admin.product_review.search')) {
+                $searchData = $session->get('plugin.product_review.admin.product_review.search');
+                $repo->findDeserializeObjects($searchData);
+            }
+
+            $qb = $repo->getQueryBuilderBySearchData($searchData);
+
+            // データ行の出力.
+            $csvService->setExportQueryBuilder($qb);
+            $csvService->exportData(function ($entity, $csvService) {
+                /* @var $csvService CsvExportService */
+                $arrCsv = $csvService->getCsvs();
+                $ProductReview = $entity;
+                $row = array();
+                // CSV出力項目と合致するデータを取得.
+                foreach ($arrCsv as $Csv) {
+                    // 受注データを検索.
+                    $data = $csvService->getData($Csv, $ProductReview);
+                    $row[] = $data;
+                }
+                //$row[] = number_format(memory_get_usage(true));
+                // 出力.
+                $csvService->fputcsv($row);
+            });
+        });
+
+        $now = new \DateTime();
+        $filename = 'product_review_'.$now->format('YmdHis').'.csv';
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$filename);
+        $response->send();
+
+        log_info('商品レビューCSV出力ファイル名', array($filename));
+
+        return $response;
     }
 }

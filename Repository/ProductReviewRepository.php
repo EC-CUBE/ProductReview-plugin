@@ -9,9 +9,11 @@
  */
 namespace Plugin\ProductReview\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Eccube\Common\Constant;
+use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Master\Sex;
 use Plugin\ProductReview\Entity\ProductReview;
@@ -161,5 +163,29 @@ class ProductReviewRepository extends EntityRepository
         $qb->addOrderBy('r.update_date', 'DESC');
 
         return $qb;
+    }
+
+    /**
+     * Find entity.
+     *
+     * @param array $searchData セッションから取得した検索条件の配列
+     */
+    public function findDeserializeObjects(array &$searchData)
+    {
+        $em = $this->_em;
+        foreach ($searchData as &$conditions) {
+            if ($conditions instanceof ArrayCollection) {
+                $conditions = new ArrayCollection(
+                    array_map(
+                        function ($entity) use ($em) {
+                            return $em->getRepository(get_class($entity))->find($entity->getId());
+                        },
+                        $conditions->toArray()
+                    )
+                );
+            } elseif ($conditions instanceof AbstractEntity) {
+                $conditions = $em->getRepository(get_class($conditions))->find($conditions->getId());
+            }
+        }
     }
 }

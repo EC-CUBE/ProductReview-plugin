@@ -74,6 +74,9 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
         $admin->match('/plugin/product/review/{page_no}', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::index')
             ->assert('page_no', '\d+')
             ->bind('plugin_admin_product_review_page');
+        // 一覧: download csv
+        $admin->post('/plugin/product/review/download', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::download')
+            ->bind('plugin_admin_product_review_download');
 
         // 編集
         $admin->match('/plugin/product/review/{id}/edit', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::edit')

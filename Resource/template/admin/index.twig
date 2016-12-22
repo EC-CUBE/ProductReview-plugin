@@ -31,6 +31,11 @@
 <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/bootstrap-datetimepicker.min.js"></script>
 <script>
 $(function() {
+    $('#product_review_download').click(function(event) {
+        event.preventDefault();
+        var href = $(this).attr('href');
+        fnChangeActionSubmit(href);
+    });
 
     var inputDate = document.createElement('input');
     inputDate.setAttribute('type', 'date');
@@ -177,15 +182,13 @@ function fnChangeActionSubmit(action) {
                                     {% endfor %}
                                     </ul>
                                 </li>
-                                {# var3.0.0では未対応
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown">CSVダウンロード<svg class="cb cb-angle-down icon_down"><use xlink:href="#cb-angle-down"></svg></a>
+                                <li id="result_list_main__csv_menu" class="dropdown">
+                                    <a id="result_list_main__csv_menu_toggle" class="dropdown-toggle" data-toggle="dropdown">CSVダウンロード<svg class="cb cb-angle-down icon_down"> <use xlink:href="#cb-angle-down" /></svg></a>
                                     <ul class="dropdown-menu">
-                                        <li><a>ダウンロード</a></li>
-                                        <li><a>出力項目設定</a></li>
+                                        <li><a id="product_review_download" href="{{ url('plugin_admin_product_review_download') }}">受注CSVダウンロード</a></li>
+                                        <li><a href="{{ url('admin_setting_shop_csv', { id : csv_type }) }}">受注CSV出力項目設定</a></li>
                                     </ul>
                                 </li>
-                                #}
                             </ul>
                         </div>
                     </div>
