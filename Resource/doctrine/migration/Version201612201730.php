@@ -220,7 +220,7 @@ class Version201612201730 extends AbstractMigration
         $em->flush($CsvType);
 
         // Create csv data
-        $Member = $app['eccube.repository.member']->find(1);
+        $Member = $app['eccube.repository.member']->find(2);
         $rank = 1;
         $Csv = new Csv();
         $Csv->setCsvType($CsvType)

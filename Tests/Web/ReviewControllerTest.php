@@ -10,107 +10,209 @@
 namespace Plugin\ProductReview\Tests\Web;
 
 use Eccube\Common\Constant;
+use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Product;
 use Eccube\Tests\Web\AbstractWebTestCase;
+use Faker\Generator;
+use Plugin\ProductReview\Entity\ProductReview;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Class ReviewControllerTest front.
+ */
 class ReviewControllerTest extends AbstractWebTestCase
 {
     /**
-     * please ensure have 1 or more order in database before testing
+     * @var $faker Generator
+     */
+    protected $faker;
+
+    /**
+     * Setup method.
      */
     public function setUp()
     {
         parent::setUp();
+        $this->faker = $this->getFaker();
+        $this->deleteAllRows(array('plg_product_review'));
     }
 
+    /**
+     * Add product review.
+     */
     public function testProductReviewAddConfirmComplete()
     {
         $productId = 1;
-        $fake = $this->getFaker();
         $crawler = $this->client->request(
             'POST',
             $this->app->url('plugin_products_detail_review', array('id' => $productId)),
-            array('product_review' => array(
-                'comment' => $fake->word,
-                'title' => $fake->word,
-                'sex' => 1,
-                'recommend_level' => 4,
-                'reviewer_url' => '',
-                'reviewer_name' => $fake->word,
-                '_token' => 'dummy',
-
-            ), 'mode' => 'confirm')
+            array(
+                'product_review' => array(
+                    'comment' => $this->faker->text(2999),
+                    'title' => $this->faker->word,
+                    'sex' => 1,
+                    'recommend_level' => $this->faker->numberBetween(1, 5),
+                    'reviewer_url' => $this->faker->url,
+                    'reviewer_name' => $this->faker->word,
+                    '_token' => 'dummy',
+                ),
+                'mode' => 'confirm',
+            )
         );
         $this->assertContains('完了ページヘ', $crawler->html());
 
+        // Complete
         $form = $crawler->selectButton('完了ページヘ')->form();
         $this->client->submit($form);
+
         $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('plugin_products_detail_review_complete', array('id' => $productId))));
 
+        // Verify back to product detail link.
+        /**
+         * @var $crawler Crawler
+         */
+        $crawler = $this->client->followRedirect();
+        $link = $crawler->selectLink('製品の詳細に戻る')->link();
+
+        $this->actual = $link->getUri();
+        $this->expected = $this->app->url('product_detail', array('id' => $productId));
+        $this->verify();
     }
 
+    /**
+     * Back test
+     */
     public function testProductReviewAddConfirmBack()
     {
         $productId = 1;
-        $fake = $this->getFaker();
+        $inputForm = array(
+            'comment' => $this->faker->text(2999),
+            'title' => $this->faker->word,
+            'sex' => 1,
+            'recommend_level' => $this->faker->numberBetween(1, 5),
+            'reviewer_url' => $this->faker->url,
+            'reviewer_name' => $this->faker->word,
+            '_token' => 'dummy',
+        );
         $crawler = $this->client->request(
             'POST',
             $this->app->url('plugin_products_detail_review', array('id' => $productId)),
-            array('product_review' => array(
-                'comment' => $fake->word,
-                'title' => $fake->word,
-                'sex' => 1,
-                'recommend_level' => 4,
-                'reviewer_url' => '',
-                'reviewer_name' => $fake->word,
-                '_token' => 'dummy',
-
-            ), 'mode' => 'confirm')
+            array('product_review' => $inputForm,
+                'mode' => 'confirm',
+            )
         );
         $this->assertContains('完了ページヘ', $crawler->html());
 
+        // Back click
         $form = $crawler->selectButton('戻る')->form();
         $crawlerConfirm = $this->client->submit($form);
-        $this->assertContains('確認ページヘ', $crawlerConfirm->html());
+        $html = $crawlerConfirm->html();
+        $this->assertContains('確認ページヘ', $html);
 
+        // Verify data
+        $this->assertContains($inputForm['comment'], $html);
     }
 
-    private function initReviewData($productId)
-    {
-        $fake = $this->getFaker();
-        $Product = $this->app['eccube.repository.product']->find($productId);
-
-        $Review = new \Plugin\ProductReview\Entity\ProductReview();
-        $Review->setComment($fake->word);
-        $Review->setTitle($fake->word);
-        $Review->setProduct($Product);
-        $Review->setRecommendLevel(3);
-        $Review->setReviewerName($fake->word);
-        $Disp = $this->app['eccube.repository.master.disp']
-            ->find(\Eccube\Entity\Master\Disp::DISPLAY_SHOW);
-        $Review->setStatus($Disp);
-        $Review->setDelFlg(Constant::DISABLED);
-
-        $resultReview = $this->app['eccube.plugin.product_review.repository.product_review']->save($Review);
-        
-        if ($resultReview) {
-            return $Review;
-        }
-        return false;
-    }
-
+    /**
+     * review list
+     */
     public function testProductReview()
     {
         $productId = 1;
-        $ProductReview = $this->initReviewData($productId);
+        $ProductReview = $this->createProductReviewData($productId);
         $crawler = $this->client->request(
             'GET',
             $this->app->url('product_detail', array('id' => $productId))
         );
 
+        // review area
         $this->assertContains('id="review_area"', $crawler->html());
-        $this->assertContains($ProductReview->getComment(), $crawler->html());
 
+        // review content
+        $reviewArea = $crawler->filter('#review_area');
+        $this->assertContains($ProductReview->getComment(), $reviewArea->html());
+
+        // review total
+        $totalNum = $reviewArea->filter('.heading02')->html();
+        $this->assertContains('1', $totalNum);
+    }
+
+    /**
+     * review list
+     */
+    public function testProductReviewMaxNumber()
+    {
+        $max = 31;
+        $Product = $this->createProduct();
+        $productId = $Product->getId();
+        $this->createProductReviewByNumber($max, $productId);
+        $crawler = $this->client->request(
+            'GET',
+            $this->app->url('product_detail', array('id' => $productId))
+        );
+
+        // review area
+        $this->assertContains('id="review_area"', $crawler->html());
+
+        // review content
+        $reviewArea = $crawler->filter('#review_area');
+
+        // review total
+        $totalHtml = $reviewArea->filter('.heading02')->html();
+        $this->assertContains((string) $max, $totalHtml);
+    }
+
+    /**
+     * @param $number
+     * @param int $productId
+     */
+    private function createProductReviewByNumber($number, $productId = 1)
+    {
+        $Product = $this->app['eccube.repository.product']->find($productId);
+        if (!$Product) {
+            $Product = $this->createProduct();
+        }
+
+        for ($i = 0; $i < $number; $i++) {
+            $this->createProductReviewData($Product);
+        }
+    }
+
+    /**
+     * Create data.
+     *
+     * @param int|Product $product
+     * @param int         $delFlg
+     * @return ProductReview
+     */
+    private function createProductReviewData($product = 1, $delFlg = Constant::DISABLED)
+    {
+        if ($product instanceof Product) {
+            $Product = $product;
+        } else {
+            $Product = $this->app['eccube.repository.product']->find($product);
+        }
+
+        $Disp = $this->app['eccube.repository.master.disp']->find(Disp::DISPLAY_SHOW);
+        $Sex = $this->app['eccube.repository.master.sex']->find(1);
+        $Customer = $this->createCustomer();
+
+        $Review = new ProductReview();
+        $Review->setComment($this->faker->word);
+        $Review->setTitle($this->faker->word);
+        $Review->setProduct($Product);
+        $Review->setRecommendLevel($this->faker->numberBetween(1,5));
+        $Review->setReviewerName($this->faker->word);
+        $Review->setReviewerUrl($this->faker->url);
+        $Review->setStatus($Disp);
+        $Review->setDelFlg($delFlg);
+        $Review->setSex($Sex);
+        $Review->setCustomer($Customer);
+
+        $this->app['orm.em']->persist($Review);
+        $this->app['orm.em']->flush($Review);
+
+        return $Review;
     }
 
 }

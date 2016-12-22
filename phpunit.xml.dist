@@ -13,10 +13,9 @@
         </testsuite>
     </testsuites>
 
-
-    <logging>
-        <log type="coverage-html" target="./reports/coverage.html"/>
-    </logging>
+    <!--<logging>-->
+        <!--<log type="coverage-html" target="./reports/coverage.html"/>-->
+    <!--</logging>-->
 
     
     <!-- カバーレージのターゲット -->
@@ -24,7 +23,8 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./</directory>
             <exclude>
-                <directory suffix=".php">./Migration</directory>
+                <directory suffix=".php">./Tests</directory>
+                <directory suffix=".php">./Resource</directory>
                 <file>./PluginManager.php</file>
             </exclude>
         </whitelist>

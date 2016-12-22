@@ -11,147 +11,321 @@
 namespace Plugin\ProductReview\Tests\Web;
 
 use Eccube\Common\Constant;
+use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Product;
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
+use Faker\Generator;
+use Plugin\ProductReview\Entity\ProductReview;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpKernel\Client;
 
+/**
+ * Class ReviewAdminControllerTest.
+ */
 class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 {
     /**
-     * please ensure have 1 or more order in database before testing
+     * @var $faker Generator
      */
-    private $dummyData;
-    private $commonTitle = 'just test Title';
+    protected $faker;
 
+    /**
+     * Setup method.
+     */
     public function setUp()
     {
         parent::setUp();
+        $this->faker = $this->getFaker();
         $this->deleteAllRows(array('plg_product_review'));
-        $this->dummyData = array();
-        $this->dummyData[] = $this->initDummyData(1, 0);
-        $this->dummyData[] = $this->initDummyData(2, 0);
-        $this->dummyData[] = $this->initDummyData(1, 1);
-        $this->dummyData[] = $this->initDummyData(2, 1);
     }
 
-    private function initDummyData($productId, $del_flg)
-    {
-        $fake = $this->getFaker();
-        $Product = $this->app['eccube.repository.product']->find($productId);
-
-        $Review = new \Plugin\ProductReview\Entity\ProductReview();
-        $Review->setComment($fake->word);
-        $Review->setTitle($this->commonTitle);
-        $Review->setProduct($Product);
-        $Review->setRecommendLevel(3);
-        $Review->setReviewerName($fake->word);
-        $Disp = $this->app['eccube.repository.master.disp']
-            ->find(\Eccube\Entity\Master\Disp::DISPLAY_SHOW);
-        $Review->setStatus($Disp);
-        $Review->setDelFlg($del_flg);
-
-        $resultReview = $this->app['eccube.plugin.product_review.repository.product_review']->save($Review);
-
-        if ($resultReview) {
-            return $Review;
-        }
-        return false;
-    }
-
+    /**
+     * Search list
+     */
     public function testReviewList()
     {
-        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review')
-        );
+        $number = 5;
+        $this->createProductReviewByNumber($number);
+        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review'));
         $this->assertContains('検索する', $crawler->html());
         $form = $crawler->selectButton('検索する')->form();
         $crawlerSearch = $this->client->submit($form);
-        $this->assertContains('検索結果 ', $crawlerSearch->html());
+        $this->assertContains('検索結果', $crawlerSearch->html());
+        /* @var $crawlerSearch Crawler */
+        $actual = $crawlerSearch->filter('.box-title span strong')->html();
 
-        $tr = $crawlerSearch->filter('.table-striped tbody');
-        foreach($this->dummyData as $dummy) { //echo '=='.$dummy->getDelFlg();
-            if ($dummy->getDelFlg()) {
-                continue;
-            }
-            $this->assertContains($dummy->getReviewerName(), $tr->html());
-        }
+        $this->actual = $actual;
+
+        $this->expected = 5;
+
+        $this->assertContains((string) $this->expected, $this->actual);
     }
 
+    /**
+     * test delete
+     */
+    public function testReviewDeleteIdNotFound()
+    {
+        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+        $this->client->request('DELETE',
+            $this->app->url('plugin_admin_product_review_delete', array('id' => 99999))
+        );
+    }
+
+    /**
+     * test delete
+     */
     public function testReviewDelete()
     {
-        $Review = array_shift($this->dummyData);
-        $productId = $Review->getId();
+        $Review = $this->createProductReviewData();
+        $productReviewId = $Review->getId();
         $this->client->request('DELETE',
-            $this->app->url('plugin_admin_product_review_delete', array('id' => $productId))
+            $this->app->url('plugin_admin_product_review_delete', array('id' => $productReviewId))
         );
         $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
-        $ProductNew = $this->app['eccube.plugin.product_review.repository.product_review']->find($productId);
-        $this->expected = 1;
-        $this->actual = $ProductNew->getDelFlg();
+
+        $this->expected = Constant::ENABLED;
+        $this->actual = $Review->getDelFlg();
         $this->verify();
     }
 
-    public function testReviewEdit()
+    /**
+     * Test edit.
+     */
+    public function testReviewEditWithIdInvalid()
     {
-        $fake = $this->getFaker();
-        $Review = array_shift($this->dummyData);
-        $reviewId = $Review->getId();
-        $fakeTitle = $fake->word;
+        /**
+         * @var $crawler Crawler
+         */
+        $this->client->request(
+            'GET',
+            $this->app->url('plugin_admin_product_review_edit', array('id' => 99999))
+        );
+        /**
+         * @var $client Client
+         */
+        $client = $this->client;
+        $this->assertTrue($client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
 
-        $crawler = $this->client->request('GET',
+        $crawler = $client->followRedirect();
+
+        $this->expected = '商品レビューは見つかりませんでした。';
+        $this->actual = $crawler->filter('.alert')->html();
+        $this->assertContains($this->expected, $this->actual);
+    }
+
+    /**
+     * Test edit.
+     */
+    public function testReviewEditWithProductReviewDeleted()
+    {
+        $Review = $this->createProductReviewData();
+        $reviewId = $Review->getId();
+
+        $this->app['product_review.repository.product_review']->delete($Review);
+        $this->app['orm.em']->detach($Review);
+
+        $crawler = $this->client->request(
+            'GET',
+            $this->app->url('plugin_admin_product_review_edit', array('id' => $reviewId))
+        );
+        /**
+         * @var $client Client
+         */
+        $client = $this->client;
+        $this->assertTrue($client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
+
+        $crawler = $client->followRedirect();
+
+        $this->expected = '商品レビューは見つかりませんでした。';
+        $this->actual = $crawler->filter('.alert')->html();
+        $this->assertContains($this->expected, $this->actual);
+    }
+
+    /**
+     * Test edit.
+     */
+    public function testReviewEditSuccess()
+    {
+        $Review = $this->createProductReviewData();
+        $reviewId = $Review->getId();
+        $fakeTitle = $this->faker->word;
+
+        $crawler = $this->client->request(
+            'GET',
             $this->app->url('plugin_admin_product_review_edit', array('id' => $reviewId))
         );
         $form = $crawler->selectButton('登録')->form();
         $form['admin_product_review[recommend_level]'] = 1;
         $form['admin_product_review[title]'] = $fakeTitle;
-        $this->client->submit($form);
+        $crawler = $this->client->submit($form);
 
+        // check message.
+        $this->expected = '商品レビューを保存しました。';
+        $this->actual = $crawler->filter('.alert')->html();
+        $this->assertContains($this->expected, $this->actual);
+
+        // Check entity
         $this->expected = $fakeTitle;
         $this->actual = $Review->getTitle();
+        $this->verify();
+
+        // Stay in edit page
+        $this->assertContains('商品レビュー管理', $crawler->html());
+    }
+
+    /**
+     * Search test.
+     */
+    public function testReviewSearch()
+    {
+        $review = $this->createProductReviewData();
+        $form = $this->initForm($review);
+        $crawler = $this->client->request(
+            'POST',
+            $this->app->url('plugin_admin_product_review'),
+            array('admin_product_review_search' => $form)
+        );
+
+        $this->assertContains('検索する', $crawler->html());
+        $numberResult = $crawler->filter('.box-title span strong');
+        $this->assertContains('1', $numberResult->html());
+
+        $table = $crawler->filter('.table-striped tbody');
+
+        $this->assertContains($review->getReviewerName(), $table->html());
+    }
+
+    /**
+     * Search test.
+     */
+    public function testReviewSearchWithPaging()
+    {
+        $number = 11;
+        $this->createProductReviewByNumber($number);
+
+        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review'));
+        $this->assertContains('検索する', $crawler->html());
+        $form = $crawler->selectButton('検索する')->form();
+        $crawlerSearch = $this->client->submit($form);
+
+        $numberResult = $crawlerSearch->filter('.box-title span strong');
+        $this->assertContains((string) $number, $numberResult->html());
+
+        /* @var $crawler Crawler */
+        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review_page', array('page_no' => 2)));
+
+        // page 2
+        $paging = $crawler->filter('#pagination_wrap .pagenation__item')->last();
+
+        // Current active on page 2.
+        $this->assertContains('active', $paging->parents()->html());
+
+        $this->expected = 2;
+        $this->actual = $paging->text();
         $this->verify();
     }
 
     /**
-     * @param $type
-     * @param $expected
-     * @dataProvider dataRoutingProvider
+     * Download csv test.
      */
-    public function testReviewSearch($multi, $productName, $productCode, $sex, $recomendLevel, $postDateFrom, $postDateTo, $expectNumber)
+    public function testDownloadCsv()
     {
-        $dataArray = $this->initForm($multi, $productName, $productCode, $sex, $recomendLevel, $postDateFrom, $postDateTo);
-        $crawler = $this->client->request('POST', $this->app->url('plugin_admin_product_review'), $dataArray
+        $Product = $this->createProduct();
+        $review = $this->createProductReviewData($Product->getId());
+        $form = $this->initForm($review);
+        $crawler = $this->client->request(
+            'POST',
+            $this->app->url('plugin_admin_product_review'),
+            array('admin_product_review_search' => $form)
         );
 
         $this->assertContains('検索する', $crawler->html());
-        if (!$expectNumber) {
-            $this->assertContains('検索条件に該当するデータがありませんでした。', $crawler->html());
-        } else {
-            $numberResult = $crawler->filter('.box-title span strong');
-            $this->assertContains($expectNumber, $numberResult->html());
-        }
-    }
+        $numberResult = $crawler->filter('.box-title span strong');
+        $this->assertContains('1', $numberResult->html());
 
-    public function dataRoutingProvider()
-    {
-        return array(
-            array('', '', '', '', '', '', '', '2'),
-            array($this->commonTitle, '', '', '', '', '', '', null),
-            array('', 'ディナーフォーク', '', '', '', '', '', '1'),
-            array('', '', 'cafe-01', '', '', '', '', '1'),
-            array('', '', '', '1', '', '', '', null),
-//            array('multi', 'productName', 'productCode', 'sex', 'recommendLevel', 'postDateFrom', 'postDateTo','expectNumber'),
+        $table = $crawler->filter('.table-striped tbody');
+
+        $this->assertContains($review->getReviewerName(), $table->html());
+
+        $this->expectOutputRegex("/{$review->getTitle()}/");
+
+        $this->client->request(
+            'POST',
+            $this->app->url('plugin_admin_product_review_download')
         );
     }
 
-    private function initForm($multi, $productName, $productCode, $sex, $recomendLevel, $postDateFrom, $postDateTo)
+    /**
+     * Search form.
+     * @param ProductReview $review
+     *
+     * @return array
+     */
+    private function initForm(ProductReview $review)
     {
-        return array('admin_product_review_search' => array(
+        return array(
             '_token' => 'dummy',
-            'multi' => $multi,
-            'product_name' => $productName,
-            'product_code' => $productCode,
-            'sex' => array($sex),
-            'recommend_level' => $recomendLevel,
-            'review_start' => $postDateFrom,
-            'review_end' => $postDateTo,
-        ));
+            'multi' => $review->getReviewerName(),
+            'product_name' => $review->getProduct()->getName(),
+            'product_code' => $review->getProduct()->getCodeMax(),
+            'sex' => array($review->getSex()->getId()),
+            'recommend_level' => $review->getRecommendLevel(),
+            'review_start' => $review->getCreateDate()->modify('-2 days')->format('Y-m-d'),
+            'review_end' => $review->getCreateDate()->modify('+2 days')->format('Y-m-d'),
+        );
+    }
+
+    /**
+     * @param $number
+     * @param int $productId
+     */
+    private function createProductReviewByNumber($number, $productId = 1)
+    {
+        $Product = $this->app['eccube.repository.product']->find($productId);
+        if (!$Product) {
+            $Product = $this->createProduct();
+        }
+
+        for ($i = 0; $i < $number; $i++) {
+            $this->createProductReviewData($Product);
+        }
+    }
+
+    /**
+     * Create data.
+     *
+     * @param int|Product $product
+     * @param int         $delFlg
+     * @return ProductReview
+     */
+    private function createProductReviewData($product = 1, $delFlg = Constant::DISABLED)
+    {
+        if ($product instanceof Product) {
+            $Product = $product;
+        } else {
+            $Product = $this->app['eccube.repository.product']->find($product);
+        }
+
+        $Disp = $this->app['eccube.repository.master.disp']->find(Disp::DISPLAY_SHOW);
+        $Sex = $this->app['eccube.repository.master.sex']->find(1);
+        $Customer = $this->createCustomer();
+
+        $Review = new ProductReview();
+        $Review->setComment($this->faker->word);
+        $Review->setTitle($this->faker->word);
+        $Review->setProduct($Product);
+        $Review->setRecommendLevel($this->faker->numberBetween(1,5));
+        $Review->setReviewerName($this->faker->word);
+        $Review->setReviewerUrl($this->faker->url);
+        $Review->setStatus($Disp);
+        $Review->setDelFlg($delFlg);
+        $Review->setSex($Sex);
+        $Review->setCustomer($Customer);
+
+        $this->app['orm.em']->persist($Review);
+        $this->app['orm.em']->flush($Review);
+
+        return $Review;
     }
 }
