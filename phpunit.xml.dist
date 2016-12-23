@@ -13,9 +13,9 @@
         </testsuite>
     </testsuites>
 
-    <!--<logging>-->
-        <!--<log type="coverage-html" target="./reports/coverage.html"/>-->
-    <!--</logging>-->
+    <logging>
+        <log type="coverage-html" target="./reports/coverage.html"/>
+    </logging>
 
     
     <!-- カバーレージのターゲット -->
@@ -26,6 +26,7 @@
                 <directory suffix=".php">./Tests</directory>
                 <directory suffix=".php">./Resource</directory>
                 <file>./PluginManager.php</file>
+                <file>./log.php</file>
             </exclude>
         </whitelist>
     </filter>

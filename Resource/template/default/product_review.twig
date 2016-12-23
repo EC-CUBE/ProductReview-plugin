@@ -25,14 +25,14 @@
             <dl>
                 {% set star = 5 - avg %}
                 <dt class="heading02 sp">この商品のレビュー
-                    <span><span class="recommend_level">{% for i in 1..avg %}★{% endfor %}</span><span>{% for i in 1..star %}☆{% endfor %}</span>
+                    <span>{% if avg %}<span class="recommend_level">{% for i in 1..avg %}★{% endfor %}</span>{% endif %}{% if star %}<span>{% for i in 1..star %}☆{% endfor %}</span>{% endif %}
                     <span>
                         ({{ number }})
                     </span>
                     </span>
                     <svg class="cb cb-angle-down"><use xlink:href="#cb-angle-down" /></svg></dt>
                 <dt class="heading02 pc active">この商品のレビュー
-                    <span><span class="recommend_level">{% for i in 1..avg %}★{% endfor %}</span><span>{% for i in 1..star %}☆{% endfor %}</span>
+                    <span>{% if avg %}<span class="recommend_level">{% for i in 1..avg %}★{% endfor %}</span>{% endif %}{% if star %}<span>{% for i in 1..star %}☆{% endfor %}</span>{% endif %}
                     <span>
                         ({{ number }})
                     </span>
@@ -56,7 +56,7 @@
 
                                     <a href="{{ url }}">{{ ProductReview.reviewer_name }}さん</a>
                                     {% set star = 5 - ProductReview.recommend_level %}
-                                    <span><span class="recommend_level">{% for i in 1..ProductReview.recommend_level %}★{% endfor %}</span><span>{% for i in 1..star %}☆{% endfor %}</span></span>
+                                    <span>{% if avg %}<span class="recommend_level">{% for i in 1..avg %}★{% endfor %}</span>{% endif %}{% if star %}<span>{% for i in 1..star %}☆{% endfor %}</span>{% endif %}</span>
                                 </p>
                                 <h4 class="heading04">{{ ProductReview.title }}</h4>
                                 <p>{{ ProductReview.comment }}</p>

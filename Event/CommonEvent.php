@@ -10,7 +10,6 @@
 namespace Plugin\ProductReview\Event;
 
 use Eccube\Application;
-use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class AbstractEvent.

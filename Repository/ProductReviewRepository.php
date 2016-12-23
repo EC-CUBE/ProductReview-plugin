@@ -178,7 +178,7 @@ class ProductReviewRepository extends EntityRepository
             if ($conditions instanceof ArrayCollection) {
                 $conditions = new ArrayCollection(
                     array_map(
-                        function ($entity) use ($em) {
+                        function (AbstractEntity $entity) use ($em) {
                             return $em->getRepository(get_class($entity))->find($entity->getId());
                         },
                         $conditions->toArray()

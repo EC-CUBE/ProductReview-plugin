@@ -77,7 +77,7 @@ class ProductReviewEventLegacy extends CommonEvent
 
             $oldHtml = $oldElement->html();
 
-//            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
+            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
 
             $newHtml = $oldHtml.$twig;
 

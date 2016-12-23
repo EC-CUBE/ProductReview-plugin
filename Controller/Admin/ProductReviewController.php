@@ -97,6 +97,21 @@ class ProductReviewController extends AbstractController
                     );
                 }
             }
+            if (isset($searchData['status']) && count($searchData['status']) > 0) {
+                $id = array();
+                foreach ($searchData['status'] as $status) {
+                    $id[] = $status->getId();
+                }
+                $searchData['status'] = $app['eccube.repository.master.disp']->findBy(array('id' => $id));
+            }
+
+            if (isset($searchData['sex']) && count($searchData['sex']) > 0) {
+                $id = array();
+                foreach ($searchData['sex'] as $sex) {
+                    $id[] = $sex->getId();
+                }
+                $searchData['sex'] = $app['eccube.repository.master.sex']->findBy(array('id' => $id));
+            }
             $searchForm->setData($searchData);
         }
 
@@ -248,8 +263,7 @@ class ProductReviewController extends AbstractController
 
             // データ行の出力.
             $csvService->setExportQueryBuilder($qb);
-            $csvService->exportData(function ($entity, $csvService) {
-                /* @var $csvService CsvExportService */
+            $csvService->exportData(function ($entity, CsvExportService $csvService) {
                 $arrCsv = $csvService->getCsvs();
                 $row = array();
                 // CSV出力項目と合致するデータを取得.
@@ -258,7 +272,6 @@ class ProductReviewController extends AbstractController
                     $data = $csvService->getData($csv, $entity);
                     $row[] = $data;
                 }
-                //$row[] = number_format(memory_get_usage(true));
                 // 出力.
                 $csvService->fputcsv($row);
             });

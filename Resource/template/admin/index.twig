@@ -11,14 +11,10 @@
 {#
 [商品管理]-[商品レビュー]-[一覧・検索]画面
 #}
-
 {% extends 'default_frame.twig' %}
-
 {% set menus = ['product', 'product_review'] %}
-
 {% block title %}商品管理{% endblock %}
 {% block sub_title %}商品レビュー{% endblock %}
-
 {% form_theme searchForm 'Form/bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block stylesheet %}
@@ -54,7 +50,6 @@ $(function() {
             showTodayButton: true
         });
     }
-
     // フォーム値を確認し、アコーディオンを制御
     // 値あり : 開く / 値なし : 閉じる
     (function($, f) {
@@ -77,7 +72,6 @@ $(function() {
         }
     })($, formPropStateSubscriber);
 });
-
 function fnChangeActionSubmit(action) {
     document.search_form.action = action;
     document.search_form.submit();
@@ -92,38 +86,27 @@ function fnChangeActionSubmit(action) {
         {{ form_widget(searchForm._token) }}
         <div class="row">
             <div class="col-md-12 accordion">
-
                 {{ form_widget(searchForm.multi, { attr: { placeholder: '投稿者名・投稿者URL', class : 'input_search' } } ) }}
-
                 <a class="toggle" href="#"><svg class="cb cb-minus"> <use xlink:href="#cb-minus"/></svg> <svg class="cb cb-minus"> <use xlink:href="#cb-minus"/></svg></a>
                 <div class="search-box-inner accpanel">
                     <div class="row">
                         <div class="col-sm-12 col-lg-10 col-lg-offset-1 search">
-
                             <div class="row">
                                 <div class="col-xs-6">
                                     <label>{{ searchForm.product_name.vars.label }}</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.product_name) }}
-                                    </div>
+                                    <div class="form-group">{{ form_widget(searchForm.product_name) }}</div>
                                 </div>
                                 <div class="col-xs-6">
                                     <label>{{ searchForm.product_code.vars.label }}</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.product_code) }}
-                                    </div>
+                                    <div class="form-group">{{ form_widget(searchForm.product_code) }}</div>
                                 </div>
                                 <div class="col-sm-6">
                                     <label>{{ searchForm.sex.vars.label }}</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.sex) }}
-                                    </div>
+                                    <div class="form-group">{{ form_widget(searchForm.sex) }}</div>
                                 </div>
                                 <div class="col-sm-6">
                                     <label>{{ searchForm.recommend_level.vars.label }}</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.recommend_level) }}
-                                    </div>
+                                    <div class="form-group">{{ form_widget(searchForm.recommend_level) }}</div>
                                 </div>
                             </div>
                             <div class="row">
@@ -135,9 +118,7 @@ function fnChangeActionSubmit(action) {
                                 </div>
                                 <div class="col-sm-6">
                                     <label>{{ searchForm.status.vars.label }}</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.status) }}
-                                    </div>
+                                    <div class="form-group">{{ form_widget(searchForm.status) }}</div>
                                 </div>
                             </div><!-- /.row -->
                             <div class="col-sm-12">
@@ -146,16 +127,14 @@ function fnChangeActionSubmit(action) {
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- /.col -->
+            </div><!-- /.col -->
         </div>
         <div class="row btn_area">
             <div class="col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-4 text-center">
                 <button class="btn btn-primary btn-block btn-lg" onclick="fnChangeActionSubmit('{{ url('plugin_admin_product_review') }}'); return false;">
                     検索する <svg class="cb cb-angle-right"><use xlink:href="#cb-angle-right"></use></svg>
                 </button>
-            </div>
-            <!-- /.col -->
+            </div> <!-- /.col -->
         </div>
     </form>
 </div>
@@ -213,12 +192,8 @@ function fnChangeActionSubmit(action) {
                                     <td>{{ Review.reviewer_name }}</td>
                                     <td>{{ Review.Product.name }}</td>
                                     <td><a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a></td>
-                                    <td>
-                                        {% for i in 1..Review.recommend_level %}★{% endfor %}
-                                    </td>
-                                    <td>
-                                        {{ Review.status }}
-                                    </td>
+                                    <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
+                                    <td>{{ Review.status }}</td>
                                     <td class="icon_edit">
                                         <div class="dropdown">
                                             <a class="dropdown-toggle" data-toggle="dropdown"><svg class="cb cb-ellipsis-h"> <use xlink:href="#cb-ellipsis-h" /></svg></a>
