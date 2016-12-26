@@ -95,7 +95,7 @@ class Version201612201830 extends AbstractMigration
         $csvId = $CsvType->getId();
         $table = self::TABLE;
 
-        $sql = "INSERT INTO {$table} (id, review_max, create_date, update_date, csv_id) VALUES (1, 5, now(), now(), {$csvId});";
+        $sql = "INSERT INTO {$table} (id, review_max, create_date, update_date, csv_id) VALUES (1, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, {$csvId});";
         $this->addSql($sql);
 
         if ($this->connection->getDatabasePlatform()->getName() == 'postgresql') {
