@@ -82,7 +82,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $this->client->request('DELETE',
             $this->app->url('plugin_admin_product_review_delete', array('id' => $productReviewId))
         );
-        $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
+        $this->assertTrue($this->client->getResponse()->isRedirection());
 
         $this->expected = Constant::ENABLED;
         $this->actual = $Review->getDelFlg();
