@@ -39,7 +39,7 @@ class ProductReviewRepository extends EntityRepository
     {
         try {
             $this->_em->persist($ProductReview);
-            $this->_em->flush();
+            $this->_em->flush($ProductReview);
         } catch (\Exception $e) {
             return false;
         }
@@ -59,7 +59,7 @@ class ProductReviewRepository extends EntityRepository
         try {
             $ProductReview->setDelFlg(Constant::ENABLED);
             $this->_em->persist($ProductReview);
-            $this->_em->flush();
+            $this->_em->flush($ProductReview);
         } catch (\Exception $e) {
             return false;
         }
