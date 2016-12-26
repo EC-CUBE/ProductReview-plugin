@@ -57,7 +57,7 @@ class ProductReviewEvent extends CommonEvent
 
         // Get rate
         $rate = $repository->getAvgAll($Product, $Disp);
-        $avgRecommend = intval($rate['recommend_avg']);
+        $avgRecommend = round($rate['recommend_avg']);
         $reviewNumber = intval($rate['review_num']);
 
         /**
