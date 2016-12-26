@@ -50,6 +50,8 @@ class ProductReviewController extends AbstractController
             throw new NotFoundHttpException();
         }
         if (!$request->getSession()->has('_security_admin') && $Product->getStatus()->getId() !== Disp::DISPLAY_SHOW) {
+            log_info('Product review', array('status' => 'Not permission'));
+
             throw new NotFoundHttpException();
         }
         if (count($Product->getProductClasses()) < 1) {
@@ -68,6 +70,8 @@ class ProductReviewController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             switch ($request->get('mode')) {
                 case 'confirm':
+                    log_info('Product review config');
+
                     $builder->setAttribute('freeze', true);
                     $form = $builder->getForm();
                     $form->handleRequest($request);
@@ -79,6 +83,7 @@ class ProductReviewController extends AbstractController
                     break;
 
                 case 'complete':
+                    log_info('Product review complete');
                     /** @var $ProductReview ProductReview */
                     $ProductReview = $form->getData();
                     if ($app->isGranted('ROLE_USER')) {
@@ -96,9 +101,12 @@ class ProductReviewController extends AbstractController
 
                     if (!$status) {
                         $app->addError('plugin.front.product_review.system.error');
+                        log_info('Product review complete', array('status' => 'fail'));
 
                         return $app->redirect($app->url('plugin_products_detail_review_error'));
                     } else {
+                        log_info('Product review complete', array('id' => $Product->getId()));
+
                         return $app->redirect($app->url('plugin_products_detail_review_complete', array('id' => $Product->getId())));
                     }
                     break;

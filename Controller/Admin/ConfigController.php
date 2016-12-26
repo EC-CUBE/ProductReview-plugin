@@ -48,8 +48,12 @@ class ConfigController extends AbstractController
                 $em->persist($config);
                 $em->flush($config);
 
+                log_info('Product review config', array('status' => 'Success'));
+
                 $app->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');
             } catch (\Exception $e) {
+                log_info('Product review config', array('status' => $e->getMessage()));
+
                 $app->addError('plugin.admin.product_review_config.save.error', 'admin');
             }
         }

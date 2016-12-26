@@ -170,6 +170,9 @@ class ProductReviewController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $status = $app['product_review.repository.product_review']
                 ->save($ProductReview);
+
+            log_info('Product review add/edit', array('status' => $status));
+
             if (!$status) {
                 $app->addError('plugin.admin.product_review.save.error', 'admin');
             } else {
@@ -217,6 +220,8 @@ class ProductReviewController extends AbstractController
         } else {
             $app->addError('plugin.admin.product_review.delete.error', 'admin');
         }
+
+        log_info('Product review delete', array('status' => isset($status) ? $status: 0));
 
         return $app->redirect($app->url('plugin_admin_product_review'));
     }
