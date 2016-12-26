@@ -78,7 +78,7 @@ class ProductReviewRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('r')
             ->select('r')
-            ->leftJoin('r.Product', 'p')
+            ->innerJoin('r.Product', 'p')
             ->andWhere('r.del_flg = :del');
         $qb->setParameter('del', Constant::DISABLED);
 
