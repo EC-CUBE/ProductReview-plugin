@@ -56,7 +56,7 @@
 
                                     <a href="{{ url }}">{{ ProductReview.reviewer_name }}さん</a>
                                     {% set star = 5 - ProductReview.recommend_level %}
-                                    <span>{% if avg %}<span class="recommend_level">{% for i in 1..avg %}★{% endfor %}</span>{% endif %}{% if star %}<span>{% for i in 1..star %}☆{% endfor %}</span>{% endif %}</span>
+                                    <span>{% if ProductReview.recommend_level %}<span class="recommend_level">{% for i in 1..ProductReview.recommend_level %}★{% endfor %}</span>{% endif %}{% if star %}<span>{% for i in 1..star %}☆{% endfor %}</span>{% endif %}</span>
                                 </p>
                                 <h4 class="heading04">{{ ProductReview.title }}</h4>
                                 <p>{{ ProductReview.comment }}</p>

@@ -199,7 +199,10 @@ class ProductReviewController extends AbstractController
     public function delete(Application $app, Request $request, $id = null)
     {
         $this->isTokenValid($app);
-
+        $session = $request->getSession();
+        $pageNo = intval($session->get('plugin.product_review.admin.product_review.search.page_no'));
+        $pageNo = $pageNo ? $pageNo : 1;
+        $resume = Constant::ENABLED;
         if ($id) {
             /* @var $repos ProductReviewRepository */
             $repos = $app['product_review.repository.product_review'];
@@ -223,7 +226,7 @@ class ProductReviewController extends AbstractController
 
         log_info('Product review delete', array('status' => isset($status) ? $status: 0));
 
-        return $app->redirect($app->url('plugin_admin_product_review'));
+        return $app->redirect($app->url('plugin_admin_product_review_page', array('page_no' => $pageNo)).'?resume='.$resume);
     }
 
     /**
