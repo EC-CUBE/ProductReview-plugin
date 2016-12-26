@@ -64,6 +64,9 @@ class ProductReviewType extends AbstractType
                     new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
+                'attr' => array(
+                    'maxlength' => $config['stext_len'],
+                ),
             ))
             ->add('reviewer_url', 'text', array(
                 'label' => '投稿者URL',
@@ -71,6 +74,9 @@ class ProductReviewType extends AbstractType
                 'constraints' => array(
                     new Assert\Url(),
                     new Assert\Length(array('max' => $config['mltext_len'])),
+                ),
+                'attr' => array(
+                    'maxlength' => $config['mltext_len'],
                 ),
             ))
             ->add('sex', 'sex', array(
@@ -96,6 +102,9 @@ class ProductReviewType extends AbstractType
                     new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
+                'attr' => array(
+                    'maxlength' => $config['stext_len'],
+                ),
             ))
             ->add('comment', 'textarea', array(
                 'label' => 'コメント',
@@ -103,6 +112,9 @@ class ProductReviewType extends AbstractType
                 'constraints' => array(
                     new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['ltext_len'])),
+                ),
+                'attr' => array(
+                    'maxlength' => $config['ltext_len'],
                 ),
             ));
     }
