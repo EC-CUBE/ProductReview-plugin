@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Entity;
 
 use Eccube\Entity\AbstractEntity;
@@ -43,9 +44,9 @@ class ProductReviewConfig extends AbstractEntity
     private $update_date;
 
     /**
-     * Set product_review config id
+     * Set product_review config id.
      *
-     * @param  string $id
+     * @param string $id
      *
      * @return ProductReviewConfig
      */
@@ -57,9 +58,9 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -67,7 +68,7 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Get csv_id
+     * Get csv_id.
      *
      * @return CsvType
      */
@@ -77,9 +78,10 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Set csv id
+     * Set csv id.
      *
      * @param CsvType $cid
+     *
      * @return ProductReviewConfig
      */
     public function setCsvType(CsvType $cid)
@@ -90,7 +92,7 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Get ReviewMax
+     * Get ReviewMax.
      *
      * @return int
      */
@@ -100,9 +102,10 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Set max
+     * Set max.
      *
-     * @param  int $max
+     * @param int $max
+     *
      * @return ProductReview
      */
     public function setReviewMax($max)
@@ -113,9 +116,10 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Set create_date
+     * Set create_date.
      *
-     * @param  \DateTime $createDate
+     * @param \DateTime $createDate
+     *
      * @return $this
      */
     public function setCreateDate($createDate)
@@ -126,7 +130,7 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Get create_date
+     * Get create_date.
      *
      * @return \DateTime
      */
@@ -136,9 +140,10 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Set update_date
+     * Set update_date.
      *
-     * @param  \DateTime $updateDate
+     * @param \DateTime $updateDate
+     *
      * @return $this
      */
     public function setUpdateDate($updateDate)
@@ -149,7 +154,7 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
-     * Get update_date
+     * Get update_date.
      *
      * @return \DateTime
      */

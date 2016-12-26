@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Event;
 
 use Eccube\Entity\Master\Disp;
@@ -16,7 +17,7 @@ use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 
 /**
- * Class Event
+ * Class Event.
  */
 class ProductReviewEvent extends CommonEvent
 {
@@ -32,7 +33,7 @@ class ProductReviewEvent extends CommonEvent
 
         $parameters = $event->getParameters();
         /**
-         * @var Product $Product
+         * @var Product
          */
         $Product = $parameters['Product'];
 
@@ -47,7 +48,7 @@ class ProductReviewEvent extends CommonEvent
         $Disp = $this->app['eccube.repository.master.disp']->find(Disp::DISPLAY_SHOW);
 
         /**
-         * @var $repository ProductReviewRepository
+         * @var ProductReviewRepository
          */
         $repository = $this->app['product_review.repository.product_review'];
 
@@ -60,14 +61,14 @@ class ProductReviewEvent extends CommonEvent
         $reviewNumber = intval($rate['review_num']);
 
         /**
-         * @var $twig \Twig_Environment
+         * @var \Twig_Environment
          */
         $twig = $this->app['twig'];
 
         $twigAppend = $twig->getLoader()->getSource('ProductReview/Resource/template/default/product_review.twig');
 
         /**
-         * @var string $twigSource twig template.
+         * @var string twig template
          */
         $twigSource = $event->getSource();
 

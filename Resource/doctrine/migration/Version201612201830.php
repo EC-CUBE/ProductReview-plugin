@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace DoctrineMigrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -97,7 +98,7 @@ class Version201612201830 extends AbstractMigration
         $sql = "INSERT INTO {$table} (id, review_max, create_date, update_date, csv_id) VALUES (1, 5, now(), now(), {$csvId});";
         $this->addSql($sql);
 
-        if ($this->connection->getDatabasePlatform()->getName() == "postgresql") {
+        if ($this->connection->getDatabasePlatform()->getName() == 'postgresql') {
             if ($schema->hasSequence($firstSequence)) {
                 // increase seq
                 $this->addSql("SELECT setval('{$firstSequence}', 2);");
@@ -111,6 +112,7 @@ class Version201612201830 extends AbstractMigration
      * Create csv data.
      *
      * @param Application $app
+     *
      * @return CsvType
      */
     protected function createCsvData(Application $app)
@@ -127,7 +129,7 @@ class Version201612201830 extends AbstractMigration
             ->getSingleScalarResult();
         $CsvType = new CsvType();
         $CsvType->setName('製品レビューCSV')
-            ->setId($csvTypeId+1)
+            ->setId($csvTypeId + 1)
             ->setRank(999);
         $em->persist($CsvType);
         $em->flush($CsvType);
@@ -148,7 +150,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -161,7 +163,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -174,7 +176,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -187,7 +189,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -200,7 +202,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -213,7 +215,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -226,7 +228,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -239,7 +241,7 @@ class Version201612201830 extends AbstractMigration
         $em->flush($Csv);
 
         $Csv = new Csv();
-        $rank++;
+        ++$rank;
         $Csv->setCsvType($CsvType)
             ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
@@ -255,7 +257,7 @@ class Version201612201830 extends AbstractMigration
     }
 
     /**
-     * Delete data
+     * Delete data.
      */
     protected function deleteData()
     {

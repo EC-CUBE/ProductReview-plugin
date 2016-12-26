@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
@@ -25,7 +25,7 @@ use Symfony\Component\HttpKernel\Client;
 class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 {
     /**
-     * @var $faker Generator
+     * @var Generator
      */
     protected $faker;
 
@@ -40,7 +40,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     }
 
     /**
-     * Search list
+     * Search list.
      */
     public function testReviewList()
     {
@@ -62,7 +62,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     }
 
     /**
-     * test delete
+     * test delete.
      */
     public function testReviewDeleteIdNotFound()
     {
@@ -73,7 +73,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     }
 
     /**
-     * test delete
+     * test delete.
      */
     public function testReviewDelete()
     {
@@ -94,7 +94,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      */
     public function testReviewEditWithIdInvalid()
     {
-        /**
+        /*
          * @var $crawler Crawler
          */
         $this->client->request(
@@ -102,7 +102,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             $this->app->url('plugin_admin_product_review_edit', array('id' => 99999))
         );
         /**
-         * @var $client Client
+         * @var Client
          */
         $client = $this->client;
         $this->assertTrue($client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
@@ -130,7 +130,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             $this->app->url('plugin_admin_product_review_edit', array('id' => $reviewId))
         );
         /**
-         * @var $client Client
+         * @var Client
          */
         $client = $this->client;
         $this->assertTrue($client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
@@ -258,6 +258,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
     /**
      * Search form.
+     *
      * @param ProductReview $review
      *
      * @return array
@@ -287,7 +288,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             $Product = $this->createProduct();
         }
 
-        for ($i = 0; $i < $number; $i++) {
+        for ($i = 0; $i < $number; ++$i) {
             $this->createProductReviewData($Product);
         }
     }
@@ -297,6 +298,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      *
      * @param int|Product $product
      * @param int         $delFlg
+     *
      * @return ProductReview
      */
     private function createProductReviewData($product = 1, $delFlg = Constant::DISABLED)
@@ -315,7 +317,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $Review->setComment($this->faker->word);
         $Review->setTitle($this->faker->word);
         $Review->setProduct($Product);
-        $Review->setRecommendLevel($this->faker->numberBetween(1,5));
+        $Review->setRecommendLevel($this->faker->numberBetween(1, 5));
         $Review->setReviewerName($this->faker->word);
         $Review->setReviewerUrl($this->faker->url);
         $Review->setStatus($Disp);

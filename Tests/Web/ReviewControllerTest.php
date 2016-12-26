@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Tests\Web;
 
 use Eccube\Common\Constant;
@@ -23,7 +24,7 @@ use Symfony\Component\DomCrawler\Crawler;
 class ReviewControllerTest extends AbstractWebTestCase
 {
     /**
-     * @var $faker Generator
+     * @var Generator
      */
     protected $faker;
 
@@ -69,7 +70,7 @@ class ReviewControllerTest extends AbstractWebTestCase
 
         // Verify back to product detail link.
         /**
-         * @var $crawler Crawler
+         * @var Crawler
          */
         $crawler = $this->client->followRedirect();
         $link = $crawler->selectLink('製品の詳細に戻る')->link();
@@ -80,7 +81,7 @@ class ReviewControllerTest extends AbstractWebTestCase
     }
 
     /**
-     * Back test
+     * Back test.
      */
     public function testProductReviewAddConfirmBack()
     {
@@ -114,7 +115,7 @@ class ReviewControllerTest extends AbstractWebTestCase
     }
 
     /**
-     * review list
+     * review list.
      */
     public function testProductReview()
     {
@@ -138,7 +139,7 @@ class ReviewControllerTest extends AbstractWebTestCase
     }
 
     /**
-     * review list
+     * review list.
      */
     public function testProductReviewMaxNumber()
     {
@@ -173,7 +174,7 @@ class ReviewControllerTest extends AbstractWebTestCase
             $Product = $this->createProduct();
         }
 
-        for ($i = 0; $i < $number; $i++) {
+        for ($i = 0; $i < $number; ++$i) {
             $this->createProductReviewData($Product);
         }
     }
@@ -183,6 +184,7 @@ class ReviewControllerTest extends AbstractWebTestCase
      *
      * @param int|Product $product
      * @param int         $delFlg
+     *
      * @return ProductReview
      */
     private function createProductReviewData($product = 1, $delFlg = Constant::DISABLED)
@@ -201,7 +203,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $Review->setComment($this->faker->word);
         $Review->setTitle($this->faker->word);
         $Review->setProduct($Product);
-        $Review->setRecommendLevel($this->faker->numberBetween(1,5));
+        $Review->setRecommendLevel($this->faker->numberBetween(1, 5));
         $Review->setReviewerName($this->faker->word);
         $Review->setReviewerUrl($this->faker->url);
         $Review->setStatus($Disp);
@@ -214,5 +216,4 @@ class ReviewControllerTest extends AbstractWebTestCase
 
         return $Review;
     }
-
 }

@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Entity;
 
 use Eccube\Entity\AbstractEntity;
@@ -51,7 +52,7 @@ class ProductReview extends AbstractEntity
     private $Sex;
 
     /**
-     * @var integer
+     * @var int
      */
     private $recommend_level;
 
@@ -71,7 +72,7 @@ class ProductReview extends AbstractEntity
     private $Customer;
 
     /**
-     * @var integer
+     * @var int
      */
     private $del_flg;
 
@@ -86,9 +87,10 @@ class ProductReview extends AbstractEntity
     private $update_date;
 
     /**
-     * Set product_review id
+     * Set product_review id.
      *
-     * @param  string $id
+     * @param string $id
+     *
      * @return ProductReview
      */
     public function setId($id)
@@ -99,9 +101,9 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -109,7 +111,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get reviewer_name
+     * Get reviewer_name.
      *
      * @return string
      */
@@ -119,9 +121,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set reviewer_name
+     * Set reviewer_name.
      *
-     * @param  string $reviewer_name
+     * @param string $reviewer_name
+     *
      * @return ProductReview
      */
     public function setReviewerName($reviewer_name)
@@ -132,7 +135,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get reviewer_url
+     * Get reviewer_url.
      *
      * @return string
      */
@@ -142,9 +145,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set reviewer_url
+     * Set reviewer_url.
      *
-     * @param  string $reviewer_url
+     * @param string $reviewer_url
+     *
      * @return ProductReview
      */
     public function setReviewerUrl($reviewer_url)
@@ -155,9 +159,9 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get recommend_level
+     * Get recommend_level.
      *
-     * @return integer
+     * @return int
      */
     public function getRecommendLevel()
     {
@@ -165,9 +169,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set recommend_level
+     * Set recommend_level.
      *
-     * @param  integer $recommend_level
+     * @param int $recommend_level
+     *
      * @return ProductReview
      */
     public function setRecommendLevel($recommend_level)
@@ -178,9 +183,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set Sex
+     * Set Sex.
      *
-     * @param  Sex $Sex
+     * @param Sex $Sex
+     *
      * @return ProductReview
      */
     public function setSex(Sex $Sex = null)
@@ -191,7 +197,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get Sex
+     * Get Sex.
      *
      * @return Sex
      */
@@ -201,7 +207,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -211,9 +217,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set title
+     * Set title.
      *
-     * @param  string $title
+     * @param string $title
+     *
      * @return ProductReview
      */
     public function setTitle($title)
@@ -224,7 +231,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get comment
+     * Get comment.
      *
      * @return string
      */
@@ -234,9 +241,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set comment
+     * Set comment.
      *
-     * @param  string $comment
+     * @param string $comment
+     *
      * @return ProductReview
      */
     public function setComment($comment)
@@ -247,9 +255,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set Status
+     * Set Status.
      *
-     * @param  Disp $Status
+     * @param Disp $Status
+     *
      * @return ProductReview
      */
     public function setStatus(Disp $Status = null)
@@ -260,7 +269,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get Status
+     * Get Status.
      *
      * @return Disp
      */
@@ -270,9 +279,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set Product
+     * Set Product.
      *
-     * @param  Product $Product
+     * @param Product $Product
+     *
      * @return $this
      */
     public function setProduct(Product $Product)
@@ -283,7 +293,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get Product
+     * Get Product.
      *
      * @return Product
      */
@@ -293,9 +303,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set Customer
+     * Set Customer.
      *
-     * @param  Customer $Customer
+     * @param Customer $Customer
+     *
      * @return $this
      */
     public function setCustomer(Customer $Customer)
@@ -306,7 +317,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get Customer
+     * Get Customer.
      *
      * @return Customer
      */
@@ -316,9 +327,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set del_flg
+     * Set del_flg.
      *
-     * @param  integer $delFlg
+     * @param int $delFlg
+     *
      * @return $this
      */
     public function setDelFlg($delFlg)
@@ -329,9 +341,9 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get del_flg
+     * Get del_flg.
      *
-     * @return integer
+     * @return int
      */
     public function getDelFlg()
     {
@@ -339,9 +351,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set create_date
+     * Set create_date.
      *
-     * @param  \DateTime $createDate
+     * @param \DateTime $createDate
+     *
      * @return $this
      */
     public function setCreateDate($createDate)
@@ -352,7 +365,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get create_date
+     * Get create_date.
      *
      * @return \DateTime
      */
@@ -362,9 +375,10 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set update_date
+     * Set update_date.
      *
-     * @param  \DateTime $updateDate
+     * @param \DateTime $updateDate
+     *
      * @return $this
      */
     public function setUpdateDate($updateDate)
@@ -375,7 +389,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Get update_date
+     * Get update_date.
      *
      * @return \DateTime
      */

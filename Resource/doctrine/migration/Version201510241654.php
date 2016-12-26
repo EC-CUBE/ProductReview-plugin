@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace DoctrineMigrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -245,7 +246,7 @@ class Version201510241654 extends AbstractMigration
             $PageLayout = new PageLayout();
         }
         $PageLayout->setDeviceType($DeviceType);
-        $PageLayout->setName( 'お客様の声書き込み');
+        $PageLayout->setName('お客様の声書き込み');
         $PageLayout->setUrl('plugin_products_detail_review');
         $PageLayout->setMetaRobots('noindex');
         $PageLayout->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
@@ -258,7 +259,7 @@ class Version201510241654 extends AbstractMigration
         }
 
         $PageLayoutComplete->setDeviceType($DeviceType);
-        $PageLayoutComplete->setName( 'お客様の声書き込み完了');
+        $PageLayoutComplete->setName('お客様の声書き込み完了');
         $PageLayoutComplete->setUrl('plugin_products_detail_review_complete');
         $PageLayoutComplete->setMetaRobots('noindex');
         $PageLayoutComplete->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
@@ -271,7 +272,7 @@ class Version201510241654 extends AbstractMigration
         }
 
         $PageLayoutError->setDeviceType($DeviceType);
-        $PageLayoutError->setName( 'お客様の声書き込みエラー');
+        $PageLayoutError->setName('お客様の声書き込みエラー');
         $PageLayoutError->setUrl('plugin_products_detail_review_error');
         $PageLayoutError->setMetaRobots('noindex');
         $PageLayoutError->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
@@ -280,7 +281,7 @@ class Version201510241654 extends AbstractMigration
     }
 
     /**
-     * Delete page layout
+     * Delete page layout.
      */
     protected function deletePageLayout()
     {
@@ -311,7 +312,6 @@ class Version201510241654 extends AbstractMigration
                 }
             }
         }
-
 
         $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review_complete');
         if ($PageLayout instanceof PageLayout) {

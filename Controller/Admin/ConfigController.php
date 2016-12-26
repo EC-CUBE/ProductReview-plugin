@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Controller\Admin;
 
 use Doctrine\ORM\EntityManager;
@@ -25,6 +26,7 @@ class ConfigController extends AbstractController
     /**
      * @param Application $app
      * @param Request     $request
+     *
      * @return Response
      */
     public function index(Application $app, Request $request)

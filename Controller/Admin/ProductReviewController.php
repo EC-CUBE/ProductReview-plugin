@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Controller\Admin;
 
 use Eccube\Application;
@@ -34,6 +35,7 @@ class ProductReviewController extends AbstractController
      * @param Application $app
      * @param Request     $request
      * @param int         $page_no
+     *
      * @return Response
      */
     public function index(Application $app, Request $request, $page_no = null)
@@ -135,6 +137,7 @@ class ProductReviewController extends AbstractController
      * @param Application $app
      * @param Request     $request
      * @param int         $id
+     *
      * @return RedirectResponse|Response
      */
     public function edit(Application $app, Request $request, $id)
@@ -187,6 +190,7 @@ class ProductReviewController extends AbstractController
      * @param Application $app
      * @param Request     $request
      * @param int         $id
+     *
      * @return RedirectResponse
      */
     public function delete(Application $app, Request $request, $id = null)
@@ -222,6 +226,7 @@ class ProductReviewController extends AbstractController
      *
      * @param Application $app
      * @param Request     $request
+     *
      * @return StreamedResponse
      */
     public function download(Application $app, Request $request)

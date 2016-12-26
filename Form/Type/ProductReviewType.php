@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Form\Type;
 
 use Eccube\Application;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ProductReviewType
- * [商品レビュー]-[レビューフロント]用Form
+ * [商品レビュー]-[レビューフロント]用Form.
  */
 class ProductReviewType extends AbstractType
 {

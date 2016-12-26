@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Controller;
 
 use Eccube\Application;
@@ -38,6 +39,7 @@ class ProductReviewController extends AbstractController
      * @param Application $app
      * @param Request     $request
      * @param int         $id
+     *
      * @return RedirectResponse|Response
      */
     public function review(Application $app, Request $request, $id)
@@ -69,6 +71,7 @@ class ProductReviewController extends AbstractController
                     $builder->setAttribute('freeze', true);
                     $form = $builder->getForm();
                     $form->handleRequest($request);
+
                     return $app['twig']->render('ProductReview/Resource/template/default/confirm.twig', array(
                         'form' => $form->createView(),
                         'Product' => $Product,
@@ -120,6 +123,7 @@ class ProductReviewController extends AbstractController
      *
      * @param Application $app
      * @param int         $id
+     *
      * @return mixed
      */
     public function complete(Application $app, $id)
@@ -131,6 +135,7 @@ class ProductReviewController extends AbstractController
      * 購入エラー画面表示.
      *
      * @param Application $app
+     *
      * @return Response
      */
     public function frontError(Application $app)

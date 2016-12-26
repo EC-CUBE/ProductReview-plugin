@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the ProductReview plugin
+ * This file is part of the ProductReview plugin.
  *
  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Application;
@@ -27,6 +28,7 @@ class ProductReviewConfigType extends AbstractType
 
     /**
      * ProductReviewType constructor.
+     *
      * @param object $app
      */
     public function __construct($app)
@@ -35,7 +37,7 @@ class ProductReviewConfigType extends AbstractType
     }
 
     /**
-     * Build form
+     * Build form.
      *
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -57,7 +59,7 @@ class ProductReviewConfigType extends AbstractType
     }
 
     /**
-     * Config
+     * Config.
      *
      * @param OptionsResolver $resolver
      */
@@ -69,8 +71,8 @@ class ProductReviewConfigType extends AbstractType
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'admin_product_review_config';
