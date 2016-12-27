@@ -277,6 +277,9 @@ class Version201612201830 extends AbstractMigration
         $repos = $em->getRepository($entityName);
         /* @var $Config ProductReviewConfig */
         $Config = $repos->find(1);
+        if (!$Config) {
+            return;
+        }
         $CsvType = $Config->getCsvType();
 
         $arrCsv = $app['eccube.repository.csv']->findBy(array('CsvType' => $CsvType));
@@ -287,6 +290,8 @@ class Version201612201830 extends AbstractMigration
             }
         }
 
+        $em->remove($Config);
+        $em->flush($Config);
         $em->remove($CsvType);
         $em->flush($CsvType);
     }
