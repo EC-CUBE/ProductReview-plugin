@@ -238,42 +238,28 @@ class Version201510241654 extends AbstractMigration
         $DeviceType = $app['eccube.repository.master.device_type']
             ->find(DeviceType::DEVICE_TYPE_PC);
 
-        /** @var $repos PageLayoutRepository */
-        $repos = $em->getRepository('Eccube\Entity\PageLayout');
-        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review');
-
-        if (!$PageLayout) {
-            $PageLayout = new PageLayout();
-        }
+        $PageLayout = new PageLayout();
         $PageLayout->setDeviceType($DeviceType);
         $PageLayout->setName('お客様の声書き込み');
-        $PageLayout->setUrl('plugin_products_detail_review');
+        $PageLayout->setUrl('products_detail_review');
         $PageLayout->setMetaRobots('noindex');
         $PageLayout->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
         $em->persist($PageLayout);
         $em->flush($PageLayout);
 
-        $PageLayoutComplete = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review_complete');
-        if (!$PageLayoutComplete) {
-            $PageLayoutComplete = new PageLayout();
-        }
-
+        $PageLayoutComplete = new PageLayout();
         $PageLayoutComplete->setDeviceType($DeviceType);
         $PageLayoutComplete->setName('お客様の声書き込み完了');
-        $PageLayoutComplete->setUrl('plugin_products_detail_review_complete');
+        $PageLayoutComplete->setUrl('products_detail_review_complete');
         $PageLayoutComplete->setMetaRobots('noindex');
         $PageLayoutComplete->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
         $em->persist($PageLayoutComplete);
         $em->flush($PageLayoutComplete);
 
-        $PageLayoutError = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review_error');
-        if (!$PageLayoutError) {
-            $PageLayoutError = new PageLayout();
-        }
-
+        $PageLayoutError = new PageLayout();
         $PageLayoutError->setDeviceType($DeviceType);
         $PageLayoutError->setName('お客様の声書き込みエラー');
-        $PageLayoutError->setUrl('plugin_products_detail_review_error');
+        $PageLayoutError->setUrl('products_detail_review_error');
         $PageLayoutError->setMetaRobots('noindex');
         $PageLayoutError->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
         $em->persist($PageLayoutError);
@@ -300,43 +286,22 @@ class Version201510241654 extends AbstractMigration
         $DeviceType = $app['eccube.repository.master.device_type']
             ->find(DeviceType::DEVICE_TYPE_PC);
 
-        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review');
+        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'products_detail_review');
         if ($PageLayout instanceof PageLayout) {
             $em->remove($PageLayout);
             $em->flush($PageLayout);
-        } else {
-            foreach ($PageLayout as $page) {
-                if ($page instanceof PageLayout) {
-                    $em->remove($page);
-                    $em->flush($page);
-                }
-            }
         }
 
-        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review_complete');
+        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'products_detail_review_complete');
         if ($PageLayout instanceof PageLayout) {
             $em->remove($PageLayout);
             $em->flush($PageLayout);
-        } else {
-            foreach ($PageLayout as $page) {
-                if ($page instanceof PageLayout) {
-                    $em->remove($page);
-                    $em->flush($page);
-                }
-            }
         }
 
-        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'plugin_products_detail_review_error');
+        $PageLayout = $this->findPageLayout($repos, $DeviceType, 'products_detail_review_error');
         if ($PageLayout instanceof PageLayout) {
             $em->remove($PageLayout);
             $em->flush($PageLayout);
-        } else {
-            foreach ($PageLayout as $page) {
-                if ($page instanceof PageLayout) {
-                    $em->remove($page);
-                    $em->flush($page);
-                }
-            }
         }
     }
 
@@ -351,16 +316,20 @@ class Version201510241654 extends AbstractMigration
      */
     protected function findPageLayout($repos, $DeviceType, $url)
     {
-        $PageLayout = $repos->createQueryBuilder('p')
-            ->where('p.DeviceType = :DeviceType AND p.url = :url')
-            ->getQuery()
-            ->setParameters(array(
-                'DeviceType' => $DeviceType,
-                'url' => $url,
-            ))
-            ->getResult();
+        try {
+            $PageLayout = $repos->createQueryBuilder('p')
+                ->where('p.DeviceType = :DeviceType AND p.url = :url')
+                ->getQuery()
+                ->setParameters(array(
+                    'DeviceType' => $DeviceType,
+                    'url' => $url,
+                ))
+                ->getSingleResult();
 
-        return $PageLayout;
+            return $PageLayout;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     /**
