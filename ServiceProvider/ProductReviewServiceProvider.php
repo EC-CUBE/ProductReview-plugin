@@ -85,7 +85,7 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
             ->bind('plugin_admin_product_review_edit');
 
         // 削除
-        $admin->match('/plugin/product/review/{id}/delete', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::delete')
+        $admin->delete('/plugin/product/review/{id}/delete', 'Plugin\ProductReview\Controller\Admin\ProductReviewController::delete')
             ->assert('id', '\d+')
             ->bind('plugin_admin_product_review_delete');
 
