@@ -60,10 +60,10 @@ class ReviewControllerTest extends AbstractWebTestCase
                 'mode' => 'confirm',
             )
         );
-        $this->assertContains('完了ページヘ', $crawler->html());
+        $this->assertContains('送信する', $crawler->html());
 
         // Complete
-        $form = $crawler->selectButton('完了ページヘ')->form();
+        $form = $crawler->selectButton('送信する')->form();
         $this->client->submit($form);
 
         $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('plugin_products_detail_review_complete', array('id' => $productId))));
@@ -73,7 +73,7 @@ class ReviewControllerTest extends AbstractWebTestCase
          * @var Crawler
          */
         $crawler = $this->client->followRedirect();
-        $link = $crawler->selectLink('製品の詳細に戻る')->link();
+        $link = $crawler->selectLink('商品ページに戻る')->link();
 
         $this->actual = $link->getUri();
         $this->expected = $this->app->url('product_detail', array('id' => $productId));
@@ -102,7 +102,7 @@ class ReviewControllerTest extends AbstractWebTestCase
                 'mode' => 'confirm',
             )
         );
-        $this->assertContains('完了ページヘ', $crawler->html());
+        $this->assertContains('送信する', $crawler->html());
 
         // Back click
         $form = $crawler->selectButton('戻る')->form();
@@ -127,10 +127,10 @@ class ReviewControllerTest extends AbstractWebTestCase
         );
 
         // review area
-        $this->assertContains('id="review_area"', $crawler->html());
+        $this->assertContains('id="product_review_area"', $crawler->html());
 
         // review content
-        $reviewArea = $crawler->filter('#review_area');
+        $reviewArea = $crawler->filter('#product_review_area');
         $this->assertContains($ProductReview->getComment(), $reviewArea->html());
 
         // review total
@@ -153,10 +153,10 @@ class ReviewControllerTest extends AbstractWebTestCase
         );
 
         // review area
-        $this->assertContains('id="review_area"', $crawler->html());
+        $this->assertContains('id="product_review_area"', $crawler->html());
 
         // review content
-        $reviewArea = $crawler->filter('#review_area');
+        $reviewArea = $crawler->filter('#product_review_area');
 
         // review total
         $totalHtml = $reviewArea->filter('.heading02')->html();
