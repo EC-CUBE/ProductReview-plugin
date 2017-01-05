@@ -10,18 +10,44 @@
 #}
 {% extends 'default_frame.twig' %}
 
-{% set body_class = 'product_page' %}
+{% set body_class = 'product_review_page' %}
+
+{% block stylesheet %}
+<style>
+    .product_review_page .dl_table {
+        margin: 0 0 16px;
+    }
+    .product_review_page .dl_table dt {
+        margin-bottom: 5px;
+    }
+    .product_review_page .dl_table dt label {
+        font-weight: bold;
+    }
+    .product_review_page textarea {
+        vertical-align: top;
+    }
+    .product_review_page #product_review_sex .radio {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .product_review_page #product_review_sex .radio input[type="radio"] {
+        margin-right: 10px;
+    }
+</style>
+{% endblock stylesheet %}
 
 {% block main %}
 <h1 class="page-heading">お客様の声書き込み</h1>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
+            <p id="confirm_box__message">下記の内容で送信してもよろしいでしょうか？<br/>よろしければ、一番下の「送信する」ボタンをクリックしてください。</p>
+
             <form method="post" action="{{ url('plugin_products_detail_review', { id : Product.id }) }}">
                 {{ form_widget(form._token) }}
                 <div class="dl_table">
                     <dl>
-                        <dt>商品名</dt>
+                        <dt><label>商品名</label></dt>
                         <dd class="form-group">
                             {{ Product.name }}
                         </dd>
@@ -70,7 +96,7 @@
                 <div class="row no-padding">
                     <div class="btn_group col-sm-offset-4 col-sm-4">
                         <p>
-                            <button type="submit" class="btn btn-primary btn-block" name="mode" value="complete">完了ページヘ</button>
+                            <button type="submit" class="btn btn-primary btn-block" name="mode" value="complete">送信する</button>
                         </p>
                         <p>
                             <button type="submit" class="btn btn-info btn-block" name="mode" value="back">戻る</button>

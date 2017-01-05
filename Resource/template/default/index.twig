@@ -10,20 +10,44 @@
 #}
 {% extends 'default_frame.twig' %}
 
-{% set body_class = 'product_page' %}
+{% set body_class = 'product_review_page' %}
+
+{% block stylesheet %}
+<style>
+    .product_review_page .dl_table {
+        margin: 0 0 16px;
+    }
+    .product_review_page .dl_table dt {
+        margin-bottom: 5px;
+    }
+    .product_review_page .dl_table dt label {
+        font-weight: bold;
+    }
+    .product_review_page textarea {
+        vertical-align: top;
+    }
+    .product_review_page #product_review_sex .radio {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .product_review_page #product_review_sex .radio input[type="radio"] {
+        margin-right: 10px;
+    }
+</style>
+{% endblock stylesheet %}
 
 {% block main %}
 <h1 class="page-heading">お客様の声書き込み</h1>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <h2>商品について、お客様のご意見、ご感想をどしどしお寄せください。</h2>
+            <p>商品について、お客様のご感想をお待ちしております。</p>
             <form method="post" action="{{ url('plugin_products_detail_review', { id : Product.id }) }}">
                 <input type="hidden" name="mode" value="confirm">
                 {{ form_widget(form._token) }}
                 <div class="dl_table">
                     <dl>
-                        <dt>商品名</dt>
+                        <dt><label>商品名</label></dt>
                         <dd class="form-group">
                             {{ Product.name }}
                         </dd>
@@ -49,7 +73,7 @@
                             {{ form_errors(form.recommend_level) }}
                         </dd>
                     </dl>
-                    <dl>
+                    <dl id="product_review_sex">
                         <dt>{{ form_label(form.sex) }}</dt>
                         <dd>
                             <div class="form-group form-inline">
