@@ -49,7 +49,7 @@ class ProductReviewEventLegacy extends CommonEvent
             $Product = $app['eccube.repository.product']->find($id);
             $Disp = $app['eccube.repository.master.disp']
                 ->find(Disp::DISPLAY_SHOW);
-            $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('update_date' => 'DESC'), $limit);
+            $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('create_date' => 'DESC'), $limit);
 
             // Get rate
             $rate = $repository->getAvgAll($Product, $Disp);

@@ -53,7 +53,7 @@ class ProductReviewEvent extends CommonEvent
         $repository = $this->app['product_review.repository.product_review'];
 
         // Get review
-        $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('update_date' => 'DESC'), $max);
+        $arrProductReview = $repository->findBy(array('Product' => $Product, 'Status' => $Disp), array('create_date' => 'DESC'), $max);
 
         // Get rate
         $rate = $repository->getAvgAll($Product, $Disp);
