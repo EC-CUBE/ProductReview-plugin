@@ -240,7 +240,7 @@ class Version201510241654 extends AbstractMigration
 
         $PageLayout = new PageLayout();
         $PageLayout->setDeviceType($DeviceType);
-        $PageLayout->setName('お客様の声書き込み');
+        $PageLayout->setName('レビューを書く');
         $PageLayout->setUrl('products_detail_review');
         $PageLayout->setMetaRobots('noindex');
         $PageLayout->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
@@ -249,7 +249,7 @@ class Version201510241654 extends AbstractMigration
 
         $PageLayoutComplete = new PageLayout();
         $PageLayoutComplete->setDeviceType($DeviceType);
-        $PageLayoutComplete->setName('お客様の声書き込み完了');
+        $PageLayoutComplete->setName('レビューを書く - 完了');
         $PageLayoutComplete->setUrl('products_detail_review_complete');
         $PageLayoutComplete->setMetaRobots('noindex');
         $PageLayoutComplete->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);
@@ -258,7 +258,7 @@ class Version201510241654 extends AbstractMigration
 
         $PageLayoutError = new PageLayout();
         $PageLayoutError->setDeviceType($DeviceType);
-        $PageLayoutError->setName('お客様の声書き込みエラー');
+        $PageLayoutError->setName('レビューを書く - エラー');
         $PageLayoutError->setUrl('products_detail_review_error');
         $PageLayoutError->setMetaRobots('noindex');
         $PageLayoutError->setEditFlg(PageLayout::EDIT_FLG_DEFAULT);

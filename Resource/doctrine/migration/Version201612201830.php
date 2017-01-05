@@ -128,7 +128,7 @@ class Version201612201830 extends AbstractMigration
             ->getQuery()
             ->getSingleScalarResult();
         $CsvType = new CsvType();
-        $CsvType->setName('製品レビューCSV')
+        $CsvType->setName('商品レビューCSV')
             ->setId($csvTypeId + 1)
             ->setRank(999);
         $em->persist($CsvType);
@@ -156,7 +156,7 @@ class Version201612201830 extends AbstractMigration
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Status')
             ->setReferenceFieldName('name')
-            ->setDispName('公開ステータス(名称)')
+            ->setDispName('公開・非公開')
             ->setRank($rank)
             ->setEnableFlg(Constant::ENABLED);
         $em->persist($Csv);
@@ -169,7 +169,7 @@ class Version201612201830 extends AbstractMigration
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('create_date')
             ->setReferenceFieldName('create_date')
-            ->setDispName('登録日')
+            ->setDispName('投稿日')
             ->setRank($rank)
             ->setEnableFlg(Constant::ENABLED);
         $em->persist($Csv);
@@ -182,7 +182,7 @@ class Version201612201830 extends AbstractMigration
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('reviewer_name')
             ->setReferenceFieldName('reviewer_name')
-            ->setDispName('レビュー担当者名')
+            ->setDispName('投稿者名')
             ->setRank($rank)
             ->setEnableFlg(Constant::ENABLED);
         $em->persist($Csv);
@@ -195,7 +195,7 @@ class Version201612201830 extends AbstractMigration
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('reviewer_url')
             ->setReferenceFieldName('reviewer_url')
-            ->setDispName('レビューアーのURL')
+            ->setDispName('投稿者URL')
             ->setRank($rank)
             ->setEnableFlg(Constant::ENABLED);
         $em->persist($Csv);
@@ -208,7 +208,7 @@ class Version201612201830 extends AbstractMigration
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Sex')
             ->setReferenceFieldName('name')
-            ->setDispName('性別(名称)')
+            ->setDispName('性別')
             ->setRank($rank)
             ->setEnableFlg(Constant::ENABLED);
         $em->persist($Csv);
@@ -221,7 +221,7 @@ class Version201612201830 extends AbstractMigration
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('recommend_level')
             ->setReferenceFieldName('recommend_level')
-            ->setDispName('階層')
+            ->setDispName('おすすめレベル')
             ->setRank($rank)
             ->setEnableFlg(Constant::ENABLED);
         $em->persist($Csv);
