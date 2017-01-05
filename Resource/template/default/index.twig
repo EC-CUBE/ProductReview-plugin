@@ -66,13 +66,6 @@
                             {{ form_errors(form.reviewer_url) }}
                         </dd>
                     </dl>
-                    <dl>
-                        <dt>{{ form_label(form.recommend_level) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.recommend_level) }}
-                            {{ form_errors(form.recommend_level) }}
-                        </dd>
-                    </dl>
                     <dl id="product_review_sex">
                         <dt>{{ form_label(form.sex) }}</dt>
                         <dd>
@@ -80,6 +73,13 @@
                                 {{ form_widget(form.sex) }}
                                 {{ form_errors(form.sex) }}
                             </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.recommend_level) }}</dt>
+                        <dd class="form-group">
+                            {{ form_widget(form.recommend_level) }}
+                            {{ form_errors(form.recommend_level) }}
                         </dd>
                     </dl>
                     <dl>
