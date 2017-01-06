@@ -1,240 +1,120 @@
 <?php
-/*
- * This file is part of EC-CUBE
+/**
+ * This file is part of the ProductReview plugin.
  *
- * Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
- * http://www.lockon.co.jp/
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Plugin\ProductReview\Controller;
 
-use Plugin\ProductReview\Form\Type\ProductReviewSearchType;
-use Plugin\ProductReview\Form\Type\ProductReviewType;
 use Eccube\Application;
 use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
+use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Product;
+use Plugin\ProductReview\Entity\ProductReview;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception as HttpException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class ProductReviewController front.
+ */
 class ProductReviewController extends AbstractController
 {
-    private $title;
-
-    public function __construct()
-    {
-        $this->title = '';
-    }
-
-    public function index(Application $app, Request $request, $page_no = null)
-    {
-        $session = $app['session'];
-
-        $pageMaxis = $app['eccube.repository.master.page_max']->findAll();
-        $page_count = $app['config']['default_page_count'];
-        $pagination = null;
-        $searchForm = $app['form.factory']
-            ->createBuilder('admin_product_review_search')
-            ->getForm();
-        $searchForm->handleRequest($request);
-        if ('POST' === $request->getMethod()) {
-            if ($searchForm->isValid()) {
-                $searchData = $searchForm->getData();
-                $qb = $app['eccube.plugin.product_review.repository.product_review']
-                    ->getQueryBuilderBySearchData($searchData);
-
-                $page_no = 1;
-                $pagination = $app['paginator']()->paginate(
-                    $qb,
-                    $page_no,
-                    $page_count,
-                    array('wrap-queries' => true)
-                );
-
-                // sessionのデータ保持
-                $session->set('plugin.product_review.admin.product_review.search', $searchData);
-            }
-        } else {
-            if (is_null($page_no)) {
-                // sessionを削除
-                $session->remove('plugin.product_review.admin.product_review.search');
-                $searchData = array();
-            } else {
-                // pagingなどの処理
-                $searchData = $session->get('plugin.product_review.admin.product_review.search');
-                if (!is_null($searchData)) {
-                    $qb = $app['eccube.plugin.product_review.repository.product_review']
-                        ->getQueryBuilderBySearchData($searchData);
-
-                    // 表示件数
-                    $pcount = $request->get('page_count');
-
-                    $page_count = empty($pcount) ? $page_count : $pcount;
-
-                    $pagination = $app['paginator']()->paginate(
-                        $qb,
-                        $page_no,
-                        $page_count,
-                        array('wrap-queries' => true)
-                    );
-                }
-            }
-            $searchForm->setData($searchData);
-        }
-
-        return $app->render('ProductReview/Resource/template/admin//index.twig', array(
-            'searchForm' => $searchForm->createView(),
-            'pagination' => $pagination,
-            'pageMaxis' => $pageMaxis,
-            'page_count' => $page_count,
-        ));
-    }
+    /**
+     * @var null
+     */
+    private $title = null;
 
     /**
-     * 編集
+     * Review function.
+     *
      * @param Application $app
-     * @param Request $request
-     * @param unknown $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request     $request
+     * @param int         $id
+     *
+     * @return RedirectResponse|Response
      */
-    public function edit(Application $app, Request $request, $id)
-    {
-        // IDから商品レビューを取得する
-        /** @var $ProductReview \Plugin\ProductReview\Entity\ProductReview */
-        $ProductReview = $app['eccube.plugin.product_review.repository.product_review']
-            ->findOneById($id);
-
-        if (is_null($ProductReview)) {
-            $app->addError('admin.product_review.notfound', 'admin');
-            return $app->redirect($app->url('admin_product_review'));
-        }
-
-        // formの作成
-        $form = $app['form.factory']
-            ->createBuilder('admin_product_review', $ProductReview)
-            ->getForm();
-
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $status = $app['eccube.plugin.product_review.repository.product_review']
-                    ->save($ProductReview);
-                if (!$status) {
-                    $app->addError('admin.product_review.save.error', 'admin');
-                } else {
-                    $app->addSuccess('admin.product_review.save.complete', 'admin');
-                }
-
-                return $app->redirect($app->url('admin_product_review'));
-            }
-        }
-
-        return $app->render('ProductReview/Resource/template/admin//edit.twig', array(
-            'form' => $form->createView(),
-            'Product' => $ProductReview->getProduct(),
-        ));
-    }
-
-    public function delete(Application $app, Request $request, $id = null)
-    {
-        $this->isTokenValid($app);
-
-        if (!is_null($id)) {
-            $repos = $app['eccube.plugin.product_review.repository.product_review'];
-
-            $TargetProductReview = $repos->find($id);
-
-            if (!$TargetProductReview) {
-                throw new NotFoundHttpException();
-            }
-
-            $status = $repos->delete($TargetProductReview);
-
-            if ($status === true) {
-                $app->addSuccess('admin.product_review.delete.complete', 'admin');
-            } else {
-                $app->addError('admin.product_review.delete.error', 'admin');
-            }
-        } else {
-            $app->addError('admin.product_review.delete.error', 'admin');
-        }
-        return $app->redirect($app->url('admin_product_review'));
-    }
-
     public function review(Application $app, Request $request, $id)
     {
-        /* @var $Product \Eccube\Entity\Product */
+        /* @var $Product Product */
         $Product = $app['eccube.repository.product']->get($id);
-        if (!$request->getSession()->has('_security_admin') && $Product->getStatus()->getId() !== 1) {
+        if (!$Product) {
+            throw new NotFoundHttpException();
+        }
+        if (!$request->getSession()->has('_security_admin') && $Product->getStatus()->getId() !== Disp::DISPLAY_SHOW) {
+            log_info('Product review', array('status' => 'Not permission'));
+
             throw new NotFoundHttpException();
         }
         if (count($Product->getProductClasses()) < 1) {
             throw new NotFoundHttpException();
         }
 
-        $ProductReview = new \Plugin\ProductReview\Entity\ProductReview();
+        $ProductReview = new ProductReview();
 
-        /* @var $builder \Symfony\Component\Form\FormBuilderInterface */
+        /* @var $builder FormBuilderInterface */
         $builder = $app['form.factory']
             ->createBuilder('product_review', $ProductReview);
-        /* @var $form \Symfony\Component\Form\FormInterface */
-            $form = $builder->getForm();
+        /* @var $form FormInterface */
+        $form = $builder->getForm();
 
-        if ($request->getMethod() === 'POST') {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                switch ($request->get('mode')) {
-                    case 'confirm':
-                        $builder->setAttribute('freeze', true);
-                        $form = $builder->getForm();
-                        $form->handleRequest($request);
-                        return $app['twig']->render('ProductReview/Resource/template/default/confirm.twig', array(
-                            'form' => $form->createView(),
-                            'Product' => $Product
-                        ));
-                        break;
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            switch ($request->get('mode')) {
+                case 'confirm':
+                    log_info('Product review config');
 
-                    case 'complete':
-                        /** @var $ProductReview \Plugin\ProductReview\Entity\ProductReview */
-                        $ProductReview = $form->getData();
-                        if ($app->isGranted('ROLE_USER')) {
-                            $Customer = $app->user();
-                            $ProductReview->setCustomer($Customer);
-                        }
-                        $ProductReview->setProduct($Product);
-                        $Disp = $app['eccube.repository.master.disp']
-                            ->find(\Eccube\Entity\Master\Disp::DISPLAY_HIDE);
+                    $builder->setAttribute('freeze', true);
+                    $form = $builder->getForm();
+                    $form->handleRequest($request);
 
-                        $ProductReview->setStatus($Disp);
-                        $ProductReview->setDelFlg(Constant::DISABLED);
-                        $status = $app['eccube.plugin.product_review.repository.product_review']
-                            ->save($ProductReview);
+                    return $app['twig']->render('ProductReview/Resource/template/default/confirm.twig', array(
+                        'form' => $form->createView(),
+                        'Product' => $Product,
+                    ));
+                    break;
 
-                        if (!$status) {
-                            $app->addError('front.product_review.system.error');
-                            return $app->redirect($app->url('products_detail_review_error'));
-                        } else {
-                            return $app->redirect($app->url('products_detail_review_complete', array('id' => $Product->getId())));
-                        }
-                        break;
-                    case 'back':
-                        // do nothing
-                        break;
-                }
+                case 'complete':
+                    log_info('Product review complete');
+                    /** @var $ProductReview ProductReview */
+                    $ProductReview = $form->getData();
+                    if ($app->isGranted('ROLE_USER')) {
+                        $Customer = $app->user();
+                        $ProductReview->setCustomer($Customer);
+                    }
+                    $ProductReview->setProduct($Product);
+                    $Disp = $app['eccube.repository.master.disp']
+                        ->find(Disp::DISPLAY_HIDE);
+
+                    $ProductReview->setStatus($Disp);
+                    $ProductReview->setDelFlg(Constant::DISABLED);
+                    $status = $app['product_review.repository.product_review']
+                        ->save($ProductReview);
+
+                    if (!$status) {
+                        $app->addError('plugin.front.product_review.system.error');
+                        log_info('Product review complete', array('status' => 'fail'));
+
+                        return $app->redirect($app->url('plugin_products_detail_review_error'));
+                    } else {
+                        log_info('Product review complete', array('id' => $Product->getId()));
+
+                        return $app->redirect($app->url('plugin_products_detail_review_complete', array('id' => $Product->getId())));
+                    }
+                    break;
+
+                case 'back':
+                default:
+                    // do nothing
+                    break;
             }
         }
 
@@ -247,23 +127,27 @@ class ProductReviewController extends AbstractController
     }
 
     /**
-     * Complete
+     * Complete.
      *
-     * @param  Application $app
+     * @param Application $app
+     * @param int         $id
+     *
      * @return mixed
      */
-    public function complete(Application $app)
+    public function complete(Application $app, $id)
     {
-        return $app['view']->render('ProductReview/Resource/template/default/complete.twig', array(
-        ));
+        return $app['view']->render('ProductReview/Resource/template/default/complete.twig', array('id' => $id));
     }
 
     /**
-     * 購入エラー画面表示
+     * 購入エラー画面表示.
+     *
+     * @param Application $app
+     *
+     * @return Response
      */
     public function frontError(Application $app)
     {
         return $app->render('ProductReview/Resource/template/default/error.twig');
     }
-
 }

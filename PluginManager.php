@@ -1,60 +1,73 @@
 <?php
-/*
- * This file is part of EC-CUBE
+/**
+ * This file is part of the ProductReview plugin.
  *
- * Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
- * http://www.lockon.co.jp/
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Plugin\ProductReview;
 
+use Eccube\Application;
 use Eccube\Plugin\AbstractPluginManager;
 
+/**
+ * Class PluginManager.
+ */
 class PluginManager extends AbstractPluginManager
 {
-
-    public function __construct()
-    {
-    }
-
+    /**
+     * Install.
+     *
+     * @param array       $config
+     * @param Application $app
+     */
     public function install($config, $app)
     {
-        $this->migrationSchema($app, __DIR__ . '/Migration', $config['code']);
     }
 
+    /**
+     * Uninstall.
+     *
+     * @param array       $config
+     * @param Application $app
+     */
     public function uninstall($config, $app)
     {
-        $this->migrationSchema($app, __DIR__ . '/Migration', $config['code'], 0);
+        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code'], 0);
     }
 
+    /**
+     * Enable.
+     *
+     * @param array       $config
+     * @param Application $app
+     */
     public function enable($config, $app)
     {
-
+        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code']);
     }
 
+    /**
+     * Disable.
+     *
+     * @param array       $config
+     * @param Application $app
+     */
     public function disable($config, $app)
     {
-
     }
 
+    /**
+     * Update.
+     *
+     * @param array       $config
+     * @param Application $app
+     */
     public function update($config, $app)
     {
-
+        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code']);
     }
-
 }

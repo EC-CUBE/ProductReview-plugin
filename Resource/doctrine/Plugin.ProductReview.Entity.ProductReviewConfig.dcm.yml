@@ -1,0 +1,35 @@
+Plugin\ProductReview\Entity\ProductReviewConfig:
+    type: entity
+    table: plg_product_review_config
+    repositoryClass: Plugin\ProductReview\Repository\ProductReviewConfigRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            id: true
+            column: id
+            generator:
+                 strategy: AUTO
+    fields:
+        review_max:
+            type: smallint
+            nullable: true
+            unsigned: true
+            options:
+                default: '5'
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+
+    manyToOne:
+        CsvType:
+            targetEntity: Eccube\Entity\Master\CsvType
+            joinColumn:
+                name: csv_id
+                referencedColumnName: id
+                nullable: true
+    lifecycleCallbacks: {  }

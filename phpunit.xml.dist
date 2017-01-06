@@ -13,7 +13,6 @@
         </testsuite>
     </testsuites>
 
-
     <logging>
         <log type="coverage-html" target="./reports/coverage.html"/>
     </logging>
@@ -24,8 +23,10 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./</directory>
             <exclude>
-                <directory suffix=".php">./Migration</directory>
+                <directory suffix=".php">./Tests</directory>
+                <directory suffix=".php">./Resource</directory>
                 <file>./PluginManager.php</file>
+                <file>./log.php</file>
             </exclude>
         </whitelist>
     </filter>

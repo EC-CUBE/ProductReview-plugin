@@ -1,10 +1,11 @@
 name: 商品レビュープラグイン
 code: ProductReview
-version: 0.0.2
+version: 1.0.0
 service:
     - ProductReviewServiceProvider
 orm.path:
     - /Resource/doctrine
-migration.path:
-    - /Migration
 event: Event
+const:
+    review_regist_min: 1
+    review_regist_max: 30

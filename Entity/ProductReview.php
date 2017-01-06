@@ -1,28 +1,28 @@
 <?php
-/*
-* This file is part of EC-CUBE
-*
-* Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
-* http://www.lockon.co.jp/
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+/**
+ * This file is part of the ProductReview plugin.
+ *
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plugin\ProductReview\Entity;
 
-class ProductReview extends \Eccube\Entity\AbstractEntity
+use Eccube\Entity\AbstractEntity;
+use Eccube\Entity\Customer;
+use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Master\Sex;
+use Eccube\Entity\Product;
+
+/**
+ * Class ProductReview Entity.
+ */
+class ProductReview extends AbstractEntity
 {
     /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getMethod();
-    }
-
-    /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -47,32 +47,32 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     private $comment;
 
     /**
-     * @var \Eccube\Entity\Master\Sex
+     * @var Sex
      */
     private $Sex;
 
     /**
-     * @var integer
+     * @var int
      */
     private $recommend_level;
 
     /**
-     * @var \Eccube\Entity\Master\Disp
+     * @var Disp
      */
     private $Status;
 
     /**
-     * @var \Eccube\Entity\Product
+     * @var Product
      */
     private $Product;
 
     /**
-     * @var \Eccube\Entity\Customer
+     * @var Customer
      */
     private $Customer;
 
     /**
-     * @var integer
+     * @var int
      */
     private $del_flg;
 
@@ -87,16 +87,10 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     private $update_date;
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * Set product_review id
+     * Set product_review id.
      *
-     * @param  string $id
+     * @param string $id
+     *
      * @return ProductReview
      */
     public function setId($id)
@@ -107,9 +101,9 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -117,7 +111,7 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get reviewer_name
+     * Get reviewer_name.
      *
      * @return string
      */
@@ -127,9 +121,10 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set reviewer_name
+     * Set reviewer_name.
      *
-     * @param  string $reviewer_name
+     * @param string $reviewer_name
+     *
      * @return ProductReview
      */
     public function setReviewerName($reviewer_name)
@@ -140,7 +135,7 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get reviewer_url
+     * Get reviewer_url.
      *
      * @return string
      */
@@ -150,9 +145,10 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set reviewer_url
+     * Set reviewer_url.
      *
-     * @param  string $reviewer_url
+     * @param string $reviewer_url
+     *
      * @return ProductReview
      */
     public function setReviewerUrl($reviewer_url)
@@ -163,9 +159,9 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get recommend_level
+     * Get recommend_level.
      *
-     * @return integer
+     * @return int
      */
     public function getRecommendLevel()
     {
@@ -173,9 +169,10 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set recommend_level
+     * Set recommend_level.
      *
-     * @param  integer $recommend_level
+     * @param int $recommend_level
+     *
      * @return ProductReview
      */
     public function setRecommendLevel($recommend_level)
@@ -186,12 +183,13 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set Sex
+     * Set Sex.
      *
-     * @param  \Eccube\Entity\Master\Sex $Sex
+     * @param Sex $Sex
+     *
      * @return ProductReview
      */
-    public function setSex(\Eccube\Entity\Master\Sex $Sex = null)
+    public function setSex(Sex $Sex = null)
     {
         $this->Sex = $Sex;
 
@@ -199,9 +197,9 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get Sex
+     * Get Sex.
      *
-     * @return \Eccube\Entity\Master\Sex
+     * @return Sex
      */
     public function getSex()
     {
@@ -209,7 +207,7 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -219,9 +217,10 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set title
+     * Set title.
      *
-     * @param  string $title
+     * @param string $title
+     *
      * @return ProductReview
      */
     public function setTitle($title)
@@ -232,7 +231,7 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get comment
+     * Get comment.
      *
      * @return string
      */
@@ -242,9 +241,10 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set comment
+     * Set comment.
      *
-     * @param  string $comment
+     * @param string $comment
+     *
      * @return ProductReview
      */
     public function setComment($comment)
@@ -255,12 +255,13 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set Status
+     * Set Status.
      *
-     * @param  \Eccube\Entity\Master\Disp $Status
+     * @param Disp $Status
+     *
      * @return ProductReview
      */
-    public function setStatus(\Eccube\Entity\Master\Disp $Status = null)
+    public function setStatus(Disp $Status = null)
     {
         $this->Status = $Status;
 
@@ -268,9 +269,9 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get Status
+     * Get Status.
      *
-     * @return \Eccube\Entity\Master\Disp
+     * @return Disp
      */
     public function getStatus()
     {
@@ -278,12 +279,13 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set Product
+     * Set Product.
      *
-     * @param  \Eccube\Entity\Product $Product
-     * @return \Eccube\Entity\Product
+     * @param Product $Product
+     *
+     * @return $this
      */
-    public function setProduct(\Eccube\Entity\Product $Product)
+    public function setProduct(Product $Product)
     {
         $this->Product = $Product;
 
@@ -291,9 +293,9 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get Product
+     * Get Product.
      *
-     * @return \Eccube\Entity\Product
+     * @return Product
      */
     public function getProduct()
     {
@@ -301,12 +303,13 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set Customer
+     * Set Customer.
      *
-     * @param  \Eccube\Entity\Customer $Customer
-     * @return \Eccube\Entity\Customer
+     * @param Customer $Customer
+     *
+     * @return $this
      */
-    public function setCustomer(\Eccube\Entity\Customer $Customer)
+    public function setCustomer(Customer $Customer)
     {
         $this->Customer = $Customer;
 
@@ -314,9 +317,9 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get Customer
+     * Get Customer.
      *
-     * @return \Eccube\Entity\Customer
+     * @return Customer
      */
     public function getCustomer()
     {
@@ -324,10 +327,11 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set del_flg
+     * Set del_flg.
      *
-     * @param  integer $delFlg
-     * @return Payment
+     * @param int $delFlg
+     *
+     * @return $this
      */
     public function setDelFlg($delFlg)
     {
@@ -337,9 +341,9 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get del_flg
+     * Get del_flg.
      *
-     * @return integer
+     * @return int
      */
     public function getDelFlg()
     {
@@ -347,10 +351,11 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set create_date
+     * Set create_date.
      *
-     * @param  \DateTime $createDate
-     * @return Payment
+     * @param \DateTime $createDate
+     *
+     * @return $this
      */
     public function setCreateDate($createDate)
     {
@@ -360,7 +365,7 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get create_date
+     * Get create_date.
      *
      * @return \DateTime
      */
@@ -370,10 +375,11 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set update_date
+     * Set update_date.
      *
-     * @param  \DateTime $updateDate
-     * @return Payment
+     * @param \DateTime $updateDate
+     *
+     * @return $this
      */
     public function setUpdateDate($updateDate)
     {
@@ -383,7 +389,7 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Get update_date
+     * Get update_date.
      *
      * @return \DateTime
      */
@@ -391,5 +397,4 @@ class ProductReview extends \Eccube\Entity\AbstractEntity
     {
         return $this->update_date;
     }
-
 }

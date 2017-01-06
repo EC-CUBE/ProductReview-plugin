@@ -1,35 +1,20 @@
 {#
-This file is part of EC-CUBE
-
-Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
-
-http://www.lockon.co.jp/
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+/*
+ * This file is part of the ProductReview plugin
+ *
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 #}
 {#
 [商品管理]-[商品レビュー]-[一覧・検索]画面
 #}
-
 {% extends 'default_frame.twig' %}
-
 {% set menus = ['product', 'product_review'] %}
-
 {% block title %}商品管理{% endblock %}
 {% block sub_title %}商品レビュー{% endblock %}
-
 {% form_theme searchForm 'Form/bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block stylesheet %}
@@ -42,6 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/bootstrap-datetimepicker.min.js"></script>
 <script>
 $(function() {
+    $('#product_review_download').click(function(event) {
+        event.preventDefault();
+        var href = $(this).attr('href');
+        fnChangeActionSubmit(href);
+    });
 
     var inputDate = document.createElement('input');
     inputDate.setAttribute('type', 'date');
@@ -60,7 +50,6 @@ $(function() {
             showTodayButton: true
         });
     }
-
     // フォーム値を確認し、アコーディオンを制御
     // 値あり : 開く / 値なし : 閉じる
     (function($, f) {
@@ -69,7 +58,6 @@ $(function() {
         if (!$ac) {
             return false
         }
-
         //フォーム内全項目取得
         var c = f();
         if (c.formState()) {
@@ -83,7 +71,6 @@ $(function() {
         }
     })($, formPropStateSubscriber);
 });
-
 function fnChangeActionSubmit(action) {
     document.search_form.action = action;
     document.search_form.submit();
@@ -98,46 +85,39 @@ function fnChangeActionSubmit(action) {
         {{ form_widget(searchForm._token) }}
         <div class="row">
             <div class="col-md-12 accordion">
-
                 {{ form_widget(searchForm.multi, { attr: { placeholder: '投稿者名・投稿者URL', class : 'input_search' } } ) }}
-
                 <a class="toggle" href="#"><svg class="cb cb-minus"> <use xlink:href="#cb-minus"/></svg> <svg class="cb cb-minus"> <use xlink:href="#cb-minus"/></svg></a>
                 <div class="search-box-inner accpanel">
                     <div class="row">
                         <div class="col-sm-12 col-lg-10 col-lg-offset-1 search">
-
                             <div class="row">
                                 <div class="col-xs-6">
-                                    <label>商品名</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.product_name) }}
-                                    </div>
+                                    <label>{{ searchForm.product_name.vars.label }}</label>
+                                    <div class="form-group">{{ form_widget(searchForm.product_name) }}</div>
                                 </div>
                                 <div class="col-xs-6">
-                                    <label>商品コード</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.product_code) }}
-                                    </div>
+                                    <label>{{ searchForm.product_code.vars.label }}</label>
+                                    <div class="form-group">{{ form_widget(searchForm.product_code) }}</div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label>性別</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.sex) }}
-                                    </div>
+                                    <label>{{ searchForm.sex.vars.label }}</label>
+                                    <div class="form-group">{{ form_widget(searchForm.sex) }}</div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label>おすすめレベル</label>
-                                    <div class="form-group">
-                                        {{ form_widget(searchForm.recommend_level) }}
-                                    </div>
+                                    <label>{{ searchForm.recommend_level.vars.label }}</label>
+                                    <div class="form-group">{{ form_widget(searchForm.recommend_level) }}</div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label>投稿日</label>
+                                    <label>{{ searchForm.review_start.vars.label }}</label>
                                     <div class="form-group range">
                                         {{ form_widget(searchForm.review_start, {'attr': {'class': 'input_cal'}}) }} ～ {{ form_widget(searchForm.review_end, {'attr': {'class': 'input_cal'}}) }}
                                     </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>{{ searchForm.status.vars.label }}</label>
+                                    <div class="form-group">{{ form_widget(searchForm.status) }}</div>
                                 </div>
                             </div><!-- /.row -->
                             <div class="col-sm-12">
@@ -146,16 +126,14 @@ function fnChangeActionSubmit(action) {
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- /.col -->
+            </div><!-- /.col -->
         </div>
         <div class="row btn_area">
             <div class="col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-4 text-center">
-                <button class="btn btn-primary btn-block btn-lg" onclick="fnChangeActionSubmit('{{ url('admin_product_review') }}'); return false;">
+                <button class="btn btn-primary btn-block btn-lg" onclick="fnChangeActionSubmit('{{ url('plugin_admin_product_review') }}'); return false;">
                     検索する <svg class="cb cb-angle-right"><use xlink:href="#cb-angle-right"></use></svg>
                 </button>
-            </div>
-            <!-- /.col -->
+            </div> <!-- /.col -->
         </div>
     </form>
 </div>
@@ -178,19 +156,17 @@ function fnChangeActionSubmit(action) {
                                     {% endfor %}
                                     <ul class="dropdown-menu">
                                     {% for pageMax in pageMaxis if pageMax.name != page_count %}
-                                        <li><a href="{{ path('admin_product_review_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{ pageMax.name|e }}件</a></li>
+                                        <li><a href="{{ url('plugin_admin_product_review_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{ pageMax.name|e }}件</a></li>
                                     {% endfor %}
                                     </ul>
                                 </li>
-                                {# var3.0.0では未対応
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown">CSVダウンロード<svg class="cb cb-angle-down icon_down"><use xlink:href="#cb-angle-down"></svg></a>
+                                <li id="result_list_main__csv_menu" class="dropdown">
+                                    <a id="result_list_main__csv_menu_toggle" class="dropdown-toggle" data-toggle="dropdown">CSVダウンロード<svg class="cb cb-angle-down icon_down"> <use xlink:href="#cb-angle-down" /></svg></a>
                                     <ul class="dropdown-menu">
-                                        <li><a>ダウンロード</a></li>
-                                        <li><a>出力項目設定</a></li>
+                                        <li><a id="product_review_download" href="{{ url('plugin_admin_product_review_download') }}">CSVダウンロード</a></li>
+                                        <li><a href="{{ url('admin_setting_shop_csv', { id : csv_type }) }}">出力項目設定</a></li>
                                     </ul>
                                 </li>
-                                #}
                             </ul>
                         </div>
                     </div>
@@ -202,6 +178,7 @@ function fnChangeActionSubmit(action) {
                                     <th>投稿日</th>
                                     <th>投稿者</th>
                                     <th>商品名</th>
+                                    <th>タイトル</th>
                                     <th>おすすめレベル</th>
                                     <th>公開・非公開</th>
                                     <th>&nbsp;</th>
@@ -213,18 +190,15 @@ function fnChangeActionSubmit(action) {
                                     <td>{{ Review.create_date|date('Y/m/d H:i') }}</td>
                                     <td>{{ Review.reviewer_name }}</td>
                                     <td>{{ Review.Product.name }}</td>
-                                    <td>
-                                        {% for i in 1..Review.recommend_level %}★{% endfor %}
-                                    </td>
-                                    <td>
-                                        {{ Review.status }}
-                                    </td>
+                                    <td><a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a></td>
+                                    <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
+                                    <td>{{ Review.status }}</td>
                                     <td class="icon_edit">
                                         <div class="dropdown">
                                             <a class="dropdown-toggle" data-toggle="dropdown"><svg class="cb cb-ellipsis-h"> <use xlink:href="#cb-ellipsis-h" /></svg></a>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                            <li><a href="{{ url('admin_product_review_edit', { id : Review.id }) }}">編集</a></li>
-                                            <li><a href="{{ url('admin_product_review_delete', { id : Review.id }) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="このレビューを削除してもよろしいですか？">削除</a></li>
+                                            <li><a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}">編集</a></li>
+                                            <li><a href="{{ url('plugin_admin_product_review_delete', { id : Review.id }) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="このレビューを削除してもよろしいですか？">削除</a></li>
                                             </ul>
                                         </div>
                                     </td>
@@ -236,7 +210,7 @@ function fnChangeActionSubmit(action) {
                     </div>
                 </div><!-- /.box-body -->
                 {% if pagination.totalItemCount > 0 %}
-                    {% include "pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'admin_product_review_page' } %}
+                    {% include "pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'plugin_admin_product_review_page' } %}
                 {% endif %}
                 {% else %}
                     <div class="box-header with-arrow">

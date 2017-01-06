@@ -1,52 +1,48 @@
 <?php
-/*
- * This file is part of EC-CUBE
+/**
+ * This file is part of the ProductReview plugin.
  *
- * Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
- * http://www.lockon.co.jp/
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-/*
- * [商品レビュー]-[レビュー検索]用Form
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Plugin\ProductReview\Form\Type\Admin;
 
+use Eccube\Application;
 use Symfony\Component\Form\AbstractType;
-use \Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\ORM\EntityRepository;
 
-class ProductReviewSerchType extends AbstractType
+/**
+ * Class ProductReviewSearchType.
+ * [商品レビュー]-[レビュー検索]用Form.
+ */
+class ProductReviewSearchType extends AbstractType
 {
+    /**
+     * @var Application
+     */
     private $app;
 
+    /**
+     * ProductReviewSearchType constructor.
+     *
+     * @param object $app
+     */
     public function __construct($app)
     {
         $this->app = $app;
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     * build form method.
+     *
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $config = $this->app['config'];
@@ -107,13 +103,17 @@ class ProductReviewSerchType extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
-            ->addEventSubscriber(new \Eccube\Event\FormEventSubscriber());
-        ;
+            ->add('status', 'disp', array(
+                'label' => '表示',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true,
+            ));
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'admin_product_review_search';

@@ -1,47 +1,49 @@
 <?php
-/*
- * This file is part of EC-CUBE
+/**
+ * This file is part of the ProductReview plugin.
  *
- * Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
  *
- * http://www.lockon.co.jp/
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Plugin\ProductReview;
 
-use Eccube\Common\Constant;
-use Eccube\Event\RenderEvent;
+use Eccube\Application;
+use Eccube\Event\TemplateEvent;
+use Plugin\ProductReview\Util\Version;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Plugin\ProductReview\EventLegacy;
 
+/**
+ * Class Event.
+ */
 class Event
 {
-
+    /**
+     * @var Application
+     */
     private $app;
-    private $legacyEvent;
 
+    /**
+     * MakerEvent constructor.
+     *
+     * @param Application $app
+     */
     public function __construct($app)
     {
         $this->app = $app;
-        $this->legacyEvent = new EventLegacy($app);
     }
 
     /**
-     * フロント：商品詳細画面に商品レビューを表示します.
+     * @param TemplateEvent $event
+     */
+    public function onProductDetailRender(TemplateEvent $event)
+    {
+        $this->app['product_review.event.product_review']->onProductDetailRender($event);
+    }
+
+    /**
      * @param FilterResponseEvent $event
      */
     public function onRenderProductsDetailBefore(FilterResponseEvent $event)
@@ -49,12 +51,8 @@ class Event
         if ($this->supportNewHookPoint()) {
             return;
         }
-        $this->legacyEvent->onRenderProductsDetailBefore($event);
-    }
 
-    public function onRouterProductsDetailResponse(FilterResponseEvent $event)
-    {
-        $this->legacyEvent->onRenderProductsDetailBefore($event);
+        $this->app['product_review.event.product_review_legacy']->onRenderProductsDetailBefore($event);
     }
 
     /**
@@ -62,6 +60,6 @@ class Event
      */
     private function supportNewHookPoint()
     {
-        return version_compare('3.0.9', Constant::VERSION, '<=');
+        return Version::isSupportVersion();
     }
 }
