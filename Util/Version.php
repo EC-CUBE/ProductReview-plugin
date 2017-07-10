@@ -53,4 +53,14 @@ class Version
     {
         return method_exists($class, $method);
     }
+
+    /**
+     * Check version to support new session function.
+     *
+     * @return bool
+     */
+    public static function isSupportNewSession()
+    {
+        return version_compare(Constant::VERSION, '3.0.15', '>=');
+    }
 }
