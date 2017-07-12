@@ -12,7 +12,6 @@ namespace Plugin\ProductReview\Controller\Admin;
 
 use Eccube\Application;
 use Eccube\Common\Constant;
-use Eccube\Util\FormUtil;
 use Eccube\Controller\AbstractController;
 use Eccube\Service\CsvExportService;
 use Plugin\ProductReview\Entity\ProductReview;
@@ -68,7 +67,7 @@ class ProductReviewController extends AbstractController
 
             // New rule to save session
             if (Version::isSupportNewSession()) {
-                $searchData = FormUtil::getViewData($searchForm);
+                $searchData = \Eccube\Util\FormUtil::getViewData($searchForm);
             }
 
             // sessionのデータ保持
@@ -91,7 +90,7 @@ class ProductReviewController extends AbstractController
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
                 if (!is_null($searchData)) {
                     if (Version::isSupportNewSession()) {
-                        $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
+                        $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
                     }
                     $qb = $app['product_review.repository.product_review']
                         ->getQueryBuilderBySearchData($searchData);
@@ -282,7 +281,7 @@ class ProductReviewController extends AbstractController
             if (Version::isSupportNewSession()) {
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
                 $searchForm = $app['form.factory']->create('admin_product_review_search', null, array('csrf_protection' => false));
-                $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
+                $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
             } else {
                 if ($session->has('plugin.product_review.admin.product_review.search')) {
                     $searchData = $session->get('plugin.product_review.admin.product_review.search');
