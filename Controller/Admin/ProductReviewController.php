@@ -17,6 +17,7 @@ use Eccube\Service\CsvExportService;
 use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
+use Plugin\ProductReview\Util\Version;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,6 +65,11 @@ class ProductReviewController extends AbstractController
                 array('wrap-queries' => true)
             );
 
+            // New rule to save session
+            if (Version::isSupportNewSession()) {
+                $searchData = \Eccube\Util\FormUtil::getViewData($searchForm);
+            }
+
             // sessionのデータ保持
             $session->set('plugin.product_review.admin.product_review.search', $searchData);
             $session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
@@ -83,6 +89,9 @@ class ProductReviewController extends AbstractController
 
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
                 if (!is_null($searchData)) {
+                    if (Version::isSupportNewSession()) {
+                        $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
+                    }
                     $qb = $app['product_review.repository.product_review']
                         ->getQueryBuilderBySearchData($searchData);
 
@@ -99,22 +108,24 @@ class ProductReviewController extends AbstractController
                     );
                 }
             }
-            if (isset($searchData['status']) && count($searchData['status']) > 0) {
-                $id = array();
-                foreach ($searchData['status'] as $status) {
-                    $id[] = $status->getId();
+            if (!Version::isSupportNewSession()) {
+                if (isset($searchData['status']) && count($searchData['status']) > 0) {
+                    $id = array();
+                    foreach ($searchData['status'] as $status) {
+                        $id[] = $status->getId();
+                    }
+                    $searchData['status'] = $app['eccube.repository.master.disp']->findBy(array('id' => $id));
                 }
-                $searchData['status'] = $app['eccube.repository.master.disp']->findBy(array('id' => $id));
-            }
 
-            if (isset($searchData['sex']) && count($searchData['sex']) > 0) {
-                $id = array();
-                foreach ($searchData['sex'] as $sex) {
-                    $id[] = $sex->getId();
+                if (isset($searchData['sex']) && count($searchData['sex']) > 0) {
+                    $id = array();
+                    foreach ($searchData['sex'] as $sex) {
+                        $id[] = $sex->getId();
+                    }
+                    $searchData['sex'] = $app['eccube.repository.master.sex']->findBy(array('id' => $id));
                 }
-                $searchData['sex'] = $app['eccube.repository.master.sex']->findBy(array('id' => $id));
+                $searchForm->setData($searchData);
             }
-            $searchForm->setData($searchData);
         }
 
         // Get product preview config.
@@ -267,9 +278,15 @@ class ProductReviewController extends AbstractController
 
             $session = $request->getSession();
             $searchData = array();
-            if ($session->has('plugin.product_review.admin.product_review.search')) {
+            if (Version::isSupportNewSession()) {
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
-                $repo->findDeserializeObjects($searchData);
+                $searchForm = $app['form.factory']->create('admin_product_review_search', null, array('csrf_protection' => false));
+                $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
+            } else {
+                if ($session->has('plugin.product_review.admin.product_review.search')) {
+                    $searchData = $session->get('plugin.product_review.admin.product_review.search');
+                    $repo->findDeserializeObjects($searchData);
+                }
             }
 
             $qb = $repo->getQueryBuilderBySearchData($searchData);
