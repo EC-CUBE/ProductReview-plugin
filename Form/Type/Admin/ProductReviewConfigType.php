@@ -31,7 +31,7 @@ class ProductReviewConfigType extends AbstractType
      *
      * @param object $app
      */
-    public function __construct($app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
     }

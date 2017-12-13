@@ -107,16 +107,6 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
 
         $app->mount('', $front);
 
-        // 型登録
-        $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
-            $types[] = new ProductReviewType($app);
-            $types[] = new AdminProductReviewType($app);
-            $types[] = new ProductReviewSearchType($app);
-            $types[] = new ProductReviewConfigType($app);
-
-            return $types;
-        }));
-
         // メッセージ登録
         $file = __DIR__.'/../Resource/locale/message.'.$app['locale'].'.yml';
         if (file_exists($file)) {
