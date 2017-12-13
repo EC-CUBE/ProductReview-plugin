@@ -36,15 +36,6 @@ class ProductReviewServiceProvider implements ServiceProviderInterface
      */
     public function register(BaseApplication $app)
     {
-        // 商品レビュー用リポジトリ
-        $app['product_review.repository.product_review'] = $app->share(function () use ($app) {
-            return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReview');
-        });
-
-        $app['product_review.repository.product_review_config'] = $app->share(function () use ($app) {
-            return $app['orm.em']->getRepository('Plugin\ProductReview\Entity\ProductReviewConfig');
-        });
-
         // Product Review event
         $app['product_review.event.product_review'] = $app->share(function () use ($app) {
             return new ProductReviewEvent($app);
