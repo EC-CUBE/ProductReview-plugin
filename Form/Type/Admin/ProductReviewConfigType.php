@@ -11,7 +11,9 @@
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Application;
+use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,14 +28,19 @@ class ProductReviewConfigType extends AbstractType
      */
     private $app;
 
+    private $min;
+
+    private $max;
+
     /**
      * ProductReviewType constructor.
      *
      * @param object $app
      */
-    public function __construct(Application $app)
+    public function __construct($productReviewConstant)
     {
-        $this->app = $app;
+        $this->min = $productReviewConstant['min'];
+        $this->max = $productReviewConstant['max'];
     }
 
     /**
@@ -44,11 +51,11 @@ class ProductReviewConfigType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $config = $this->app['config'];
-        $max = $config['ProductReview']['const']['review_regist_max'];
-        $min = $config['ProductReview']['const']['review_regist_min'];
+        $max = $this->max;
+        $min = $this->min;
+
         $builder
-            ->add('review_max', 'integer', array(
+            ->add('review_max', IntegerType::class, array(
                 'required' => true,
                 'label' => "レビューの表示件数({$min}～{$max})",
                 'constraints' => array(
@@ -65,9 +72,9 @@ class ProductReviewConfigType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'class' => 'Plugin\ProductReview\Entity\ProductReviewConfig',
-        ));
+        $resolver->setDefaults([
+            'data_class' => ProductReviewConfig::class
+        ]);
     }
 
     /**

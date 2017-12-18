@@ -10,79 +10,116 @@
 
 namespace Plugin\ProductReview\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Customer;
-use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 
 /**
- * Class ProductReview Entity.
+ * ProductReview
+ *
+ * @ORM\Table(name="plg_product_review")
+ * @ORM\Entity(repositoryClass="Plugin\ProductReview\Repository\ProductReviewRepository")
  */
 class ProductReview extends AbstractEntity
 {
     /**
      * @var int
+     *
+     * @ORM\Column(name="id", type="integer", options={"unsigned":true})
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="reviewer_name", type="string")
      */
     private $reviewer_name;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="reviewer_url", type="text", nullable=true)
      */
     private $reviewer_url;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=50)
      */
     private $title;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="comment", type="text")
      */
     private $comment;
 
     /**
      * @var Sex
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\Sex")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sex_id", referencedColumnName="id")
+     * })
      */
     private $Sex;
 
     /**
      * @var int
+     *
+     * @ORM\Column(name="recommend_level", type="smallint")
      */
     private $recommend_level;
 
     /**
-     * @var Disp
+     * @var ProductStatus
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\ProductStatus")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_satus_id", referencedColumnName="id")
+     * })
      */
     private $Status;
 
     /**
      * @var Product
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Product")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     * })
      */
     private $Product;
 
     /**
      * @var Customer
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Customer")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="customer_id", referencedColumnName="id")
+     * })
      */
     private $Customer;
 
     /**
-     * @var int
-     */
-    private $del_flg;
-
-    /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $create_date;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="update_date", type="datetimetz")
      */
     private $update_date;
 
@@ -257,11 +294,13 @@ class ProductReview extends AbstractEntity
     /**
      * Set Status.
      *
-     * @param Disp $Status
+     * FIXME 公開・非公開はフラグを別で用意する
+     *
+     * @param ProductStatus $Status
      *
      * @return ProductReview
      */
-    public function setStatus(Disp $Status = null)
+    public function setStatus(ProductStatus $Status = null)
     {
         $this->Status = $Status;
 
@@ -271,7 +310,9 @@ class ProductReview extends AbstractEntity
     /**
      * Get Status.
      *
-     * @return Disp
+     * FIXME 公開・非公開はフラグを別で用意する
+     *
+     * @return ProductStatus
      */
     public function getStatus()
     {
@@ -324,30 +365,6 @@ class ProductReview extends AbstractEntity
     public function getCustomer()
     {
         return $this->Customer;
-    }
-
-    /**
-     * Set del_flg.
-     *
-     * @param int $delFlg
-     *
-     * @return $this
-     */
-    public function setDelFlg($delFlg)
-    {
-        $this->del_flg = $delFlg;
-
-        return $this;
-    }
-
-    /**
-     * Get del_flg.
-     *
-     * @return int
-     */
-    public function getDelFlg()
-    {
-        return $this->del_flg;
     }
 
     /**

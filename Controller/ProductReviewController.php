@@ -10,17 +10,23 @@
 
 namespace Plugin\ProductReview\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Eccube\Application;
 use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
+use Eccube\Repository\Master\ProductStatusRepository;
 use Plugin\ProductReview\Entity\ProductReview;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
+use Plugin\ProductReview\Form\Type\ProductReviewType;
+use Plugin\ProductReview\Repository\ProductReviewRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -29,41 +35,42 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ProductReviewController extends AbstractController
 {
     /**
-     * @var null
-     */
-    private $title = null;
-
-    /**
      * Review function.
      *
      * @param Application $app
-     * @param Request     $request
-     * @param int         $id
+     * @param Request $request
+     * @param int $id
      *
      * @return RedirectResponse|Response
      */
-    public function review(Application $app, Request $request, $id)
+
+    /**
+     * @Route("/plugin/products/detail/{id}/review", name="plugin_products_detail_review", requirements={"id" = "\d+"})
+     *
+     * @param Request $request
+     * @param Session $session
+     * @param FormFactoryInterface $formFactory
+     * @param ProductStatusRepository $productStatusRepository
+     * @param ProductReviewRepository $productReviewRepository
+     * @param Product $Product
+     * @return RedirectResponse|Response
+     */
+    public function review(
+        Request $request,
+        Session $session,
+        FormFactoryInterface $formFactory,
+        ProductStatusRepository $productStatusRepository,
+        ProductReviewRepository $productReviewRepository,
+        Product $Product)
     {
-        /* @var $Product Product */
-        $Product = $app['eccube.repository.product']->get($id);
-        if (!$Product) {
-            throw new NotFoundHttpException();
-        }
-        if (!$request->getSession()->has('_security_admin') && $Product->getStatus()->getId() !== Disp::DISPLAY_SHOW) {
+        if (!$session->has('_security_admin') && $Product->getStatus()->getId() !== ProductStatus::DISPLAY_SHOW) {
             log_info('Product review', array('status' => 'Not permission'));
 
             throw new NotFoundHttpException();
         }
-        if (count($Product->getProductClasses()) < 1) {
-            throw new NotFoundHttpException();
-        }
 
         $ProductReview = new ProductReview();
-
-        /* @var $builder FormBuilderInterface */
-        $builder = $app['form.factory']
-            ->createBuilder('product_review', $ProductReview);
-        /* @var $form FormInterface */
+        $builder = $formFactory->createBuilder(ProductReviewType::class, $ProductReview);
         $form = $builder->getForm();
 
         $form->handleRequest($request);
@@ -76,7 +83,7 @@ class ProductReviewController extends AbstractController
                     $form = $builder->getForm();
                     $form->handleRequest($request);
 
-                    return $app['twig']->render('ProductReview/Resource/template/default/confirm.twig', array(
+                    return $this->render('ProductReview/Resource/template/default/confirm.twig', array(
                         'form' => $form->createView(),
                         'Product' => $Product,
                     ));
@@ -86,28 +93,29 @@ class ProductReviewController extends AbstractController
                     log_info('Product review complete');
                     /** @var $ProductReview ProductReview */
                     $ProductReview = $form->getData();
-                    if ($app->isGranted('ROLE_USER')) {
-                        $Customer = $app->user();
+                    if ($this->isGranted('ROLE_USER')) {
+                        $Customer = $this->getUser();;
                         $ProductReview->setCustomer($Customer);
                     }
                     $ProductReview->setProduct($Product);
-                    $Disp = $app['eccube.repository.master.disp']
-                        ->find(Disp::DISPLAY_HIDE);
+                    $Disp = $productStatusRepository->find(Disp::DISPLAY_HIDE);
 
                     $ProductReview->setStatus($Disp);
                     $ProductReview->setDelFlg(Constant::DISABLED);
-                    $status = $app['product_review.repository.product_review']
-                        ->save($ProductReview);
+                    $status = $productReviewRepository->save($ProductReview);
 
                     if (!$status) {
-                        $app->addError('plugin.front.product_review.system.error');
+//                        $app->addError('plugin.front.product_review.system.error');
                         log_info('Product review complete', array('status' => 'fail'));
 
-                        return $app->redirect($app->url('plugin_products_detail_review_error'));
+                        return $this->redirectToRoute('plugin_products_detail_review_error');
                     } else {
                         log_info('Product review complete', array('id' => $Product->getId()));
 
-                        return $app->redirect($app->url('plugin_products_detail_review_complete', array('id' => $Product->getId())));
+                        return $this->redirectToRoute(
+                            'plugin_products_detail_review_complete',
+                            array('id' => $Product->getId())
+                        );
                     }
                     break;
 
@@ -118,10 +126,8 @@ class ProductReviewController extends AbstractController
             }
         }
 
-        return $app->render('ProductReview/Resource/template/default/index.twig', array(
+        return $this->render('ProductReview/Resource/template/default/index.twig', array(
             'title' => $this->title,
-            'subtitle' => $Product->getName(),
-            'form' => $form->createView(),
             'Product' => $Product,
         ));
     }
@@ -130,24 +136,12 @@ class ProductReviewController extends AbstractController
      * Complete.
      *
      * @param Application $app
-     * @param int         $id
+     * @param int $id
      *
      * @return mixed
      */
-    public function complete(Application $app, $id)
+    public function complete($id)
     {
-        return $app['view']->render('ProductReview/Resource/template/default/complete.twig', array('id' => $id));
-    }
-
-    /**
-     * 購入エラー画面表示.
-     *
-     * @param Application $app
-     *
-     * @return Response
-     */
-    public function frontError(Application $app)
-    {
-        return $app->render('ProductReview/Resource/template/default/error.twig');
+        return $this->render('ProductReview/Resource/template/default/complete.twig', array('id' => $id));
     }
 }

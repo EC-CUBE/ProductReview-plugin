@@ -13,6 +13,7 @@ namespace Plugin\ProductReview\Controller\Admin;
 use Eccube\Application;
 use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
+use Eccube\Entity\Page;
 use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Service\CsvExportService;
 use Plugin\ProductReview\Entity\ProductReview;
@@ -20,7 +21,7 @@ use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
-use Plugin\ProductReview\Util\Version;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -60,8 +61,16 @@ class ProductReviewController extends AbstractController
      */
     protected $appConfig;
 
-    public function __construct()
+    public function __construct(
+        PageMaxRepository $pageMaxRepository,
+        ProductReviewRepository $productReviewRepository,
+        ProductReviewConfigRepository $productReviewConfigRepository,
+        FormFactoryInterface $formFactory)
     {
+        $this->pageMaxRepository = $pageMaxRepository;
+        $this->productReviewRepository = $productReviewRepository;
+        $this->productReviewConfigRepository = $productReviewConfigRepository;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -71,6 +80,17 @@ class ProductReviewController extends AbstractController
      * @param Request     $request
      * @param int         $page_no
      *
+     * @return Response
+     */
+    /**
+     * Search function.
+     *
+     * @Route("%admin_route%/plugin/product/review/", name="plugin_admin_product_review")
+     *
+     * @param Application $app
+     * @param Request $request
+     * @param Session $session
+     * @param null $page_no
      * @return Response
      */
     public function index(Application $app, Request $request, Session $session, $page_no = null)
@@ -97,7 +117,7 @@ class ProductReviewController extends AbstractController
 //                array('wrap-queries' => true)
 //            );
 
-            $searchData = \Eccube\Util\FormUtil::getViewData($searchForm);
+            $searchData = \Eccube\Util\FormUtils::getViewData($searchForm);
 
             // sessionのデータ保持
             $session->set('plugin.product_review.admin.product_review.search', $searchData);
@@ -118,7 +138,7 @@ class ProductReviewController extends AbstractController
 
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
                 if (!is_null($searchData)) {
-                    $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
+                    $searchData = \Eccube\Util\FormUtils::submitAndGetData($searchForm, $searchData);
                     $qb = $this->productReviewRepository
                         ->getQueryBuilderBySearchData($searchData);
 
@@ -141,9 +161,9 @@ class ProductReviewController extends AbstractController
         // Get product preview config.
         /* @var $Config ProductReviewConfig */
         $Config = $this->productReviewConfigRepository->find(1);
-        $csvType = $Config->getCsvType()->getId();
+        $csvType = 1;//$Config->getCsvType()->getId();
 
-        return $app->render('ProductReview/Resource/template/admin/index.twig', array(
+        return $this->render('ProductReview/Resource/template/admin/index.twig', array(
             'searchForm' => $searchForm->createView(),
             'pagination' => $pagination,
             'pageMaxis' => $pageMaxis,

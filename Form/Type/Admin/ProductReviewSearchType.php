@@ -11,7 +11,12 @@
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Application;
+use Eccube\Form\Type\Master\ProductStatusType;
+use Eccube\Form\Type\Master\SexType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -31,9 +36,14 @@ class ProductReviewSearchType extends AbstractType
      *
      * @param object $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $this->app = $app;
+
+        $this->app = [
+            'config' => [
+            'ltext_len' => 255,
+            'stext_len' => 255,
+        ]];
     }
 
     /**
@@ -47,34 +57,34 @@ class ProductReviewSearchType extends AbstractType
     {
         $config = $this->app['config'];
         $builder
-            ->add('multi', 'text', array(
+            ->add('multi', TextType::class, array(
                 'label' => '投稿者名・投稿者URL',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['ltext_len'])),
                 ),
             ))
-            ->add('product_name', 'text', array(
+            ->add('product_name', TextType::class, array(
                 'label' => '商品名',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
             ))
-            ->add('product_code', 'text', array(
+            ->add('product_code', TextType::class, array(
                 'label' => '商品コード',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
             ))
-            ->add('sex', 'sex', array(
+            ->add('sex', SexType::class, array(
                 'label' => '性別',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
             ))
-            ->add('recommend_level', 'choice', array(
+            ->add('recommend_level', ChoiceType::class, array(
                 'label' => 'おすすめレベル',
                 'choices' => array(
                     '5' => '★★★★★',
@@ -83,27 +93,30 @@ class ProductReviewSearchType extends AbstractType
                     '2' => '★★',
                     '1' => '★',
                 ),
-                'empty_value' => '選択してください',
+                'placeholder' => '選択してください',
                 'expanded' => false,
                 'multiple' => false,
             ))
-            ->add('review_start', 'birthday', array(
+            // fixme birthdaytypeは誤り
+            ->add('review_start', BirthdayType::class, array(
                 'label' => '投稿日',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-                'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
+                'placeholder' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
-            ->add('review_end', 'birthday', array(
+            // fixme birthdaytypeは誤り
+            ->add('review_end', BirthdayType::class, array(
                 'label' => '投稿日',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-                'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
+                'placeholder' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
-            ->add('status', 'disp', array(
+            // fixme 商品レビュー用のステータスを作成する
+            ->add('status', ProductStatusType::class, array(
                 'label' => '表示',
                 'required' => false,
                 'expanded' => true,

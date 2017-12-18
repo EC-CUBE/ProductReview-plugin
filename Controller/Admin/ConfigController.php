@@ -10,8 +10,10 @@
 
 namespace Plugin\ProductReview\Controller\Admin;
 
+use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewConfigType;
+use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,20 +29,22 @@ class ConfigController extends AbstractController
      * @param ProductReviewConfig $config
      * @return Response
      *
-     * @Route("/plugin/product/review/config")
+     * @Route("/%admin_route%/plugin/product/review/config", name="plugin_ProductReview_config")
      */
-    public function index(Request $request, ProductReviewConfig $Config)
+    public function index(Request $request, ProductReviewConfigRepository $configRepository)
     {
+        $Config = $configRepository->find(1);
         $form = $this->createForm(ProductReviewConfigType::class, $Config);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $Config = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($Config);
             $em->flush($Config);
 
             // todo logの仕様検討
-            //log_info('Product review config', array('status' => 'Success'));
+            log_info('Product review config', array('status' => 'Success'));
             // todo flash messageの仕様検討
             //$app->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');
         }

@@ -1,3 +1,0 @@
-Plugin\ProductReview:
-    resource: '../../app/plugins/ProductReview/Controller'
-
