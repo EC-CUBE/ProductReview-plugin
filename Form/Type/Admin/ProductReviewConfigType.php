@@ -37,10 +37,10 @@ class ProductReviewConfigType extends AbstractType
      *
      * @param object $app
      */
-    public function __construct($productReviewConstant)
+    public function __construct($min, $max)
     {
-        $this->min = $productReviewConstant['min'];
-        $this->max = $productReviewConstant['max'];
+        $this->min = $min;
+        $this->max = $max;
     }
 
     /**
