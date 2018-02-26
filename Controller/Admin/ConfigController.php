@@ -29,7 +29,7 @@ class ConfigController extends AbstractController
      * @param ProductReviewConfig $config
      * @return Response
      *
-     * @Route("/%admin_route%/plugin/product/review/config", name="plugin_ProductReview_config")
+     * @Route("/%eccube_admin_route%/plugin/product/review/config", name="plugin_ProductReview_config")
      */
     public function index(Request $request, ProductReviewConfigRepository $configRepository)
     {

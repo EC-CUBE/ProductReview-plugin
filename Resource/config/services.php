@@ -1,17 +1,16 @@
 <?php
 
-use Plugin\ProductReview\Form\Type\Admin\ProductReviewConfigType;
-
 // block_templatesのパスを追加する.
-$templates = (array)$container->getParameter('eccube.twig.block.templates');
-$templates[] = 'ProductReview/Resource/template/default/hello.twig';
+$templates = (array)$container->getParameter('eccube_twig_block_templates');
+$templates[] = 'ProductReview/Resource/template/default/review.twig';
+$container->setParameter('eccube_twig_block_templates', $templates);
 
-$container->setParameter('eccube.twig.block.templates', $templates);
-
-// サービス定義を追加する
-$container
-    ->register(ProductReviewConfigType::class)
-    ->setBindings([
-        '$min' => 1,
-        '$max' => 30,
-    ]);
+// navを追加する
+$nav = (array)$container->getParameter('eccube_nav');
+foreach ($nav as $key => $value) {
+    $add = [
+        'id' => 'product_review',
+        'name' => 'レビュー管理',
+        'url' => 'plugin_admin_product_review',
+    ];
+}

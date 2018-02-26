@@ -12,14 +12,14 @@
 [商品管理]-[商品レビュー]-[編集]画面
 #}
 
-{% extends 'default_frame.twig' %}
+{% extends '@admin/default_frame.twig' %}
 
 {% set menus = ['product', 'product_review'] %}
 
 {% block title %}商品管理{% endblock %}
 {% block sub_title %}商品レビュー管理{% endblock %}
 
-{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+{% form_theme form '@admin/Form/bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block main %}
     <div class="row" id="aside_wrap">

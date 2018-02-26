@@ -11,6 +11,7 @@
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Application;
+use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Master\ProductStatusType;
 use Eccube\Form\Type\Master\SexType;
 use Symfony\Component\Form\AbstractType;
@@ -26,25 +27,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProductReviewSearchType extends AbstractType
 {
+
     /**
-     * @var Application
+     * @var EccubeConfig
      */
-    private $app;
+    protected $eccubeConfig;
 
     /**
      * ProductReviewSearchType constructor.
      *
-     * @param object $app
+     * @param EccubeConfig $eccubeConfig
      */
-    public function __construct()
+    public function __construct(EccubeConfig $eccubeConfig)
     {
-
-        $this->app = [
-            'config' => [
-            'ltext_len' => 255,
-            'stext_len' => 255,
-        ]];
+        $this->eccubeConfig = $eccubeConfig;
     }
+
 
     /**
      * {@inheritdoc}
@@ -55,27 +53,27 @@ class ProductReviewSearchType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $config = $this->app['config'];
+        $config = $this->eccubeConfig;
         $builder
             ->add('multi', TextType::class, array(
                 'label' => '投稿者名・投稿者URL',
                 'required' => false,
                 'constraints' => array(
-                    new Assert\Length(array('max' => $config['ltext_len'])),
+                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
             ->add('product_name', TextType::class, array(
                 'label' => '商品名',
                 'required' => false,
                 'constraints' => array(
-                    new Assert\Length(array('max' => $config['stext_len'])),
+                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
             ->add('product_code', TextType::class, array(
                 'label' => '商品コード',
                 'required' => false,
                 'constraints' => array(
-                    new Assert\Length(array('max' => $config['stext_len'])),
+                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
             ->add('sex', SexType::class, array(

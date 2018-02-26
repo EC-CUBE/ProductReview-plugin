@@ -11,6 +11,7 @@
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Application;
+use Eccube\Common\EccubeConfig;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -23,25 +24,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProductReviewConfigType extends AbstractType
 {
+
     /**
-     * @var Application
+     * @var EccubeConfig
      */
-    private $app;
-
-    private $min;
-
-    private $max;
+    protected $eccubeConfig;
 
     /**
-     * ProductReviewType constructor.
+     * ProductReviewConfigType constructor.
      *
-     * @param object $app
+     * @param EccubeConfig $eccubeConfig
      */
-    public function __construct($min, $max)
+    public function __construct(EccubeConfig $eccubeConfig)
     {
-        $this->min = $min;
-        $this->max = $max;
+        $this->eccubeConfig = $eccubeConfig;
     }
+
 
     /**
      * Build form.
@@ -51,8 +49,8 @@ class ProductReviewConfigType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $max = $this->max;
-        $min = $this->min;
+        $min = 1;
+        $max = 5;
 
         $builder
             ->add('review_max', IntegerType::class, array(

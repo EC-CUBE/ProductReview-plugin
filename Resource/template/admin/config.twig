@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 #}
-{% extends 'default_frame.twig' %}
+{% extends '@admin/default_frame.twig' %}
 
 {% set menus = ['product', 'product_review'] %}
 
 {% block title %}商品管理{% endblock %}
 {% block sub_title %}商品レビューの設定{% endblock %}
 
-{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% form_theme form '@admin/Form/bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block main %}
     <form method="post" action="{{ url('plugin_ProductReview_config') }}">

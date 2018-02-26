@@ -13,7 +13,6 @@ namespace Plugin\ProductReview\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Customer;
-use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 
@@ -80,16 +79,6 @@ class ProductReview extends AbstractEntity
     private $recommend_level;
 
     /**
-     * @var ProductStatus
-     *
-     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\ProductStatus")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="product_satus_id", referencedColumnName="id")
-     * })
-     */
-    private $Status;
-
-    /**
      * @var Product
      *
      * @ORM\ManyToOne(targetEntity="Eccube\Entity\Product")
@@ -108,6 +97,13 @@ class ProductReview extends AbstractEntity
      * })
      */
     private $Customer;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="enabled", type="boolean")
+     */
+    private $enabled;
 
     /**
      * @var \DateTime
@@ -292,34 +288,6 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set Status.
-     *
-     * FIXME 公開・非公開はフラグを別で用意する
-     *
-     * @param ProductStatus $Status
-     *
-     * @return ProductReview
-     */
-    public function setStatus(ProductStatus $Status = null)
-    {
-        $this->Status = $Status;
-
-        return $this;
-    }
-
-    /**
-     * Get Status.
-     *
-     * FIXME 公開・非公開はフラグを別で用意する
-     *
-     * @return ProductStatus
-     */
-    public function getStatus()
-    {
-        return $this->Status;
-    }
-
-    /**
      * Set Product.
      *
      * @param Product $Product
@@ -365,6 +333,30 @@ class ProductReview extends AbstractEntity
     public function getCustomer()
     {
         return $this->Customer;
+    }
+
+    /**
+     * Set enabled.
+     *
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get enabled.
+     *
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
     }
 
     /**

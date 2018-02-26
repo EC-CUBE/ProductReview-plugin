@@ -34,15 +34,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ProductReviewController extends AbstractController
 {
-    /**
-     * Review function.
-     *
-     * @param Application $app
-     * @param Request $request
-     * @param int $id
-     *
-     * @return RedirectResponse|Response
-     */
 
     /**
      * @Route("/plugin/products/detail/{id}/review", name="plugin_products_detail_review", requirements={"id" = "\d+"})
@@ -58,7 +49,6 @@ class ProductReviewController extends AbstractController
     public function review(
         Request $request,
         Session $session,
-        FormFactoryInterface $formFactory,
         ProductStatusRepository $productStatusRepository,
         ProductReviewRepository $productReviewRepository,
         Product $Product)
@@ -70,7 +60,7 @@ class ProductReviewController extends AbstractController
         }
 
         $ProductReview = new ProductReview();
-        $builder = $formFactory->createBuilder(ProductReviewType::class, $ProductReview);
+        $builder = $this->formFactory->createBuilder(ProductReviewType::class, $ProductReview);
         $form = $builder->getForm();
 
         $form->handleRequest($request);
@@ -98,10 +88,10 @@ class ProductReviewController extends AbstractController
                         $ProductReview->setCustomer($Customer);
                     }
                     $ProductReview->setProduct($Product);
-                    $Disp = $productStatusRepository->find(Disp::DISPLAY_HIDE);
+                    $Disp = $productStatusRepository->find(ProductStatus::DISPLAY_HIDE);
 
                     $ProductReview->setStatus($Disp);
-                    $ProductReview->setDelFlg(Constant::DISABLED);
+                    // $ProductReview->setDelFlg(Constant::DISABLED);
                     $status = $productReviewRepository->save($ProductReview);
 
                     if (!$status) {
@@ -127,15 +117,16 @@ class ProductReviewController extends AbstractController
         }
 
         return $this->render('ProductReview/Resource/template/default/index.twig', array(
-            'title' => $this->title,
             'Product' => $Product,
+            'form' => $form->createView(),
         ));
     }
 
     /**
      * Complete.
      *
-     * @param Application $app
+     * @Route("/plugin/products/detail/{id}/review/complete", name="plugin_products_detail_review_complete", requirements={"id" = "\d+"})
+     *
      * @param int $id
      *
      * @return mixed

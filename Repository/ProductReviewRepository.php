@@ -16,6 +16,7 @@ use Doctrine\ORM\QueryBuilder;
 use Eccube\Common\Constant;
 use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 use Plugin\ProductReview\Entity\ProductReview;
@@ -84,9 +85,9 @@ class ProductReviewRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('r')
             ->select('r')
-            ->innerJoin('r.Product', 'p')
-            ->andWhere('r.del_flg = :del');
-        $qb->setParameter('del', Constant::DISABLED);
+            ->innerJoin('r.Product', 'p');
+            // ->andWhere('r.del_flg = :del');
+        // $qb->setParameter('del', Constant::DISABLED);
 
         // Do not allow search zero (number 0).
         if (!empty($searchData['multi'])) {
@@ -206,9 +207,9 @@ class ProductReviewRepository extends ServiceEntityRepository
      *
      * @return mixed
      */
-    public function getAvgAll(Product $Product, Disp $Disp)
+    public function getAvgAll(Product $Product)
     {
-        $arrTemp = array(
+        $defaults = array(
             'recommend_avg' => 0,
             'review_num' => 0,
         );
@@ -218,15 +219,13 @@ class ProductReviewRepository extends ServiceEntityRepository
                 ->leftJoin('r.Product', 'p')
                 ->where('r.Product = :Product')
                 ->setParameter('Product', $Product)
-                ->andWhere('r.Status = :Status')
-                ->setParameter('Status', $Disp)
-                ->andWhere('r.del_flg = :del')
-                ->setParameter('del', Constant::DISABLED)
+                ->andWhere('r.enabled = :enabled')
+                ->setParameter('enabled', true)
                 ->groupBy('r.Product');
 
             return $qb->getQuery()->getSingleResult();
         } catch (\Exception $exception) {
-            return $arrTemp;
+            return $defaults;
         }
     }
 }

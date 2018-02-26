@@ -13,12 +13,14 @@ namespace Plugin\ProductReview\Controller\Admin;
 use Eccube\Application;
 use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
-use Eccube\Entity\Page;
 use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Service\CsvExportService;
+use Eccube\Util\FormUtil;
+use Knp\Component\Pager\Paginator;
 use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
+use Plugin\ProductReview\Form\Type\Admin\ProductReviewType;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -77,15 +79,16 @@ class ProductReviewController extends AbstractController
      * Search function.
      *
      * @param Application $app
-     * @param Request     $request
-     * @param int         $page_no
+     * @param Request $request
+     * @param int $page_no
      *
      * @return Response
      */
     /**
      * Search function.
      *
-     * @Route("%admin_route%/plugin/product/review/", name="plugin_admin_product_review")
+     * @Route("%eccube_admin_route%/plugin/product/review/", name="plugin_admin_product_review")
+     * @Route("/%eccube_admin_route%/plugin/product/page/{page_no}", requirements={"page_no" = "\d+"}, name="plugin_admin_product_review_page")
      *
      * @param Application $app
      * @param Request $request
@@ -93,7 +96,7 @@ class ProductReviewController extends AbstractController
      * @param null $page_no
      * @return Response
      */
-    public function index(Application $app, Request $request, Session $session, $page_no = null)
+    public function index(Request $request, Session $session, $page_no = null, Paginator $paginator)
     {
         $pageNo = $page_no;
 
@@ -110,14 +113,14 @@ class ProductReviewController extends AbstractController
 
             $pageNo = 1;
             // todo paginationの扱いに応じて修正
-//            $pagination = $app['paginator']()->paginate(
-//                $qb,
-//                $pageNo,
-//                $pageCount,
-//                array('wrap-queries' => true)
-//            );
+                       $pagination = $paginator->paginate(
+                           $qb,
+                           $pageNo,
+                           $pageCount,
+                           array('wrap-queries' => true)
+                       );
 
-            $searchData = \Eccube\Util\FormUtils::getViewData($searchForm);
+            $searchData = FormUtil::getViewData($searchForm);
 
             // sessionのデータ保持
             $session->set('plugin.product_review.admin.product_review.search', $searchData);
@@ -138,7 +141,7 @@ class ProductReviewController extends AbstractController
 
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
                 if (!is_null($searchData)) {
-                    $searchData = \Eccube\Util\FormUtils::submitAndGetData($searchForm, $searchData);
+                    $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
                     $qb = $this->productReviewRepository
                         ->getQueryBuilderBySearchData($searchData);
 
@@ -148,12 +151,12 @@ class ProductReviewController extends AbstractController
                     $pageCount = empty($pcount) ? $pageCount : $pcount;
 
                     // todo paginationの扱いに応じて修正
-//                    $pagination = $app['paginator']()->paginate(
-//                        $qb,
-//                        $pageNo,
-//                        $pageCount,
-//                        array('wrap-queries' => true)
-//                    );
+                    $pagination = $paginator->paginate(
+                        $qb,
+                        $pageNo,
+                        $pageCount,
+                        array('wrap-queries' => true)
+                    );
                 }
             }
         }
@@ -174,10 +177,11 @@ class ProductReviewController extends AbstractController
 
     /**
      * 編集.
+     * @Route("%eccube_admin_route%/plugin/product/review/{id}/edit", name="plugin_admin_product_review_edit")
      *
      * @param Application $app
-     * @param Request     $request
-     * @param int         $id
+     * @param Request $request
+     * @param int $id
      *
      * @return RedirectResponse|Response
      */
@@ -185,43 +189,39 @@ class ProductReviewController extends AbstractController
     {
         // IDから商品レビューを取得する
         /** @var $ProductReview ProductReview */
-        $ProductReview = $app['product_review.repository.product_review']
-            ->find($id);
+        $ProductReview = $this->productReviewRepository->find($id);
 
         if (!$ProductReview) {
-            $app->addError('plugin.admin.product_review.not_found', 'admin');
+            $this->addError('plugin.admin.product_review.not_found', 'admin');
 
-            return $app->redirect($app->url('plugin_admin_product_review'));
+            return $this->redirectToRoute('plugin_admin_product_review');
         }
 
         $Product = $ProductReview->getProduct();
         if (!$Product) {
-            $app->addError('admin.product.not_found', 'admin');
+            $this->addError('admin.product.not_found', 'admin');
 
-            return $app->redirect($app->url('plugin_admin_product_review'));
+            return $this->redirectToRoute('plugin_admin_product_review');
         }
 
         $postedDate = $ProductReview->getCreateDate();
         // formの作成
         /* @var $form FormInterface */
-        $form = $app['form.factory']
-            ->createBuilder('admin_product_review', $ProductReview)
-            ->getForm();
+        $form = $this->createForm(ProductReviewType::class, $ProductReview);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $status = $app['product_review.repository.product_review']
-                ->save($ProductReview);
+            $status = $this->productReviewRepository->save($ProductReview);
 
             log_info('Product review add/edit', array('status' => $status));
 
             if (!$status) {
-                $app->addError('plugin.admin.product_review.save.error', 'admin');
+                $this->addError('plugin.admin.product_review.save.error', 'admin');
             } else {
-                $app->addSuccess('plugin.admin.product_review.save.complete', 'admin');
+                $this->addSuccess('plugin.admin.product_review.save.complete', 'admin');
             }
         }
 
-        return $app->render('ProductReview/Resource/template/admin/edit.twig', array(
+        return $this->render('ProductReview/Resource/template/admin/edit.twig', array(
             'form' => $form->createView(),
             'Product' => $Product,
             'post_date' => $postedDate,
@@ -230,10 +230,11 @@ class ProductReviewController extends AbstractController
 
     /**
      * Product review delete function.
+     * @Route("%eccube_admin_route%/plugin/product/review/{id}/delete", name="plugin_admin_product_review_delete")
      *
      * @param Application $app
-     * @param Request     $request
-     * @param int         $id
+     * @param Request $request
+     * @param int $id
      *
      * @return RedirectResponse
      */
@@ -265,7 +266,7 @@ class ProductReviewController extends AbstractController
             $app->addError('plugin.admin.product_review.delete.error', 'admin');
         }
 
-        log_info('Product review delete', array('status' => isset($status) ? $status: 0));
+        log_info('Product review delete', array('status' => isset($status) ? $status : 0));
 
         return $app->redirect($app->url('plugin_admin_product_review_page', array('page_no' => $pageNo)).'?resume='.$resume);
     }
@@ -273,8 +274,10 @@ class ProductReviewController extends AbstractController
     /**
      * 商品レビューCSVの出力.
      *
+     * @Route("%eccube_admin_route%/plugin/product/review/download", name="plugin_admin_product_review_download")
+     *
      * @param Application $app
-     * @param Request     $request
+     * @param Request $request
      *
      * @return StreamedResponse
      */

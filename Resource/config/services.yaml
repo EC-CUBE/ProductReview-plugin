@@ -1,0 +1,3 @@
+services:
+    product_review_nav:
+        class: Eccube\Common\EccubeNav

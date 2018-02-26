@@ -16,6 +16,7 @@ trait ProductTrait
      * @var Collection
      *
      * @ORM\OneToMany(targetEntity="Plugin\ProductReview\Entity\ProductReview", mappedBy="Product", cascade={"remove"})
+     * @ORM\OrderBy({"create_date" = "DESC"})
      */
     private $ProductReviews;
 
