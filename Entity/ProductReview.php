@@ -10,79 +10,112 @@
 
 namespace Plugin\ProductReview\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Customer;
-use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 
 /**
- * Class ProductReview Entity.
+ * ProductReview
+ *
+ * @ORM\Table(name="plg_product_review")
+ * @ORM\Entity(repositoryClass="Plugin\ProductReview\Repository\ProductReviewRepository")
  */
 class ProductReview extends AbstractEntity
 {
     /**
      * @var int
+     *
+     * @ORM\Column(name="id", type="integer", options={"unsigned":true})
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="reviewer_name", type="string")
      */
     private $reviewer_name;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="reviewer_url", type="text", nullable=true)
      */
     private $reviewer_url;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=50)
      */
     private $title;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="comment", type="text")
      */
     private $comment;
 
     /**
      * @var Sex
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\Sex")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sex_id", referencedColumnName="id")
+     * })
      */
     private $Sex;
 
     /**
      * @var int
+     *
+     * @ORM\Column(name="recommend_level", type="smallint")
      */
     private $recommend_level;
 
     /**
-     * @var Disp
-     */
-    private $Status;
-
-    /**
      * @var Product
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Product")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     * })
      */
     private $Product;
 
     /**
      * @var Customer
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Customer")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="customer_id", referencedColumnName="id")
+     * })
      */
     private $Customer;
 
     /**
-     * @var int
+     * @var bool
+     *
+     * @ORM\Column(name="enabled", type="boolean")
      */
-    private $del_flg;
+    private $enabled;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $create_date;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="update_date", type="datetimetz")
      */
     private $update_date;
 
@@ -255,30 +288,6 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set Status.
-     *
-     * @param Disp $Status
-     *
-     * @return ProductReview
-     */
-    public function setStatus(Disp $Status = null)
-    {
-        $this->Status = $Status;
-
-        return $this;
-    }
-
-    /**
-     * Get Status.
-     *
-     * @return Disp
-     */
-    public function getStatus()
-    {
-        return $this->Status;
-    }
-
-    /**
      * Set Product.
      *
      * @param Product $Product
@@ -327,27 +336,27 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set del_flg.
+     * Set enabled.
      *
-     * @param int $delFlg
+     * @param bool $enabled
      *
      * @return $this
      */
-    public function setDelFlg($delFlg)
+    public function setEnabled($enabled)
     {
-        $this->del_flg = $delFlg;
+        $this->enabled = $enabled;
 
         return $this;
     }
 
     /**
-     * Get del_flg.
+     * Get enabled.
      *
-     * @return int
+     * @return bool
      */
-    public function getDelFlg()
+    public function isEnabled()
     {
-        return $this->del_flg;
+        return $this->enabled;
     }
 
     /**

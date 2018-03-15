@@ -1,7 +1,7 @@
-# new event (for v3.0.9 - late )
-Product/detail.twig:
-    - [onProductDetailRender, NORMAL]
-
-# deprecated event (for v3.0.0 - 3.0.8)
-eccube.event.render.product_detail.before:
-    - [onRenderProductsDetailBefore, NORMAL]
+## new event (for v3.0.9 - late )
+#Product/detail.twig:
+#    - [onProductDetailRender, NORMAL]
+#
+## deprecated event (for v3.0.0 - 3.0.8)
+#eccube.event.render.product_detail.before:
+#    - [onRenderProductsDetailBefore, NORMAL]

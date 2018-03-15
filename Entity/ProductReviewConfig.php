@@ -10,36 +10,45 @@
 
 namespace Plugin\ProductReview\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Master\CsvType;
 
 /**
- * Class ProductReviewConfig Entity.
+ * ProductReviewConfig
+ *
+ * @ORM\Table(name="plg_product_review_config")
+ * @ORM\Entity(repositoryClass="Plugin\ProductReview\Repository\ProductReviewConfigRepository")
  */
 class ProductReviewConfig extends AbstractEntity
 {
     /**
      * @var int
+     *
+     * @ORM\Column(name="id", type="integer", options={"unsigned":true})
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @var CsvType
-     */
-    private $CsvType;
-
-    /**
      * @var int
+     *
+     * @ORM\Column(name="review_max", type="smallint", nullable=true, options={"unsigned":true, "default":5})
      */
     private $review_max;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $create_date;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="update_date", type="datetimetz")
      */
     private $update_date;
 
@@ -65,30 +74,6 @@ class ProductReviewConfig extends AbstractEntity
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get csv_id.
-     *
-     * @return CsvType
-     */
-    public function getCsvType()
-    {
-        return $this->CsvType;
-    }
-
-    /**
-     * Set csv id.
-     *
-     * @param CsvType $cid
-     *
-     * @return ProductReviewConfig
-     */
-    public function setCsvType(CsvType $cid)
-    {
-        $this->CsvType = $cid;
-
-        return $this;
     }
 
     /**
