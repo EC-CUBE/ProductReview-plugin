@@ -88,9 +88,8 @@ class ProductReviewController extends AbstractController
                         $ProductReview->setCustomer($Customer);
                     }
                     $ProductReview->setProduct($Product);
-                    $Disp = $productStatusRepository->find(ProductStatus::DISPLAY_HIDE);
 
-                    $ProductReview->setStatus($Disp);
+                    $ProductReview->setEnabled(true);
                     // $ProductReview->setDelFlg(Constant::DISABLED);
                     $status = $productReviewRepository->save($ProductReview);
 
