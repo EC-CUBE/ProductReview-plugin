@@ -37,8 +37,7 @@ install:
   - git clone https://github.com/EC-CUBE/ec-cube.git %BASE_DIR%
   - cd %BASE_DIR%
   # checkout version
-  - sh -c "if [ ! '%ECCUBE_VERSION%' = 'master' ]; then  git checkout %ECCUBE_VERSION%; fi"
-  - git log --oneline -n 5
+  #- sh -c "if [ ! '%ECCUBE_VERSION%' = 'master' ]; then  git checkout -b %ECCUBE_VERSION% refs/tags/%ECCUBE_VERSION%; fi"
   # Set MySQL.
   - cp tests/my.cnf c:\
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.7\bin\;%PATH%

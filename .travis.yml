@@ -35,10 +35,6 @@ matrix:
     - php: 5.3
       dist: precise
   exclude:
-    - php: 7.0
-      env: ECCUBE_VERSION=3.0.9 DB=mysql USER=root DBNAME=myapp_test DBPASS=' ' DBUSER=root
-    - php: 7.0
-      env: ECCUBE_VERSION=3.0.9 DB=pgsql USER=postgres DBNAME=myapp_test DBPASS=password DBUSER=postgres
   allow_failures:
     - php: 5.3
       env: ECCUBE_VERSION=master DB=sqlite
