@@ -19,7 +19,7 @@ environment:
     DBUSER: "root"
     BASE_DIR: "C:/projects/ec-cube"
     PLUGIN_BASE_DIR: "C:/projects/ProductReview-plugin"
-    ECCUBE_VERSION: "master"
+    ECCUBE_VERSION: "3.0.16"
     PLUGIN_CODE: "ProductReview"
   matrix:
   - db: mysql
