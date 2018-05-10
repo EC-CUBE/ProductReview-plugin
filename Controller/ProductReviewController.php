@@ -39,8 +39,6 @@ class ProductReviewController extends AbstractController
      * @Route("/plugin/products/detail/{id}/review", name="plugin_products_detail_review", requirements={"id" = "\d+"})
      *
      * @param Request $request
-     * @param Session $session
-     * @param FormFactoryInterface $formFactory
      * @param ProductStatusRepository $productStatusRepository
      * @param ProductReviewRepository $productReviewRepository
      * @param Product $Product
@@ -48,12 +46,11 @@ class ProductReviewController extends AbstractController
      */
     public function review(
         Request $request,
-        Session $session,
         ProductStatusRepository $productStatusRepository,
         ProductReviewRepository $productReviewRepository,
         Product $Product)
     {
-        if (!$session->has('_security_admin') && $Product->getStatus()->getId() !== ProductStatus::DISPLAY_SHOW) {
+        if (!$this->session->has('_security_admin') && $Product->getStatus()->getId() !== ProductStatus::DISPLAY_SHOW) {
             log_info('Product review', array('status' => 'Not permission'));
 
             throw new NotFoundHttpException();
@@ -133,5 +130,15 @@ class ProductReviewController extends AbstractController
     public function complete($id)
     {
         return $this->render('ProductReview/Resource/template/default/complete.twig', array('id' => $id));
+    }
+
+    /**
+     * @Route("/plugin/product/review/", name="plugin_products_detail_review_error")
+     *
+     * @return Response
+     */
+    public function frontError()
+    {
+        return $this->render('ProductReview/Resource/template/default/error.twig');
     }
 }

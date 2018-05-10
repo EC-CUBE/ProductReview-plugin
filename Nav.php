@@ -19,7 +19,7 @@ class Nav implements EccubeNav
             'product' => [
                 'id' => 'product_review',
                 'name' => '商品レビュー',
-                'url' => 'homepage',
+                'url' => 'plugin_admin_product_review',
             ],
         ];
     }

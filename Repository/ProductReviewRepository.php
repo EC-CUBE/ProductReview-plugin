@@ -12,6 +12,7 @@ namespace Plugin\ProductReview\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Eccube\Common\Constant;
 use Eccube\Entity\AbstractEntity;
@@ -30,8 +31,11 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ProductReviewRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    protected $entityManager;
+
+    public function __construct(RegistryInterface $registry, EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
         parent::__construct($registry, ProductReview::class);
     }
 
@@ -45,9 +49,10 @@ class ProductReviewRepository extends ServiceEntityRepository
     public function save(ProductReview $ProductReview)
     {
         try {
-            $this->_em->persist($ProductReview);
-            $this->_em->flush($ProductReview);
+            $this->entityManager->persist($ProductReview);
+            $this->entityManager->flush($ProductReview);
         } catch (\Exception $e) {
+            dump($e->getMessage());
             return false;
         }
 
@@ -65,8 +70,8 @@ class ProductReviewRepository extends ServiceEntityRepository
     {
         try {
             $ProductReview->setDelFlg(Constant::ENABLED);
-            $this->_em->persist($ProductReview);
-            $this->_em->flush($ProductReview);
+            $this->entityManager->persist($ProductReview);
+            $this->entityManager->flush($ProductReview);
         } catch (\Exception $e) {
             return false;
         }

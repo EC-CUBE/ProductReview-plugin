@@ -12,6 +12,7 @@ namespace Plugin\ProductReview\Controller\Admin;
 
 use Eccube\Application;
 use Eccube\Common\Constant;
+use Eccube\Common\EccubeConfig;
 use Eccube\Controller\AbstractController;
 use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Service\CsvExportService;
@@ -59,38 +60,38 @@ class ProductReviewController extends AbstractController
     protected $formFactory;
 
     /**
-     * @var arary
+     * @var EccubeConfig
      */
-    protected $appConfig;
+    protected $eccubeConfig;
 
+    /**
+     * ProductReviewController constructor.
+     * @param PageMaxRepository $pageMaxRepository
+     * @param ProductReviewRepository $productReviewRepository
+     * @param ProductReviewConfigRepository $productReviewConfigRepository
+     * @param FormFactoryInterface $formFactory
+     * @param EccubeConfig $eccubeConfig
+     */
     public function __construct(
         PageMaxRepository $pageMaxRepository,
         ProductReviewRepository $productReviewRepository,
         ProductReviewConfigRepository $productReviewConfigRepository,
-        FormFactoryInterface $formFactory)
+        FormFactoryInterface $formFactory,
+        EccubeConfig $eccubeConfig)
     {
         $this->pageMaxRepository = $pageMaxRepository;
         $this->productReviewRepository = $productReviewRepository;
         $this->productReviewConfigRepository = $productReviewConfigRepository;
         $this->formFactory = $formFactory;
+        $this->eccubeConfig = $eccubeConfig;
     }
 
-    /**
-     * Search function.
-     *
-     * @param Application $app
-     * @param Request $request
-     * @param int $page_no
-     *
-     * @return Response
-     */
     /**
      * Search function.
      *
      * @Route("%eccube_admin_route%/plugin/product/review/", name="plugin_admin_product_review")
      * @Route("/%eccube_admin_route%/plugin/product/page/{page_no}", requirements={"page_no" = "\d+"}, name="plugin_admin_product_review_page")
      *
-     * @param Application $app
      * @param Request $request
      * @param Session $session
      * @param null $page_no
@@ -101,7 +102,7 @@ class ProductReviewController extends AbstractController
         $pageNo = $page_no;
 
         $pageMaxis = $this->pageMaxRepository->findAll();
-        $pageCount = 10; // $app['config']['default_page_count']; todo configの扱いに応じて修正
+        $pageCount = $this->eccubeConfig->get('eccube_default_page_count');
         $pagination = null;
         $searchForm = $this->createForm(ProductReviewSearchType::class);
         $searchForm->handleRequest($request);
@@ -113,12 +114,12 @@ class ProductReviewController extends AbstractController
 
             $pageNo = 1;
             // todo paginationの扱いに応じて修正
-                       $pagination = $paginator->paginate(
-                           $qb,
-                           $pageNo,
-                           $pageCount,
-                           array('wrap-queries' => true)
-                       );
+           $pagination = $paginator->paginate(
+               $qb,
+               $pageNo,
+               $pageCount,
+               array('wrap-queries' => true)
+           );
 
             $searchData = FormUtil::getViewData($searchForm);
 
@@ -179,13 +180,12 @@ class ProductReviewController extends AbstractController
      * 編集.
      * @Route("%eccube_admin_route%/plugin/product/review/{id}/edit", name="plugin_admin_product_review_edit")
      *
-     * @param Application $app
      * @param Request $request
      * @param int $id
      *
      * @return RedirectResponse|Response
      */
-    public function edit(Application $app, Request $request, $id)
+    public function edit(Request $request, $id)
     {
         // IDから商品レビューを取得する
         /** @var $ProductReview ProductReview */
@@ -206,10 +206,14 @@ class ProductReviewController extends AbstractController
 
         $postedDate = $ProductReview->getCreateDate();
         // formの作成
+        $builder = $this->formFactory->createBuilder(ProductReviewType::class, $ProductReview);
         /* @var $form FormInterface */
-        $form = $this->createForm(ProductReviewType::class, $ProductReview);
+        $form = $builder->getForm();
+//        dump($request);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $ProductReview = $form->getData();
+            dump($ProductReview);
             $status = $this->productReviewRepository->save($ProductReview);
 
             log_info('Product review add/edit', array('status' => $status));

@@ -120,6 +120,33 @@ class ProductReview extends AbstractEntity
     private $update_date;
 
     /**
+     * @var \Eccube\Entity\Master\ProductStatus
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\ProductStatus")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="status_id", referencedColumnName="id")
+     * })
+     */
+    private $status;
+
+    /**
+     * @return \Eccube\Entity\Master\ProductStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param \Eccube\Entity\Master\ProductStatus $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+
+    /**
      * Set product_review id.
      *
      * @param string $id

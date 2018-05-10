@@ -94,13 +94,13 @@ class ProductReviewType extends AbstractType
             ))
             ->add('recommend_level', ChoiceType::class, array(
                 'label' => 'おすすめレベル',
-                'choices' => array(
+                'choices' => array_flip(array(
                     '5' => '★★★★★',
                     '4' => '★★★★',
                     '3' => '★★★',
                     '2' => '★★',
                     '1' => '★',
-                ),
+                )),
                 'expanded' => false,
                 'multiple' => false,
                 'required' => true,

@@ -193,7 +193,7 @@ function fnChangeActionSubmit(action) {
                                     <td>{{ Review.Product.name }}</td>
                                     <td><a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a></td>
                                     <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
-                                    <td>{{ Review.status }}</td>
+                                    <td>{#{{ Review.status }}#}</td>
                                     <td class="icon_edit">
                                         <div class="dropdown">
                                             <a class="dropdown-toggle" data-toggle="dropdown"><svg class="cb cb-ellipsis-h"> <use xlink:href="#cb-ellipsis-h" /></svg></a>
