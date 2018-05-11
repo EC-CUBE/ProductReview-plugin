@@ -80,13 +80,13 @@ class ProductReviewType extends AbstractType
             ->add('recommend_level', ChoiceType::class, array(
                 'required' => true,
                 'label' => 'おすすめレベル',
-                'choices' => array(
+                'choices' => array_flip(array(
                     '5' => '★★★★★',
                     '4' => '★★★★',
                     '3' => '★★★',
                     '2' => '★★',
                     '1' => '★',
-                ),
+                )),
                 'expanded' => true,
                 'multiple' => false,
                 'placeholder' => false,

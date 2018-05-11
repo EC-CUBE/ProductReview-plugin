@@ -13,27 +13,91 @@
 {% set body_class = 'product_review_page' %}
 
 {% block stylesheet %}
-<style>
-    .product_review_page .dl_table {
-        margin: 0 0 16px;
-    }
-    .product_review_page .dl_table dt {
-        margin-bottom: 5px;
-    }
-    .product_review_page .dl_table dt label {
-        font-weight: bold;
-    }
-    .product_review_page textarea {
-        vertical-align: top;
-    }
-    .product_review_page #product_review_sex .radio {
-        display: inline-block;
-        margin-right: 10px;
-    }
-    .product_review_page #product_review_sex .radio input[type="radio"] {
-        margin-right: 10px;
-    }
-</style>
+    <style>
+        .product_review_page .dl_table {
+            margin: 0 0 16px;
+        }
+        .product_review_page .dl_table dt {
+            margin-bottom: 5px;
+        }
+        .product_review_page .dl_table dt label {
+            font-weight: bold;
+        }
+        .product_review_page .dl_table dt legend {
+            border-bottom: none;
+        }
+        .product_review_page textarea {
+            vertical-align: top;
+        }
+        .product_review_page #product_review_sex .radio {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .product_review_page #product_review_sex .radio input[type="radio"] {
+            margin-right: 10px;
+        }
+        .product_review_page form .form-control{
+            border: 1px solid #C4CCCE;
+            border-radius: 3px !important;
+            box-shadow: none;
+            font-size: 16px;
+            height: 40px;
+            padding: 6px 12px;
+            line-height: 1.5;
+        }
+        .product_review_page form textarea.form-control{
+            border: 1px solid #C4CCCE;
+            border-radius: 3px !important;
+            box-shadow: none;
+            font-size: 16px;
+            height: 6em;
+            padding: 6px 12px;
+            line-height: 1.5;
+        }
+        .product_review_page form .btn-primary{
+            color: #fff;
+            background-color: #DE5D50;
+            border-color: #DE5D50;
+            font-size: 16px;
+            padding: 10px 16px;
+            font-weight: bold;
+            height: 44px;
+            border-radius: 0;
+            margin-bottom: 20px;
+        }
+        .product_review_page form .btn-info {
+            color: #fff;
+            background-color: #525263;
+            border-color: #525263;
+            height: 44px;
+            border-radius: 0;
+        }
+
+        @media only screen and (min-width: 768px) {
+            .dl_table {
+                display: table;
+                width: 100%;
+                border-top: 1px dotted #ccc;
+            }
+            .dl_table dl {
+                display: table-row;
+                border: 0 none;
+                padding: 8px 0;
+            }
+            .dl_table dt {
+                width: 30%;
+            }
+            .dl_table dt, .dl_table dd {
+                display: table-cell;
+                border-bottom: 1px dotted #ccc;
+                padding: 16px 0;
+            }
+            .dl_table dd {
+                padding: 16px;
+                width: 70%;
+            }
+        }
+    </style>
 {% endblock stylesheet %}
 
 {% block main %}
@@ -55,40 +119,45 @@
                     <dl>
                         <dt>{{ form_label(form.reviewer_name) }}</dt>
                         <dd class="form-group">
-                            {{ form_widget(form.reviewer_name) }}
+                            {{ form.reviewer_name.vars.data }}
+                            {{ form_widget(form.reviewer_name, {type : 'hidden'}) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.reviewer_url) }}</dt>
                         <dd class="form-group">
-                            {{ form_widget(form.reviewer_url) }}
+                            {{ form.reviewer_url.vars.data }}
+                            {{ form_widget(form.reviewer_url, {type : 'hidden'}) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.recommend_level) }}</dt>
                         <dd class="form-group">
                             {% for i in 1..form.recommend_level.vars.value %}★{% endfor %}
-                            {{ form_widget(form.recommend_level, {freeze_display_text:false}) }}
+                            {{ form_widget(form.recommend_level, {type : 'hidden'}) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.sex) }}</dt>
                         <dd>
                             <div class="form-group form-inline">
-                                {{ form_widget(form.sex) }}
+                                {{ form.sex.vars.data }}
+                                {{ form_widget(form.sex, {type : 'hidden'}) }}
                             </div>
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.title) }}</dt>
                         <dd class="form-group">
-                            {{ form_widget(form.title) }}
+                            {{ form.title.vars.data }}
+                            {{ form_widget(form.title, {type : 'hidden'}) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.comment) }}</dt>
                         <dd class="form-group">
-                            {{ form_widget(form.comment) }}
+                            {{ form.comment.vars.data }}
+                            {{ form_widget(form.comment, {type : 'hidden'}) }}
                         </dd>
                     </dl>
                 </div>

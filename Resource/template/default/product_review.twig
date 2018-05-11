@@ -124,9 +124,13 @@
         #product_review_area .review_btn a {
             width: auto;
             min-width: 350px;
+            color: #fff;
+            background-color: #525263;
+            border-color: #525263;
         }
 
         #product_review_area .review_list li {
+            list-style: none;
             padding: 8px 0;
         }
 
@@ -138,7 +142,7 @@
 
 <!--▼レビューエリア-->
 <div id="product_review_area" class="row">
-    <div class="col-sm-10 col-sm-offset-1">
+    <div class="col-sm-12">
         <div class="accordion">
             <dl>
                 {% set positive_avg_star = avg %}
@@ -155,18 +159,6 @@
                     <span>
                         ({{ number }})
                     </span>
-                    <svg class="cb cb-angle-down">
-                        <use xlink:href="#cb-angle-down"/>
-                    </svg>
-                </dt>
-                <dt class="heading02 pc active">
-                    この商品のレビュー
-
-                    <!--平均の星の数-->
-                    <span class="recommend_average">
-                        {{ stars.stars(positive_avg_star, nagative_avg_star) }}
-                    </span>
-
                     <svg class="cb cb-angle-down">
                         <use xlink:href="#cb-angle-down"/>
                     </svg>

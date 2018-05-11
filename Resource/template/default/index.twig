@@ -14,8 +14,6 @@
 
 {% block stylesheet %}
 <style>
-    .abcdefffffffffff{
-        counter-reset: red;}
     .product_review_page .dl_table {
         margin: 0 0 16px;
     }
@@ -24,6 +22,9 @@
     }
     .product_review_page .dl_table dt label {
         font-weight: bold;
+    }
+    .product_review_page .dl_table dt legend {
+        border-bottom: none;
     }
     .product_review_page textarea {
         vertical-align: top;
@@ -34,6 +35,67 @@
     }
     .product_review_page #product_review_sex .radio input[type="radio"] {
         margin-right: 10px;
+    }
+    .product_review_page form .form-control{
+        border: 1px solid #C4CCCE;
+        border-radius: 3px !important;
+        box-shadow: none;
+        font-size: 16px;
+        height: 40px;
+        padding: 6px 12px;
+        line-height: 1.5;
+    }
+    .product_review_page form textarea.form-control{
+        border: 1px solid #C4CCCE;
+        border-radius: 3px !important;
+        box-shadow: none;
+        font-size: 16px;
+        height: 6em;
+        padding: 6px 12px;
+        line-height: 1.5;
+    }
+    .product_review_page form .btn-primary{
+        color: #fff;
+        background-color: #DE5D50;
+        border-color: #DE5D50;
+        font-size: 16px;
+        padding: 10px 16px;
+        font-weight: bold;
+        height: 44px;
+        border-radius: 0;
+        margin-bottom: 20px;
+    }
+    .product_review_page form .btn-info {
+        color: #fff;
+        background-color: #525263;
+        border-color: #525263;
+        height: 44px;
+        border-radius: 0;
+    }
+
+    @media only screen and (min-width: 768px) {
+        .dl_table {
+            display: table;
+            width: 100%;
+            border-top: 1px dotted #ccc;
+        }
+        .dl_table dl {
+            display: table-row;
+            border: 0 none;
+            padding: 8px 0;
+        }
+        .dl_table dt {
+            width: 30%;
+        }
+        .dl_table dt, .dl_table dd {
+            display: table-cell;
+            border-bottom: 1px dotted #ccc;
+            padding: 16px 0;
+        }
+        .dl_table dd {
+            padding: 16px;
+            width: 70%;
+        }
     }
 </style>
 {% endblock stylesheet %}
