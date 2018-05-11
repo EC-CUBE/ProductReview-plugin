@@ -61,6 +61,8 @@
         margin: 0 auto;
         padding: 16px;
         width: 100%;
+        border-radius: 0;
+        font-weight: bold;
     }
 
     #product_review_area .review_list {
@@ -92,8 +94,21 @@
     #product_review_area .review_list .recommend_name {
         margin-left: 16px;
     }
+    #product_review_area .cb {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        vertical-align: middle;
+        fill: currentColor;
+    }
 
     @media only screen and (min-width: 768px) {
+        .heading02 {
+            font-size: 2.4rem;
+            font-weight: bold;
+            background: #EFEFEF;
+            padding: 8px 12px;
+        }
         #product_review_area {
             border-top: none;
             padding-bottom: 16px;
@@ -107,7 +122,6 @@
             position: absolute;
             right: 32px;
             top: 24px;
-            font-size: 16px;
             font-size: 1.6rem;
         }
 

@@ -17,7 +17,9 @@ use Eccube\Controller\AbstractController;
 use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Service\CsvExportService;
 use Eccube\Util\FormUtil;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;
+use Knp\Component\Pager\PaginatorInterface;
 use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
@@ -25,6 +27,7 @@ use Plugin\ProductReview\Form\Type\Admin\ProductReviewType;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -64,12 +67,17 @@ class ProductReviewController extends AbstractController
      */
     protected $eccubeConfig;
 
+    /** @var  CsvExportService */
+    protected $csvExportService;
+
+
     /**
      * ProductReviewController constructor.
      * @param PageMaxRepository $pageMaxRepository
      * @param ProductReviewRepository $productReviewRepository
      * @param ProductReviewConfigRepository $productReviewConfigRepository
      * @param FormFactoryInterface $formFactory
+     * @param CsvExportService $csvExportService
      * @param EccubeConfig $eccubeConfig
      */
     public function __construct(
@@ -77,12 +85,14 @@ class ProductReviewController extends AbstractController
         ProductReviewRepository $productReviewRepository,
         ProductReviewConfigRepository $productReviewConfigRepository,
         FormFactoryInterface $formFactory,
+        CsvExportService $csvExportService,
         EccubeConfig $eccubeConfig)
     {
         $this->pageMaxRepository = $pageMaxRepository;
         $this->productReviewRepository = $productReviewRepository;
         $this->productReviewConfigRepository = $productReviewConfigRepository;
         $this->formFactory = $formFactory;
+        $this->csvExportService = $csvExportService;
         $this->eccubeConfig = $eccubeConfig;
     }
 
@@ -91,13 +101,14 @@ class ProductReviewController extends AbstractController
      *
      * @Route("%eccube_admin_route%/plugin/product/review/", name="plugin_admin_product_review")
      * @Route("/%eccube_admin_route%/plugin/product/page/{page_no}", requirements={"page_no" = "\d+"}, name="plugin_admin_product_review_page")
+     * @Template("ProductReview/Resource/template/admin/index.twig")
      *
      * @param Request $request
      * @param Session $session
      * @param null $page_no
-     * @return Response
+     * @return array
      */
-    public function index(Request $request, Session $session, $page_no = null, Paginator $paginator)
+    public function index(Request $request, Session $session, $page_no = null, PaginatorInterface $paginator)
     {
         $pageNo = $page_no;
 
@@ -167,23 +178,24 @@ class ProductReviewController extends AbstractController
         $Config = $this->productReviewConfigRepository->find(1);
         $csvType = 1;//$Config->getCsvType()->getId();
 
-        return $this->render('ProductReview/Resource/template/admin/index.twig', array(
+        return [
             'searchForm' => $searchForm->createView(),
             'pagination' => $pagination,
             'pageMaxis' => $pageMaxis,
             'page_count' => $pageCount,
             'csv_type' => $csvType,
-        ));
+        ];
     }
 
     /**
      * 編集.
      * @Route("%eccube_admin_route%/plugin/product/review/{id}/edit", name="plugin_admin_product_review_edit")
+     * @Template("ProductReview/Resource/template/admin/edit.twig")
      *
      * @param Request $request
      * @param int $id
      *
-     * @return RedirectResponse|Response
+     * @return array
      */
     public function edit(Request $request, $id)
     {
@@ -209,11 +221,9 @@ class ProductReviewController extends AbstractController
         $builder = $this->formFactory->createBuilder(ProductReviewType::class, $ProductReview);
         /* @var $form FormInterface */
         $form = $builder->getForm();
-//        dump($request);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $ProductReview = $form->getData();
-            dump($ProductReview);
             $status = $this->productReviewRepository->save($ProductReview);
 
             log_info('Product review add/edit', array('status' => $status));
@@ -225,54 +235,50 @@ class ProductReviewController extends AbstractController
             }
         }
 
-        return $this->render('ProductReview/Resource/template/admin/edit.twig', array(
+        return [
             'form' => $form->createView(),
             'Product' => $Product,
             'post_date' => $postedDate,
-        ));
+        ];
     }
 
     /**
      * Product review delete function.
      * @Route("%eccube_admin_route%/plugin/product/review/{id}/delete", name="plugin_admin_product_review_delete")
      *
-     * @param Application $app
      * @param Request $request
      * @param int $id
      *
      * @return RedirectResponse
      */
-    public function delete(Application $app, Request $request, $id = null)
+    public function delete(Request $request, $id = null)
     {
-        $this->isTokenValid($app);
+        $this->isTokenValid();
         $session = $request->getSession();
         $pageNo = intval($session->get('plugin.product_review.admin.product_review.search.page_no'));
         $pageNo = $pageNo ? $pageNo : 1;
         $resume = Constant::ENABLED;
         if ($id) {
-            /* @var $repos ProductReviewRepository */
-            $repos = $app['product_review.repository.product_review'];
-
-            $TargetProductReview = $repos->find($id);
+            $TargetProductReview = $this->productReviewRepository->find($id);
 
             if (!$TargetProductReview) {
                 throw new NotFoundHttpException();
             }
 
-            $status = $repos->delete($TargetProductReview);
+            $status = $this->productReviewRepository->delete($TargetProductReview);
 
             if ($status === true) {
-                $app->addSuccess('plugin.admin.product_review.delete.complete', 'admin');
+                $this->addSuccess('plugin.admin.product_review.delete.complete', 'admin');
             } else {
-                $app->addError('plugin.admin.product_review.delete.error', 'admin');
+                $this->addError('plugin.admin.product_review.delete.error', 'admin');
             }
         } else {
-            $app->addError('plugin.admin.product_review.delete.error', 'admin');
+            $this->addError('plugin.admin.product_review.delete.error', 'admin');
         }
 
         log_info('Product review delete', array('status' => isset($status) ? $status : 0));
 
-        return $app->redirect($app->url('plugin_admin_product_review_page', array('page_no' => $pageNo)).'?resume='.$resume);
+        return $this->redirect($this->generateUrl('plugin_admin_product_review_page', array('page_no' => $pageNo)).'?resume='.$resume);
     }
 
     /**
@@ -280,32 +286,30 @@ class ProductReviewController extends AbstractController
      *
      * @Route("%eccube_admin_route%/plugin/product/review/download", name="plugin_admin_product_review_download")
      *
-     * @param Application $app
      * @param Request $request
      *
      * @return StreamedResponse
      */
-    public function download(Application $app, Request $request)
+    public function download(Request $request)
     {
         // タイムアウトを無効にする.
         set_time_limit(0);
 
         // sql loggerを無効にする.
-        $em = $app['orm.em'];
+        $em = $this->entityManager;
         $em->getConfiguration()->setSQLLogger(null);
 
         $response = new StreamedResponse();
-        $response->setCallback(function () use ($app, $request) {
-            // Get product preview config.
-            /* @var $Config ProductReviewConfig */
-            $Config = $app['product_review.repository.product_review_config']->find(1);
+        $response->setCallback(function () use ($request) {
+
+            $Config = $this->productReviewConfigRepository->find(1);
             $csvType = $Config->getCsvType()->getId();
 
             /* @var $csvService CsvExportService */
-            $csvService = $app['eccube.service.csv.export'];
+            $csvService = $this->csvExportService;
 
             /* @var $repo ProductReviewRepository */
-            $repo = $app['product_review.repository.product_review'];
+            $repo = $this->productReviewRepository;
 
             // CSV種別を元に初期化.
             $csvService->initCsvType($csvType);
@@ -314,17 +318,18 @@ class ProductReviewController extends AbstractController
             $csvService->exportHeader();
 
             $session = $request->getSession();
+
             $searchData = array();
-            if (Version::isSupportNewSession()) {
-                $searchData = $session->get('plugin.product_review.admin.product_review.search');
-                $searchForm = $app['form.factory']->create('admin_product_review_search', null, array('csrf_protection' => false));
-                $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
-            } else {
+//            if (Version::isSupportNewSession()) {
+//                $searchData = $session->get('plugin.product_review.admin.product_review.search');
+//                $searchForm = $this->formFactory->createBuilder(ProductReviewSearchType::class, null, array('csrf_protection' => false));
+//                $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
+//            } else {
                 if ($session->has('plugin.product_review.admin.product_review.search')) {
                     $searchData = $session->get('plugin.product_review.admin.product_review.search');
                     $repo->findDeserializeObjects($searchData);
                 }
-            }
+//            }
 
             $qb = $repo->getQueryBuilderBySearchData($searchData);
 

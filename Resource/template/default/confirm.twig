@@ -14,6 +14,13 @@
 
 {% block stylesheet %}
     <style>
+        .product_review_page p{
+            display: block;
+            -webkit-margin-before: 1em;
+            -webkit-margin-after: 1em;
+            -webkit-margin-start: 0px;
+            -webkit-margin-end: 0px;
+        }
         .product_review_page .dl_table {
             margin: 0 0 16px;
         }
@@ -36,7 +43,7 @@
         .product_review_page #product_review_sex .radio input[type="radio"] {
             margin-right: 10px;
         }
-        .product_review_page form .form-control{
+        .product_review_page form dl .form-control{
             border: 1px solid #C4CCCE;
             border-radius: 3px !important;
             box-shadow: none;
@@ -45,7 +52,7 @@
             padding: 6px 12px;
             line-height: 1.5;
         }
-        .product_review_page form textarea.form-control{
+        .product_review_page form dl textarea.form-control{
             border: 1px solid #C4CCCE;
             border-radius: 3px !important;
             box-shadow: none;
@@ -100,6 +107,8 @@
     </style>
 {% endblock stylesheet %}
 
+{% form_theme form 'Form/form_layout.twig' %}
+
 {% block main %}
 <h1 class="page-heading">レビューを書く</h1>
 <div class="container-fluid">
@@ -119,45 +128,39 @@
                     <dl>
                         <dt>{{ form_label(form.reviewer_name) }}</dt>
                         <dd class="form-group">
-                            {{ form.reviewer_name.vars.data }}
-                            {{ form_widget(form.reviewer_name, {type : 'hidden'}) }}
+                            {{ form_widget(form.reviewer_name) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.reviewer_url) }}</dt>
                         <dd class="form-group">
-                            {{ form.reviewer_url.vars.data }}
-                            {{ form_widget(form.reviewer_url, {type : 'hidden'}) }}
+                            {{ form_widget(form.reviewer_url) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.recommend_level) }}</dt>
                         <dd class="form-group">
-                            {% for i in 1..form.recommend_level.vars.value %}★{% endfor %}
-                            {{ form_widget(form.recommend_level, {type : 'hidden'}) }}
+                            {{ form_widget(form.recommend_level) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.sex) }}</dt>
                         <dd>
                             <div class="form-group form-inline">
-                                {{ form.sex.vars.data }}
-                                {{ form_widget(form.sex, {type : 'hidden'}) }}
+                                {{ form_widget(form.sex) }}
                             </div>
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.title) }}</dt>
                         <dd class="form-group">
-                            {{ form.title.vars.data }}
-                            {{ form_widget(form.title, {type : 'hidden'}) }}
+                            {{ form_widget(form.title) }}
                         </dd>
                     </dl>
                     <dl>
                         <dt>{{ form_label(form.comment) }}</dt>
                         <dd class="form-group">
-                            {{ form.comment.vars.data }}
-                            {{ form_widget(form.comment, {type : 'hidden'}) }}
+                            {{ form_widget(form.comment) }}
                         </dd>
                     </dl>
                 </div>

@@ -27,6 +27,17 @@ class PluginManager extends AbstractPluginManager
 //    private $template2 = 'coupon_shopping_item_confirm.twig';
 //    private $template3 = 'mypage_history_coupon.twig';
 
+    private $urls = [
+        'plugin_products_detail_review' => 'レビューを書く1',
+        'plugin_products_detail_review_complete' => 'レビューを書く2',
+        'plugin_products_detail_review_error' => 'レビューを書く3'
+    ];
+
+    /**
+     * @param null $meta
+     * @param Application|null $app
+     * @param ContainerInterface $container
+     */
     public function enable($meta = null, Application $app = null, ContainerInterface $container)
     {
         $entityManager = $container->get('doctrine.orm.entity_manager');
@@ -40,10 +51,12 @@ class PluginManager extends AbstractPluginManager
         }
 
         $this->copyBlock($container);
-        $PageLayout = $container->get(PageRepository::class)->findOneBy(array('url' => 'plugin_products_detail_review'));
-        if (is_null($PageLayout)) {
-            // pagelayoutの作成
-            $this->createPageLayout($container);
+        foreach ($this->urls as $url => $name) {
+            $PageLayout = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
+            if (is_null($PageLayout)) {
+                // pagelayoutの作成
+                $this->createPageLayout($container, $name, $url);
+            }
         }
     }
 
@@ -56,7 +69,9 @@ class PluginManager extends AbstractPluginManager
     {
         $this->removeBlock($container);
         // pagelayoutの削除
-        $this->removePageLayout($container);
+        foreach ($this->urls as $url => $name) {
+            $this->removePageLayout($container);
+        }
     }
 
     /**
@@ -69,22 +84,25 @@ class PluginManager extends AbstractPluginManager
         $PageLayout = $container->get(PageRepository::class)->findOneBy(array('url' => 'plugin_coupon_shopping'));
         if (is_null($PageLayout)) {
             // pagelayoutの作成
-            $this->createPageLayout($container);
+            $this->pageLayout($container);
         }
     }
 
+
     /**
      * @param ContainerInterface $container
+     * @param $name
+     * @param $url
      */
-    private function createPageLayout(ContainerInterface $container)
+    private function createPageLayout(ContainerInterface $container, $name, $url)
     {
         // ページレイアウトにプラグイン使用時の値を代入
         $DeviceType = $container->get(DeviceTypeRepository::class)->find(DeviceType::DEVICE_TYPE_PC);
         /** @var \Eccube\Entity\Page $Page */
         $Page = $container->get(PageRepository::class)->findOrCreate(null, $DeviceType);
         $Page->setEditType(Page::EDIT_TYPE_DEFAULT);
-        $Page->setName('レビューを書く');
-        $Page->setUrl('plugin_products_detail_review');
+        $Page->setName($name);
+        $Page->setUrl($url);
         $Page->setFileName('../../Plugin/ProductReview/Resource/template/default/index');
         $Page->setMetaRobots('noindex');
         // DB登録
@@ -106,14 +124,18 @@ class PluginManager extends AbstractPluginManager
      * クーポン用ページレイアウトを削除.
      *
      * @param ContainerInterface $container
+     * @param $url
      */
-    private function removePageLayout(ContainerInterface $container)
+    private function removePageLayout(ContainerInterface $container, $url)
     {
         // ページ情報の削除
-        $Page = $container->get(PageRepository::class)->findOneBy(array('url' => 'plugin_products_detail_review'));
+        $Page = $container->get(PageRepository::class)->findOneBy(array('url' => $url));
         if ($Page) {
             $Layout = $container->get(LayoutRepository::class)->find(Layout::DEFAULT_LAYOUT_UNDERLAYER_PAGE);
-            $PageLayout = $container->get(PageLayoutRepository::class)->findOneBy(['Page' => $Page, 'Layout' => $Layout]);
+            $PageLayout = $container->get(PageLayoutRepository::class)->findOneBy([
+                'Page' => $Page,
+                'Layout' => $Layout
+            ]);
             // Blockの削除
             $entityManager = $container->get('doctrine.orm.entity_manager');
             $entityManager->remove($PageLayout);
@@ -133,8 +155,9 @@ class PluginManager extends AbstractPluginManager
         // ファイルコピー
         $file = new Filesystem();
         // ブロックファイルをコピー
-        $file->copy($this->originalDir . $this->template1, $templateDir.'/ProductReview/'. $this->template1);
+        $file->copy($this->originalDir . $this->template1, $templateDir . '/ProductReview/' . $this->template1);
     }
+
     /**
      * Remove block template.
      *
@@ -144,6 +167,6 @@ class PluginManager extends AbstractPluginManager
     {
         $templateDir = $container->getParameter('eccube_theme_front_dir');
         $file = new Filesystem();
-        $file->remove($templateDir.'/ProductReview/'.$this->template1);
+        $file->remove($templateDir . '/ProductReview/' . $this->template1);
     }
 }

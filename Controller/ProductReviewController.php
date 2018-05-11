@@ -10,11 +10,7 @@
 
 namespace Plugin\ProductReview\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Eccube\Application;
-use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
-use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
 use Eccube\Repository\Master\ProductStatusRepository;
@@ -22,11 +18,9 @@ use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Form\Type\ProductReviewType;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -35,20 +29,31 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ProductReviewController extends AbstractController
 {
 
+    /** @var  ProductStatusRepository */
+    private $productStatusRepository;
+
+    /** @var  ProductReviewRepository */
+    private $productReviewRepository;
+
+    /**
+     * ProductReviewController constructor.
+     * @param ProductStatusRepository $productStatusRepository
+     * @param ProductReviewRepository $productReviewRepository
+     */
+    public function __construct(ProductStatusRepository $productStatusRepository, ProductReviewRepository $productReviewRepository){
+        $this->productStatusRepository = $productStatusRepository;
+        $this->productReviewRepository = $productReviewRepository;
+    }
+
+
     /**
      * @Route("/plugin/products/detail/{id}/review", name="plugin_products_detail_review", requirements={"id" = "\d+"})
      *
      * @param Request $request
-     * @param ProductStatusRepository $productStatusRepository
-     * @param ProductReviewRepository $productReviewRepository
      * @param Product $Product
      * @return RedirectResponse|Response
      */
-    public function review(
-        Request $request,
-        ProductStatusRepository $productStatusRepository,
-        ProductReviewRepository $productReviewRepository,
-        Product $Product)
+    public function review(Request $request, Product $Product)
     {
         if (!$this->session->has('_security_admin') && $Product->getStatus()->getId() !== ProductStatus::DISPLAY_SHOW) {
             log_info('Product review', array('status' => 'Not permission'));
@@ -67,6 +72,7 @@ class ProductReviewController extends AbstractController
                     log_info('Product review config');
 
                     $builder->setAttribute('freeze', true);
+                    $builder->setAttribute('freeze_display_text', true);
                     $form = $builder->getForm();
                     $form->handleRequest($request);
 
@@ -87,21 +93,17 @@ class ProductReviewController extends AbstractController
                     $ProductReview->setProduct($Product);
 
                     $ProductReview->setEnabled(true);
-                    // $ProductReview->setDelFlg(Constant::DISABLED);
-                    $status = $productReviewRepository->save($ProductReview);
+                    $status = $this->productReviewRepository->save($ProductReview);
 
                     if (!$status) {
-//                        $app->addError('plugin.front.product_review.system.error');
+                        $this->addError('plugin.front.product_review.system.error');
                         log_info('Product review complete', array('status' => 'fail'));
 
                         return $this->redirectToRoute('plugin_products_detail_review_error');
                     } else {
                         log_info('Product review complete', array('id' => $Product->getId()));
 
-                        return $this->redirectToRoute(
-                            'plugin_products_detail_review_complete',
-                            array('id' => $Product->getId())
-                        );
+                        return $this->redirectToRoute('plugin_products_detail_review_complete', ['id' => $Product->getId()]);
                     }
                     break;
 

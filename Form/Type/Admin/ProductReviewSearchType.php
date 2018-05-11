@@ -84,16 +84,17 @@ class ProductReviewSearchType extends AbstractType
             ))
             ->add('recommend_level', ChoiceType::class, array(
                 'label' => 'おすすめレベル',
-                'choices' => array(
+                'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
                     '3' => '★★★',
                     '2' => '★★',
                     '1' => '★',
-                ),
+                ]),
                 'placeholder' => '選択してください',
                 'expanded' => false,
                 'multiple' => false,
+                'required' => false,
             ))
             // fixme birthdaytypeは誤り
             ->add('review_start', BirthdayType::class, array(
