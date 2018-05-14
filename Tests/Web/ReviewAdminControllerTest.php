@@ -149,7 +149,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $reviewId = $Review->getId();
 
         $this->productReviewRepo->delete($Review);
-        $this->entityManager->flush($Review);
+        $this->entityManager->detach($Review);
 
         $this->client->request(
             'GET',

@@ -97,8 +97,7 @@ class ProductReviewController extends AbstractController
 
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData = $searchForm->getData();
-            dump($searchData);
-            die;
+
             $qb = $this->productReviewRepository
                 ->getQueryBuilderBySearchData($searchData);
 
