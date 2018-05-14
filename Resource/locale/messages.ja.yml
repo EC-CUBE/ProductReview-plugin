@@ -15,8 +15,10 @@ plugin.admin.product_review.setting: 商品レビューの設定
 plugin.admin.configration: 設定
 plugin.admin.product_review.form.product: 商品レビュー
 plugin.admin.product_review.form.product.name: 商品名
+plugin.admin.product_review.form.product.code: 商品コード
 plugin.admin.product_review.form.post.date: 投稿日
 plugin.admin.product_review.form.name.contributor: 投稿者名
+plugin.admin.product_review.form.level: 選択してください
 plugin.admin.product_review.form.authorURL: 投稿者URL
 plugin.admin.product_review.form.sex: 性別
 plugin.admin.product_review.form.recommended.level: おすすめレベル
@@ -24,6 +26,7 @@ plugin.admin.product_review.form.comment.title: タイトル
 plugin.admin.product_review.form.comment.content: コメント
 plugin.admin.product_review.form.return.to.search.screen: 検索画面に戻る
 plugin.admin.product_review.search.inputsearch.placeholder: 投稿者名・投稿者URL
+plugin.admin.product_review.search.multi: 表示
 plugin.admin.product_review.list.posted.date: 投稿日
 plugin.admin.product_review.list.contributor: 投稿者
 plugin.admin.product_review.list.product.name: 商品名
@@ -32,7 +35,7 @@ plugin.admin.product_review.list.level: おすすめレベル
 plugin.admin.product_review.list.status: 公開・非公開
 plugin.admin.product_review.list.title.edit.name: 名前を編集
 plugin.admin.product_review.config.form: 商品レビューの設定
-plugin.admin.product_review.config.input.limit: レビューの表示件数(1～5)
+plugin.admin.product_review.config.input.limit: レビューの表示件数(1～30)
 
 plugin.front.review: レビューを書く
 plugin.front.title: 商品について、お客様のご感想をお待ちしております。

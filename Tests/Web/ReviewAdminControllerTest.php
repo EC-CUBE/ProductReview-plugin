@@ -10,12 +10,15 @@
 
 namespace Plugin\ProductReview\Tests\Web;
 
-use Eccube\Common\Constant;
-use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
+use Eccube\Repository\Master\ProductStatusRepository;
+use Eccube\Repository\Master\SexRepository;
+use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
 use Faker\Generator;
 use Plugin\ProductReview\Entity\ProductReview;
+use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpKernel\Client;
 
@@ -30,6 +33,26 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     protected $faker;
 
     /**
+     * @var ProductRepository
+     */
+    protected $productRepo;
+
+    /**
+     * @var SexRepository
+     */
+    protected $sexMasterRepo;
+
+    /**
+     * @var ProductStatusRepository
+     */
+    protected $productStatusRepo;
+
+    /**
+     * @var ProductStatusRepository
+     */
+    protected $productReviewRepo;
+
+    /**
      * Setup method.
      */
     public function setUp()
@@ -37,6 +60,11 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         parent::setUp();
         $this->faker = $this->getFaker();
         $this->deleteAllRows(array('plg_product_review'));
+
+        $this->productRepo = $this->container->get(ProductRepository::class);
+        $this->sexMasterRepo = $this->container->get(SexRepository::class);
+        $this->productStatusRepo = $this->container->get(ProductStatusRepository::class);
+        $this->productReviewRepo = $this->container->get(ProductReviewRepository::class);
     }
 
     /**
@@ -46,17 +74,16 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     {
         $number = 5;
         $this->createProductReviewByNumber($number);
-        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review'));
-        $this->assertContains('検索する', $crawler->html());
-        $form = $crawler->selectButton('検索する')->form();
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_admin_product_review'));
+        $this->assertContains('商品レビュー', $crawler->html());
+        $form = $crawler->selectButton('検索')->form();
         $crawlerSearch = $this->client->submit($form);
         $this->assertContains('検索結果', $crawlerSearch->html());
         /* @var $crawlerSearch Crawler */
-        $actual = $crawlerSearch->filter('.box-title span strong')->html();
+        $actual = $crawlerSearch->filter('form#search_form span#search-result')->html();
 
-        $this->actual = $actual;
-
-        $this->expected = 5;
+        $this->actual = preg_replace('/\D/', '', $actual);
+        $this->expected = $number;
 
         $this->assertContains((string) $this->expected, $this->actual);
     }
@@ -66,10 +93,11 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      */
     public function testReviewDeleteIdNotFound()
     {
-        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
         $this->client->request('DELETE',
-            $this->app->url('plugin_admin_product_review_delete', array('id' => 99999))
+            $this->generateUrl('plugin_admin_product_review_delete', array('id' => 99999))
         );
+
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -80,13 +108,11 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $Review = $this->createProductReviewData();
         $productReviewId = $Review->getId();
         $this->client->request('DELETE',
-            $this->app->url('plugin_admin_product_review_delete', array('id' => $productReviewId))
+            $this->generateUrl('plugin_admin_product_review_delete', array('id' => $productReviewId))
         );
         $this->assertTrue($this->client->getResponse()->isRedirection());
 
-        $this->expected = Constant::ENABLED;
-        $this->actual = $Review->getDelFlg();
-        $this->verify();
+        $this->assertNull($this->productReviewRepo->find($productReviewId));
     }
 
     /**
@@ -99,13 +125,13 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
          */
         $this->client->request(
             'GET',
-            $this->app->url('plugin_admin_product_review_edit', array('id' => 99999))
+            $this->generateUrl('plugin_admin_product_review_edit', array('id' => 99999))
         );
         /**
          * @var Client
          */
         $client = $this->client;
-        $this->assertTrue($client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
+        $this->assertTrue($client->getResponse()->isRedirect($this->generateUrl('plugin_admin_product_review')));
 
         $crawler = $client->followRedirect();
 
@@ -122,18 +148,18 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $Review = $this->createProductReviewData();
         $reviewId = $Review->getId();
 
-        $this->app['product_review.repository.product_review']->delete($Review);
-        $this->app['orm.em']->detach($Review);
+        $this->productReviewRepo->delete($Review);
+        $this->entityManager->flush($Review);
 
-        $crawler = $this->client->request(
+        $this->client->request(
             'GET',
-            $this->app->url('plugin_admin_product_review_edit', array('id' => $reviewId))
+            $this->generateUrl('plugin_admin_product_review_edit', array('id' => $reviewId))
         );
         /**
          * @var Client
          */
         $client = $this->client;
-        $this->assertTrue($client->getResponse()->isRedirect($this->app->url('plugin_admin_product_review')));
+        $this->assertTrue($client->getResponse()->isRedirect($this->generateUrl('plugin_admin_product_review')));
 
         $crawler = $client->followRedirect();
 
@@ -153,11 +179,11 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
         $crawler = $this->client->request(
             'GET',
-            $this->app->url('plugin_admin_product_review_edit', array('id' => $reviewId))
+            $this->generateUrl('plugin_admin_product_review_edit', array('id' => $reviewId))
         );
-        $form = $crawler->selectButton('登録')->form();
-        $form['admin_product_review[recommend_level]'] = 1;
-        $form['admin_product_review[title]'] = $fakeTitle;
+        $form = $crawler->selectButton('更新')->form();
+        $form['product_review[recommend_level]'] = 1;
+        $form['product_review[title]'] = $fakeTitle;
         $crawler = $this->client->submit($form);
 
         // check message.
@@ -167,7 +193,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
         // Check entity
         $this->expected = $fakeTitle;
-        $this->actual = $Review->getTitle();
+        $this->actual = $this->productReviewRepo->find($reviewId)->getTitle();
         $this->verify();
 
         // Stay in edit page
@@ -183,13 +209,19 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $form = $this->initForm($review);
         $crawler = $this->client->request(
             'POST',
-            $this->app->url('plugin_admin_product_review'),
+            $this->generateUrl('plugin_admin_product_review'),
             array('admin_product_review_search' => $form)
         );
 
-        $this->assertContains('検索する', $crawler->html());
-        $numberResult = $crawler->filter('.box-title span strong');
-        $this->assertContains('1', $numberResult->html());
+//        dump($this->client->getResponse()->getContent());
+//        die;
+        $this->assertContains('検索', $crawler->html());
+        $numberResult = $crawler->filter('form#search_form span#search-result')->html();
+
+        dump($numberResult); die;
+        $numberResult = preg_replace('/\D/', '', $numberResult->html());
+
+        $this->assertContains('1', $numberResult);
 
         $table = $crawler->filter('.table-striped tbody');
 
@@ -204,25 +236,25 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $number = 11;
         $this->createProductReviewByNumber($number);
 
-        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review'));
-        $this->assertContains('検索する', $crawler->html());
-        $form = $crawler->selectButton('検索する')->form();
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_admin_product_review'));
+        $this->assertContains('検索', $crawler->html());
+        $form = $crawler->selectButton('検索')->form();
         $crawlerSearch = $this->client->submit($form);
 
-        $numberResult = $crawlerSearch->filter('.box-title span strong');
-        $this->assertContains((string) $number, $numberResult->html());
+        $numberResult = $crawlerSearch->filter('form#search_form span#search-result');
+        $numberResult = preg_replace('/\D/', '', $numberResult->html());
+        $this->assertContains((string) $number, $numberResult);
 
         /* @var $crawler Crawler */
-        $crawler = $this->client->request('GET', $this->app->url('plugin_admin_product_review_page', array('page_no' => 2)));
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_admin_product_review_page', array('page_no' => 2)));
 
         // page 2
-        $paging = $crawler->filter('#pagination_wrap .pagenation__item')->last();
+        $paging = $crawler->filter('ul.pagination .page-item')->last();
 
         // Current active on page 2.
         $this->assertContains('active', $paging->parents()->html());
-
         $this->expected = 2;
-        $this->actual = $paging->text();
+        $this->actual = intval($paging->text());
         $this->verify();
     }
 
@@ -236,15 +268,19 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $form = $this->initForm($review);
         $crawler = $this->client->request(
             'POST',
-            $this->app->url('plugin_admin_product_review'),
+            $this->generateUrl('plugin_admin_product_review'),
             array('admin_product_review_search' => $form)
         );
 
-        $this->assertContains('検索する', $crawler->html());
-        $numberResult = $crawler->filter('.box-title span strong');
-        $this->assertContains('1', $numberResult->html());
+        $this->assertContains('検索', $crawler->html());
+        $form = $crawler->selectButton('検索')->form();
+        $crawler = $this->client->submit($form);
+        $numberResult = $crawler->filter('form#search_form span#search-result')->html();
 
-        $table = $crawler->filter('.table-striped tbody');
+        $numberResult = preg_replace('/\D/', '', $numberResult);
+        $this->assertContains('1', $numberResult);
+
+        $table = $crawler->filter('.table tbody');
 
         $this->assertContains($review->getReviewerName(), $table->html());
 
@@ -252,8 +288,10 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
         $this->client->request(
             'POST',
-            $this->app->url('plugin_admin_product_review_download')
+            $this->generateUrl('plugin_admin_product_review_download')
         );
+
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
     }
 
     /**
@@ -272,8 +310,8 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             'product_code' => $review->getProduct()->getCodeMax(),
             'sex' => array($review->getSex()->getId()),
             'recommend_level' => $review->getRecommendLevel(),
-            'review_start' => $review->getCreateDate()->modify('-2 days')->format('Y-m-d'),
-            'review_end' => $review->getCreateDate()->modify('+2 days')->format('Y-m-d'),
+            'review_start' => $review->getCreateDate()->modify('-2 days')->format('mm/dd/Y'),
+            'review_end' => $review->getCreateDate()->modify('+2 days')->format('mm/dd/Y'),
         );
     }
 
@@ -283,7 +321,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      */
     private function createProductReviewByNumber($number, $productId = 1)
     {
-        $Product = $this->app['eccube.repository.product']->find($productId);
+        $Product = $this->productRepo->find($productId);
         if (!$Product) {
             $Product = $this->createProduct();
         }
@@ -297,20 +335,19 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      * Create data.
      *
      * @param int|Product $product
-     * @param int         $delFlg
      *
      * @return ProductReview
      */
-    private function createProductReviewData($product = 1, $delFlg = Constant::DISABLED)
+    private function createProductReviewData($product = 1)
     {
         if ($product instanceof Product) {
             $Product = $product;
         } else {
-            $Product = $this->app['eccube.repository.product']->find($product);
+            $Product = $this->productRepo->find($product);
         }
 
-        $Disp = $this->app['eccube.repository.master.disp']->find(Disp::DISPLAY_SHOW);
-        $Sex = $this->app['eccube.repository.master.sex']->find(1);
+        $Display = $this->productStatusRepo->find(ProductStatus::DISPLAY_SHOW);
+        $Sex = $this->sexMasterRepo->find(1);
         $Customer = $this->createCustomer();
 
         $Review = new ProductReview();
@@ -320,13 +357,13 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $Review->setRecommendLevel($this->faker->numberBetween(1, 5));
         $Review->setReviewerName($this->faker->word);
         $Review->setReviewerUrl($this->faker->url);
-        $Review->setStatus($Disp);
-        $Review->setDelFlg($delFlg);
+        $Review->setStatus($Display);
         $Review->setSex($Sex);
+        $Review->setEnabled(true);
         $Review->setCustomer($Customer);
 
-        $this->app['orm.em']->persist($Review);
-        $this->app['orm.em']->flush($Review);
+        $this->entityManager->persist($Review);
+        $this->entityManager->flush($Review);
 
         return $Review;
     }

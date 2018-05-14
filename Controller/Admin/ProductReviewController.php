@@ -22,6 +22,7 @@ use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewType;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -96,6 +97,8 @@ class ProductReviewController extends AbstractController
 
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData = $searchForm->getData();
+            dump($searchData);
+            die;
             $qb = $this->productReviewRepository
                 ->getQueryBuilderBySearchData($searchData);
 
@@ -272,12 +275,10 @@ class ProductReviewController extends AbstractController
         // sql loggerを無効にする.
         $em = $this->entityManager;
         $em->getConfiguration()->setSQLLogger(null);
-
         $response = new StreamedResponse();
         $response->setCallback(function () use ($request) {
-
             $Config = $this->productReviewConfigRepository->find(1);
-            $csvType = $Config->getCsvType()->getId();
+            $csvType = 1;//$Config->getCsvType()->getId();
 
             /* @var $csvService CsvExportService */
             $csvService = $this->csvExportService;
@@ -299,10 +300,10 @@ class ProductReviewController extends AbstractController
 //                $searchForm = $this->formFactory->createBuilder(ProductReviewSearchType::class, null, array('csrf_protection' => false));
 //                $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
 //            } else {
-                if ($session->has('plugin.product_review.admin.product_review.search')) {
+                /*if ($session->has('plugin.product_review.admin.product_review.search')) {
                     $searchData = $session->get('plugin.product_review.admin.product_review.search');
                     $repo->findDeserializeObjects($searchData);
-                }
+                }*/
 //            }
 
             $qb = $repo->getQueryBuilderBySearchData($searchData);

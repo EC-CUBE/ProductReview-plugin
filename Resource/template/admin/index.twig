@@ -141,7 +141,7 @@ function fnChangeActionSubmit(action) {
         <div class="c-outsideBlock__contents mb-5">
             <button class="btn btn-ec-conversion px-5" type="submit">{{ 'admin.product.index.478'|trans }}</button>
             {% if pagination %}
-                <span class="font-weight-bold ml-2">{{'admin.product.index.479'|trans({"%count%":pagination.totalItemCount})|raw}}</span>
+                <span id="search-result" class="font-weight-bold ml-2">{{'admin.product.index.479'|trans({"%count%":pagination.totalItemCount})|raw}}</span>
             {% endif %}
         </div>
     </form>

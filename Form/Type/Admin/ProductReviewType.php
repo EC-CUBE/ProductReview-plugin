@@ -58,7 +58,7 @@ class ProductReviewType extends AbstractType
         $builder
             ->add('id', HiddenType::class)
             ->add('create_date', HiddenType::class, array(
-                'label' => '投稿日',
+                'label' => 'plugin.admin.product_review.list.posted.date',
                 'mapped' => false,
             ))
             ->add('status', ProductStatusType::class, array(
@@ -68,7 +68,7 @@ class ProductReviewType extends AbstractType
                 ),
             ))
             ->add('reviewer_name', TextType::class, array(
-                'label' => '投稿者名',
+                'label' => 'plugin.admin.product_review.form.name.contributor',
                 'required' => true,
                 'constraints' => array(
                     new Assert\NotBlank(),
@@ -79,7 +79,7 @@ class ProductReviewType extends AbstractType
                 ),
             ))
             ->add('reviewer_url', TextType::class, array(
-                'label' => '投稿者URL',
+                'label' => 'plugin.admin.product_review.form.authorURL',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Url(),
@@ -93,7 +93,7 @@ class ProductReviewType extends AbstractType
                 'required' => false,
             ))
             ->add('recommend_level', ChoiceType::class, array(
-                'label' => 'おすすめレベル',
+                'label' => 'plugin.admin.product_review.list.level',
                 'choices' => array_flip(array(
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -106,7 +106,7 @@ class ProductReviewType extends AbstractType
                 'required' => true,
             ))
             ->add('title', TextType::class, array(
-                'label' => 'タイトル',
+                'label' => 'plugin.admin.product_review.form.comment.title',
                 'required' => true,
                 'constraints' => array(
                     new Assert\NotBlank(),
@@ -117,7 +117,7 @@ class ProductReviewType extends AbstractType
                 ),
             ))
             ->add('comment', TextareaType::class, array(
-                'label' => 'コメント',
+                'label' => 'plugin.admin.product_review.form.comment.content',
                 'required' => true,
                 'constraints' => array(
                     new Assert\NotBlank(),

@@ -1,3 +1,4 @@
-services:
-    product_review_nav:
-        class: Eccube\Common\EccubeNav
+parameters:
+    review_regist_min: 1
+    review_regist_max: 30
+

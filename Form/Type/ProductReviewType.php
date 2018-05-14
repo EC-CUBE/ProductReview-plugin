@@ -53,7 +53,7 @@ class ProductReviewType extends AbstractType
         $config = $this->eccubeConfig;
         $builder
             ->add('reviewer_name', TextType::class, array(
-                'label' => '投稿者名',
+                'label' => 'plugin.admin.product_review.form.name.contributor',
                 'required' => true,
                 'constraints' => array(
                     new Assert\NotBlank(),
@@ -64,7 +64,7 @@ class ProductReviewType extends AbstractType
                 ),
             ))
             ->add('reviewer_url', TextType::class, array(
-                'label' => '投稿者URL',
+                'label' => 'plugin.admin.product_review.form.authorURL',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Url(),
@@ -79,7 +79,7 @@ class ProductReviewType extends AbstractType
             ))
             ->add('recommend_level', ChoiceType::class, array(
                 'required' => true,
-                'label' => 'おすすめレベル',
+                'label' => 'plugin.admin.product_review.list.level',
                 'choices' => array_flip(array(
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -92,7 +92,7 @@ class ProductReviewType extends AbstractType
                 'placeholder' => false,
             ))
             ->add('title', TextType::class, array(
-                'label' => 'タイトル',
+                'label' => 'plugin.admin.product_review.form.comment.title',
                 'required' => true,
                 'constraints' => array(
                     new Assert\NotBlank(),
@@ -103,7 +103,7 @@ class ProductReviewType extends AbstractType
                 ),
             ))
             ->add('comment', TextareaType::class, array(
-                'label' => 'コメント',
+                'label' => 'plugin.admin.product_review.form.comment.content',
                 'required' => true,
                 'constraints' => array(
                     new Assert\NotBlank(),

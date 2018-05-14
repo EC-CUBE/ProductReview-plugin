@@ -14,9 +14,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
-use Eccube\Common\Constant;
 use Eccube\Entity\AbstractEntity;
-use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
@@ -162,7 +160,7 @@ class ProductReviewRepository extends ServiceEntityRepository
             $arrId = array();
             $arrStatus = $searchData['status'];
             foreach ($arrStatus as $status) {
-                if ($status instanceof Disp) {
+                if ($status instanceof ProductStatus) {
                     $arrId[] = $status->getId();
                 } elseif (is_numeric($status)) {
                     $arrId[] = $status;
@@ -207,7 +205,6 @@ class ProductReviewRepository extends ServiceEntityRepository
      * Get Avg and count.
      *
      * @param Product $Product
-     * @param Disp $Disp
      *
      * @return mixed
      */

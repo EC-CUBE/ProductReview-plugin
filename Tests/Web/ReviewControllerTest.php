@@ -10,13 +10,16 @@
 
 namespace Plugin\ProductReview\Tests\Web;
 
-use Eccube\Common\Constant;
-use Eccube\Entity\Master\Disp;
+use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
+use Eccube\Repository\Master\ProductStatusRepository;
+use Eccube\Repository\Master\SexRepository;
+use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\AbstractWebTestCase;
 use Faker\Generator;
 use Plugin\ProductReview\Entity\ProductReview;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class ReviewControllerTest front.
@@ -29,6 +32,21 @@ class ReviewControllerTest extends AbstractWebTestCase
     protected $faker;
 
     /**
+     * @var ProductRepository
+     */
+    protected $productRepo;
+
+    /**
+     * @var SexRepository
+     */
+    protected $sexMasterRepo;
+
+    /**
+     * @var ProductStatusRepository
+     */
+    protected $productStatusRepo;
+
+    /**
      * Setup method.
      */
     public function setUp()
@@ -36,6 +54,10 @@ class ReviewControllerTest extends AbstractWebTestCase
         parent::setUp();
         $this->faker = $this->getFaker();
         $this->deleteAllRows(array('plg_product_review'));
+
+        $this->productRepo = $this->container->get(ProductRepository::class);
+        $this->sexMasterRepo = $this->container->get(SexRepository::class);
+        $this->productStatusRepo = $this->container->get(ProductStatusRepository::class);
     }
 
     /**
@@ -46,7 +68,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $productId = 1;
         $crawler = $this->client->request(
             'POST',
-            $this->app->url('plugin_products_detail_review', array('id' => $productId)),
+            $this->generateUrl('plugin_products_detail_review', array('id' => $productId)),
             array(
                 'product_review' => array(
                     'comment' => $this->faker->text(2999),
@@ -66,7 +88,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $form = $crawler->selectButton('送信する')->form();
         $this->client->submit($form);
 
-        $this->assertTrue($this->client->getResponse()->isRedirect($this->app->url('plugin_products_detail_review_complete', array('id' => $productId))));
+        $this->assertTrue($this->client->getResponse()->isRedirect($this->generateUrl('plugin_products_detail_review_complete', array('id' => $productId))));
 
         // Verify back to product detail link.
         /**
@@ -76,7 +98,8 @@ class ReviewControllerTest extends AbstractWebTestCase
         $link = $crawler->selectLink('商品ページに戻る')->link();
 
         $this->actual = $link->getUri();
-        $this->expected = $this->app->url('product_detail', array('id' => $productId));
+
+        $this->expected = $this->generateUrl('product_detail', array('id' => $productId), UrlGeneratorInterface::ABSOLUTE_URL);
         $this->verify();
     }
 
@@ -97,7 +120,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         );
         $crawler = $this->client->request(
             'POST',
-            $this->app->url('plugin_products_detail_review', array('id' => $productId)),
+            $this->generateUrl('plugin_products_detail_review', array('id' => $productId)),
             array('product_review' => $inputForm,
                 'mode' => 'confirm',
             )
@@ -123,7 +146,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $ProductReview = $this->createProductReviewData($productId);
         $crawler = $this->client->request(
             'GET',
-            $this->app->url('product_detail', array('id' => $productId))
+            $this->generateUrl('product_detail', array('id' => $productId))
         );
 
         // review area
@@ -149,7 +172,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $this->createProductReviewByNumber($max, $productId);
         $crawler = $this->client->request(
             'GET',
-            $this->app->url('product_detail', array('id' => $productId))
+            $this->generateUrl('product_detail', array('id' => $productId))
         );
 
         // review area
@@ -169,7 +192,7 @@ class ReviewControllerTest extends AbstractWebTestCase
      */
     private function createProductReviewByNumber($number, $productId = 1)
     {
-        $Product = $this->app['eccube.repository.product']->find($productId);
+        $Product = $this->productRepo->find($productId);
         if (!$Product) {
             $Product = $this->createProduct();
         }
@@ -183,20 +206,19 @@ class ReviewControllerTest extends AbstractWebTestCase
      * Create data.
      *
      * @param int|Product $product
-     * @param int         $delFlg
      *
      * @return ProductReview
      */
-    private function createProductReviewData($product = 1, $delFlg = Constant::DISABLED)
+    private function createProductReviewData($product = 1)
     {
         if ($product instanceof Product) {
             $Product = $product;
         } else {
-            $Product = $this->app['eccube.repository.product']->find($product);
+            $Product = $this->productRepo->find($product);
         }
 
-        $Disp = $this->app['eccube.repository.master.disp']->find(Disp::DISPLAY_SHOW);
-        $Sex = $this->app['eccube.repository.master.sex']->find(1);
+        $Display = $this->productStatusRepo->find(ProductStatus::DISPLAY_SHOW);
+        $Sex = $this->sexMasterRepo->find(1);
         $Customer = $this->createCustomer();
 
         $Review = new ProductReview();
@@ -206,13 +228,13 @@ class ReviewControllerTest extends AbstractWebTestCase
         $Review->setRecommendLevel($this->faker->numberBetween(1, 5));
         $Review->setReviewerName($this->faker->word);
         $Review->setReviewerUrl($this->faker->url);
-        $Review->setStatus($Disp);
-        $Review->setDelFlg($delFlg);
+        $Review->setStatus($Display);
         $Review->setSex($Sex);
+        $Review->setEnabled(true);
         $Review->setCustomer($Customer);
 
-        $this->app['orm.em']->persist($Review);
-        $this->app['orm.em']->flush($Review);
+        $this->entityManager->persist($Review);
+        $this->entityManager->flush($Review);
 
         return $Review;
     }

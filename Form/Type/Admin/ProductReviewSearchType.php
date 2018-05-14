@@ -10,13 +10,12 @@
 
 namespace Plugin\ProductReview\Form\Type\Admin;
 
-use Eccube\Application;
 use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Master\ProductStatusType;
 use Eccube\Form\Type\Master\SexType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -56,34 +55,34 @@ class ProductReviewSearchType extends AbstractType
         $config = $this->eccubeConfig;
         $builder
             ->add('multi', TextType::class, array(
-                'label' => '投稿者名・投稿者URL',
+                'label' => 'plugin.admin.product_review.search.inputsearch.placeholder',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
             ->add('product_name', TextType::class, array(
-                'label' => '商品名',
+                'label' => 'plugin.front.product.name',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
             ->add('product_code', TextType::class, array(
-                'label' => '商品コード',
+                'label' => 'plugin.admin.product_review.form.product.code',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
             ->add('sex', SexType::class, array(
-                'label' => '性別',
+                'label' => 'plugin.admin.product_review.form.sex',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
             ))
             ->add('recommend_level', ChoiceType::class, array(
-                'label' => 'おすすめレベル',
+                'label' => 'plugin.admin.product_review.list.level',
                 'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -91,32 +90,26 @@ class ProductReviewSearchType extends AbstractType
                     '2' => '★★',
                     '1' => '★',
                 ]),
-                'placeholder' => '選択してください',
+                'placeholder' => 'plugin.admin.product_review.form.level',
                 'expanded' => false,
                 'multiple' => false,
                 'required' => false,
             ))
-            // fixme birthdaytypeは誤り
-            ->add('review_start', BirthdayType::class, array(
-                'label' => '投稿日',
+            ->add('review_start', DateType::class, array(
+                'label' => 'plugin.admin.product_review.list.posted.date',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-                'placeholder' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
-            // fixme birthdaytypeは誤り
-            ->add('review_end', BirthdayType::class, array(
-                'label' => '投稿日',
+            ->add('review_end', DateType::class, array(
+                'label' => 'plugin.admin.product_review.list.posted.date',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-                'placeholder' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
             // fixme 商品レビュー用のステータスを作成する
             ->add('status', ProductStatusType::class, array(
-                'label' => '表示',
+                'label' => 'plugin.admin.product_review.search.multi',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
