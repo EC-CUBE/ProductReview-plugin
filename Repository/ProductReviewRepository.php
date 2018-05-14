@@ -69,8 +69,7 @@ class ProductReviewRepository extends ServiceEntityRepository
     public function delete(ProductReview $ProductReview)
     {
         try {
-            $ProductReview->setDelFlg(Constant::ENABLED);
-            $this->entityManager->persist($ProductReview);
+            $this->entityManager->remove($ProductReview);
             $this->entityManager->flush($ProductReview);
         } catch (\Exception $e) {
             return false;

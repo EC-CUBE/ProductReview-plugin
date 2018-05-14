@@ -162,7 +162,7 @@
                 {% set positive_avg_star = avg %}
                 {% set nagative_avg_star = 5 - positive_avg_star %}
                 <dt class="heading02 sp">
-                    この商品のレビュー
+                    {{ 'plugin.front.review.product'|trans }}
 
                     <!--平均の星の数-->
                     <span class="recommend_average">
@@ -189,9 +189,9 @@
                                         <!--投稿者-->
                                         <span class="recommend_name">
                                             {% if ProductReview.reviewer_url %}
-                                                <a href="{{ ProductReview.reviewer_url }}" target="_blank">{{ ProductReview.reviewer_name }}さん</a>
+                                                <a href="{{ ProductReview.reviewer_url }}" target="_blank">{{ ProductReview.reviewer_name }}{{ 'plugin.front.reviewer.name'|trans }}</a>
                                             {% else %}
-                                                {{ ProductReview.reviewer_name }}さん
+                                                {{ ProductReview.reviewer_name }}{{ 'plugin.front.reviewer.name'|trans }}
                                             {% endif %}
                                         </span>
 
@@ -216,7 +216,7 @@
             </dl>
         </div>
         <div class="review_btn">
-            <a href="{{ url('plugin_products_detail_review', {'id' : Product.id}) }}" class="btn btn-info">レビューを書く</a>
+            <a href="{{ url('plugin_products_detail_review', {'id' : Product.id}) }}" class="btn btn-info">{{ 'plugin.front.review.write.down'|trans }}</a>
         </div>
     </div>
 </div>

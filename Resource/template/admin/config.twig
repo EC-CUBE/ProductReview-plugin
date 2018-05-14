@@ -12,8 +12,8 @@
 
 {% set menus = ['product', 'product_review'] %}
 
-{% block title %}商品管理{% endblock %}
-{% block sub_title %}商品レビューの設定{% endblock %}
+{% block title %}{{ 'plugin.admin.product.management.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'plugin.admin.product.management.title.sub'|trans }}{% endblock %}
 
 {% form_theme form '@admin/Form/bootstrap_3_horizontal_layout.html.twig' %}
 
@@ -24,7 +24,7 @@
             <div class="col-md-9">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">商品レビューの設定</h3>
+                        <h3 class="box-title">{{ 'plugin.admin.product_review.setting'|trans }}</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body form-horizontal">
                         <div class="form-group">
@@ -44,7 +44,7 @@
                         <div class="box-body">
                             <div class="row text-center">
                                 <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
-                                    <button class="btn btn-primary btn-block btn-lg" type="submit">設定</button>
+                                    <button class="btn btn-primary btn-block btn-lg" type="submit">{{ 'plugin.admin.configration'|trans }}</button>
                                 </div>
                             </div>
                         </div><!-- /.box-body -->

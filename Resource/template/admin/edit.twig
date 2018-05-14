@@ -16,8 +16,8 @@
 
 {% set menus = ['product', 'product_review'] %}
 
-{% block title %}商品管理{% endblock %}
-{% block sub_title %}商品レビュー管理{% endblock %}
+{% block title %}{{ 'plugin.admin.product.management.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'plugin.admin.product_review.edit.title.sub'|trans }}{% endblock %}
 
 {% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
 
@@ -37,7 +37,7 @@
                                     <div class="d-inline-block" data-toggle="tooltip" data-placement="top"
                                          title="Tooltip">
                                     <span class="card-title">
-                                        商品レビュー
+                                        {{ 'plugin.admin.product_review.form.product'|trans }}
                                     </span>
                                         <i class="fa fa-question-circle fa-lg ml-1"></i>
                                     </div>
@@ -55,7 +55,7 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <label class="control-label">商品名</label>
+                                        <label class="control-label">{{ 'plugin.admin.product_review.form.product.name'|trans }}</label>
                                     </div>
                                     <div class="col">
                                         <div>{{ Product.name }}</div>
@@ -65,7 +65,7 @@
                                 <div class="row mb-2">
                                     <div class="col-3">
                                         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>投稿日</span>
+                                            <span>{{ 'plugin.admin.product_review.form.post.date'|trans }}</span>
                                             <i class="fa fa-question-circle fa-lg ml-1"></i>
                                         </div>
                                     </div>
@@ -77,7 +77,7 @@
                                 <div class="row mb-2">
                                     <div class="col-3">
                                         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>投稿者名</span>
+                                            <span>{{ 'plugin.admin.product_review.form.name.contributor'|trans }}</span>
                                             <i class="fa fa-question-circle fa-lg ml-1"></i>
                                         </div>
                                     </div>
@@ -89,7 +89,7 @@
                                 <div class="row mb-2">
                                     <div class="col-3">
                                         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>投稿者URL</span>
+                                            <span>{{ 'plugin.admin.product_review.form.authorURL'|trans }}</span>
                                             <i class="fa fa-question-circle fa-lg ml-1"></i>
                                         </div>
                                     </div>
@@ -101,7 +101,7 @@
                                 <div class="row mb-2">
                                     <div class="col-3">
                                         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>性別</span>
+                                            <span>{{ 'plugin.admin.product_review.form.sex'|trans }}</span>
                                             <i class="fa fa-question-circle fa-lg ml-1"></i>
                                         </div>
                                     </div>
@@ -114,7 +114,7 @@
                                 <div class="row mb-2">
                                     <div class="col-3">
                                         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>おすすめレベル</span>
+                                            <span>{{ 'plugin.admin.product_review.form.recommended.level'|trans }}</span>
                                             <i class="fa fa-question-circle fa-lg ml-1"></i>
                                         </div>
                                     </div>
@@ -127,7 +127,7 @@
                                 <div class="row mb-2">
                                     <div class="col-3">
                                         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>タイトル</span>
+                                            <span>{{ 'plugin.admin.product_review.form.comment.title'|trans }}</span>
                                             <i class="fa fa-question-circle fa-lg ml-1"></i>
                                         </div>
                                     </div>
@@ -140,7 +140,7 @@
                                 <div class="row mb-2">
                                     <div class="col-3">
                                         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>コメント</span>
+                                            <span>{{ 'plugin.admin.product_review.form.comment.content'|trans }}</span>
                                             <i class="fa fa-question-circle fa-lg ml-1"></i>
                                         </div>
                                     </div>
@@ -149,37 +149,6 @@
                                         {{ form_errors(form.comment) }}
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="c-contentsArea__secondaryCol">
-                <div class="c-secondaryCol">
-                    <div class="card rounded border-0 mb-4">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-md-3" id="aside_column">
-                                    <div class="col_inner">
-                                        <div class="box no-header">
-                                            <div class="box-body">
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        <div class="form-group">
-                                                            {{ form_widget(form.status) }}
-                                                            {{ form_errors(form.status) }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row text-center">
-                                                    <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
-                                                        <button class="btn btn-primary btn-block btn-lg" type="submit">登録</button>
-                                                    </div>
-                                                </div>
-                                            </div><!-- /.box-body -->
-                                        </div><!-- /.box -->
-                                    </div>
-                                </div><!-- /.col -->
                             </div>
                         </div>
                     </div>
@@ -196,7 +165,7 @@
                                data-action="confirm"
                                title="{{ 'admin.product.product.text11'|trans({
                                    '%name%' : 'admin.product.product.title_product_screen'|trans })
-                               }}"><i class="fa fa-backward" aria-hidden="true"></i><span>検索画面に戻る</span></a>
+                               }}"><i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'plugin.admin.product_review.form.return.to.search.screen'|trans }}</span></a>
                         </div>
                     </div>
                     <div class="col-6">

@@ -7,3 +7,51 @@ plugin.front.product_review.system.error: 登録処理でシステムエラー�
 admin.product.not_found: 製品が見つかりません。
 plugin.admin.product_review_config.save.complete: 商品レビュー設定が保存されました。
 plugin.admin.product_review_config.save.error: 商品のレビュー設定を保存できませんでした。
+
+plugin.admin.product.management.title: 商品管理
+plugin.admin.product.management.title.sub: 商品レビューの設定
+plugin.admin.product_review.edit.title.sub: 商品レビュー管理
+plugin.admin.product_review.setting: 商品レビューの設定
+plugin.admin.configration: 設定
+plugin.admin.product_review.form.product: 商品レビュー
+plugin.admin.product_review.form.product.name: 商品名
+plugin.admin.product_review.form.post.date: 投稿日
+plugin.admin.product_review.form.name.contributor: 投稿者名
+plugin.admin.product_review.form.authorURL: 投稿者URL
+plugin.admin.product_review.form.sex: 性別
+plugin.admin.product_review.form.recommended.level: おすすめレベル
+plugin.admin.product_review.form.comment.title: タイトル
+plugin.admin.product_review.form.comment.content: コメント
+plugin.admin.product_review.form.return.to.search.screen: 検索画面に戻る
+plugin.admin.product_review.search.inputsearch.placeholder: 投稿者名・投稿者URL
+plugin.admin.product_review.list.posted.date: 投稿日
+plugin.admin.product_review.list.contributor: 投稿者
+plugin.admin.product_review.list.product.name: 商品名
+plugin.admin.product_review.list.title: タイトル
+plugin.admin.product_review.list.level: おすすめレベル
+plugin.admin.product_review.list.status: 公開・非公開
+plugin.admin.product_review.list.title.edit.name: 名前を編集
+plugin.admin.product_review.list:
+plugin.admin.product_review:
+plugin.admin.product_review:
+plugin.admin.product_review:
+
+
+
+
+plugin.front.review: レビューを書く
+plugin.front.title: 商品について、お客様のご感想をお待ちしております。
+plugin.front.product.name: 商品名
+plugin.front.review.product: この商品のレビュー
+plugin.front.review.write.down: レビューを書く
+plugin.front.reviewer.name: さん
+plugin.front.form.confirm: 確認ページヘ
+plugin.front.form.back: 戻る
+plugin.front.form.send: 送信する
+plugin.front.error: レビューを書く - エラー
+plugin.front.top.page.link: トップページへ
+plugin.front.confirm.page.tile: レビューを書く
+plugin.front.confirm.page.remind: "下記の内容で送信してもよろしいでしょうか？<br/>よろしければ、一番下の「送信する」ボタンをクリックしてください。"
+plugin.front.complete.thank.you: ありがとうございました。
+plugin.front.complete.message: "内容を確認後、反映させていただきます。<br>今しばらくお待ちくださいませ。"
+plugin.front.complete.btn.return: 商品ページに戻る

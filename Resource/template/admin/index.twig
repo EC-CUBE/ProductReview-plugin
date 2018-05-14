@@ -15,8 +15,8 @@
 {% extends '@admin/styleguide_frame.twig' %}
 
 {% set menus = ['product', 'product_review'] %}
-{% block title %}商品管理{% endblock %}
-{% block sub_title %}商品レビュー{% endblock %}
+{% block title %}{{ 'plugin.admin.product.management.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'plugin.admin.product_review.form.product'|trans }}{% endblock %}
 
 {% form_theme searchForm '@admin/Form/bootstrap_4_layout.html.twig' %}
 
@@ -91,7 +91,7 @@ function fnChangeActionSubmit(action) {
                 <div class="col-6">
                     <div class="mb-2">
                         <label class="col-form-label">{{ 'admin.product.index.470'|trans }}</label>
-                        {{ form_widget(searchForm.multi, { attr: { placeholder: '投稿者名・投稿者URL', class : 'input_search' } } ) }}
+                        {{ form_widget(searchForm.multi, { attr: { placeholder: 'plugin.admin.product_review.search.inputsearch.placeholder'|trans, class : 'input_search' } } ) }}
                     </div>
                     <div class="d-inline-block mb-3" data-toggle="collapse" href="#searchDetail"
                          aria-expanded="false" aria-controls="searchDetail"><a><i
@@ -187,12 +187,12 @@ function fnChangeActionSubmit(action) {
                         <thead>
                         <tr>
                             <th class="text-center">ID</th>
-                            <th>投稿日</th>
-                            <th>投稿者</th>
-                            <th>商品名</th>
-                            <th>タイトル</th>
-                            <th>おすすめレベル</th>
-                            <th>公開・非公開</th>
+                            <th>{{ 'plugin.admin.product_review.list.posted.date'|trans }}</th>
+                            <th>{{ 'plugin.admin.product_review.list.contributor'|trans }}</th>
+                            <th>{{ 'plugin.admin.product_review.list.product.name'|trans }}</th>
+                            <th>{{ 'plugin.admin.product_review.list.title'|trans }}</th>
+                            <th>{{ 'plugin.admin.product_review.list.level'|trans }}</th>
+                            <th>{{ 'plugin.admin.product_review.list.status'|trans }}</th>
                             <th>&nbsp;</th>
                         </tr>
                         </thead>
@@ -205,18 +205,57 @@ function fnChangeActionSubmit(action) {
                                 <td>{{ Review.Product.name }}</td>
                                 <td><a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a></td>
                                 <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
-                                <td>{#{{ Review.status }}#}</td>
+                                <td>{{ Review.status }}</td>
                                 <td class="icon_edit">
                                     <div class="col-auto text-right">
                                         <a href="{{ url('plugin_admin_product_review_edit', { id : Review.id }) }}"
                                            class="btn btn-ec-actionIcon mr-3 action-edit"
                                            data-toggle="tooltip"
                                            data-placement="top" title=""
-                                           data-original-title="名前を編集"><i class="fa fa-pencil fa-lg text-secondary"></i></a>
-                                        <a href="{{ url('plugin_admin_product_review_delete', { id : Review.id }) }}"
-                                           class="btn btn-ec-actionIcon mr-3"
-                                           data-toggle="modal" data-target="#confirmModal-3"
-                                           data-placement="top" title="削除"><i class="fa fa-close fa-lg text-secondary"></i></a>
+                                           data-original-title="{{ 'plugin.admin.product_review.list.title.edit.name'|trans }}"><i class="fa fa-pencil fa-lg text-secondary"></i></a>
+
+                                        <a
+                                                class="btn btn-ec-actionIcon mr-3"
+                                                data-toggle="modal"
+                                                data-target="#confirmModal-{{ Review.id }}"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="{{ 'admin.product.tag.delete'|trans }}"><i
+                                                    class="fa fa-close fa-lg text-secondary"></i></a>
+                                    </div>
+                                    <div class="modal fade" id="confirmModal-{{ Review.id }}" tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="confirmModal-{{ Review.id }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title font-weight-bold">
+                                                        {{ 'admin.product.tag.delete.confirm.title'|trans }}</h5>
+                                                    <button class="close" type="button"
+                                                            data-dismiss="modal"
+                                                            aria-label="Close"><span
+                                                                aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body text-left">
+                                                    <p class="text-left">
+                                                        {{ 'admin.product.tag.delete.confirm.message'|trans }}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-ec-sub" type="button"
+                                                            data-dismiss="modal">{{ 'admin.product.index.cancel'|trans }}
+                                                    </button>
+                                                    <a
+                                                            href="{{ url('plugin_admin_product_review_delete', { id : Review.id }) }}"
+                                                            class="btn btn-ec-delete"
+                                                            data-confirm="false"
+                                                            {{ csrf_token_for_anchor() }}
+                                                            data-method="delete">
+                                                        {{ 'admin.product.index.delete'|trans }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
