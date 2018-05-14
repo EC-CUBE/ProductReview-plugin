@@ -10,11 +10,13 @@
 
 namespace Plugin\ProductReview\Controller\Admin;
 
+use Monolog\Logger;
 use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewConfigType;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,16 +24,19 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class ConfigController.
  */
-class ConfigController extends AbstractController
+class ConfigController extends \Eccube\Controller\AbstractController
 {
+
     /**
-     * @param Request $request
-     * @param ProductReviewConfig $config
-     * @return Response
-     *
      * @Route("/%eccube_admin_route%/plugin/product/review/config", name="plugin_ProductReview_config")
+     * @Template("ProductReview/Resource/template/admin/config.twig");
+     *
+     * @param Request $request
+     * @param ProductReviewConfigRepository $configRepository
+     * @param \Eccube\Log\Logger $logger
+     * @return array
      */
-    public function index(Request $request, ProductReviewConfigRepository $configRepository)
+    public function index(Request $request, ProductReviewConfigRepository $configRepository, \Eccube\Log\Logger $logger)
     {
         $Config = $configRepository->find(1);
         $form = $this->createForm(ProductReviewConfigType::class, $Config);
@@ -43,16 +48,12 @@ class ConfigController extends AbstractController
             $em->persist($Config);
             $em->flush($Config);
 
-            // todo logの仕様検討
-            log_info('Product review config', array('status' => 'Success'));
-            // todo flash messageの仕様検討
-            //$app->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');
+            $logger->info('Product review config', array('status' => 'Success'));
+            $this->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');
         }
 
-        // todo @Template使うかどうか検討
-        // todo namespaceどうするか検討
-        return $this->render('ProductReview/Resource/template/admin/config.twig', [
+        return [
             'form' => $form->createView(),
-        ]);
+        ];
     }
 }

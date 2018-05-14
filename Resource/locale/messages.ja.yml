@@ -31,13 +31,8 @@ plugin.admin.product_review.list.title: タイトル
 plugin.admin.product_review.list.level: おすすめレベル
 plugin.admin.product_review.list.status: 公開・非公開
 plugin.admin.product_review.list.title.edit.name: 名前を編集
-plugin.admin.product_review.list:
-plugin.admin.product_review:
-plugin.admin.product_review:
-plugin.admin.product_review:
-
-
-
+plugin.admin.product_review.config.form: 商品レビューの設定
+plugin.admin.product_review.config.input.limit: レビューの表示件数(1～5)
 
 plugin.front.review: レビューを書く
 plugin.front.title: 商品について、お客様のご感想をお待ちしております。
