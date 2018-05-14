@@ -10,15 +10,11 @@
 
 namespace Plugin\ProductReview\Controller\Admin;
 
-use Eccube\Application;
 use Eccube\Common\Constant;
-use Eccube\Common\EccubeConfig;
 use Eccube\Controller\AbstractController;
 use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Service\CsvExportService;
 use Eccube\Util\FormUtil;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
 use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
@@ -28,12 +24,9 @@ use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -57,16 +50,6 @@ class ProductReviewController extends AbstractController
      */
     protected $productReviewConfigRepository;
 
-    /**
-     * @var FormFactoryInterface
-     */
-    protected $formFactory;
-
-    /**
-     * @var EccubeConfig
-     */
-    protected $eccubeConfig;
-
     /** @var  CsvExportService */
     protected $csvExportService;
 
@@ -76,24 +59,18 @@ class ProductReviewController extends AbstractController
      * @param PageMaxRepository $pageMaxRepository
      * @param ProductReviewRepository $productReviewRepository
      * @param ProductReviewConfigRepository $productReviewConfigRepository
-     * @param FormFactoryInterface $formFactory
      * @param CsvExportService $csvExportService
-     * @param EccubeConfig $eccubeConfig
      */
     public function __construct(
         PageMaxRepository $pageMaxRepository,
         ProductReviewRepository $productReviewRepository,
         ProductReviewConfigRepository $productReviewConfigRepository,
-        FormFactoryInterface $formFactory,
-        CsvExportService $csvExportService,
-        EccubeConfig $eccubeConfig)
+        CsvExportService $csvExportService)
     {
         $this->pageMaxRepository = $pageMaxRepository;
         $this->productReviewRepository = $productReviewRepository;
         $this->productReviewConfigRepository = $productReviewConfigRepository;
-        $this->formFactory = $formFactory;
         $this->csvExportService = $csvExportService;
-        $this->eccubeConfig = $eccubeConfig;
     }
 
     /**
@@ -104,11 +81,10 @@ class ProductReviewController extends AbstractController
      * @Template("ProductReview/Resource/template/admin/index.twig")
      *
      * @param Request $request
-     * @param Session $session
      * @param null $page_no
      * @return array
      */
-    public function index(Request $request, Session $session, $page_no = null, PaginatorInterface $paginator)
+    public function index(Request $request, $page_no = null, PaginatorInterface $paginator)
     {
         $pageNo = $page_no;
 
@@ -124,34 +100,33 @@ class ProductReviewController extends AbstractController
                 ->getQueryBuilderBySearchData($searchData);
 
             $pageNo = 1;
-            // todo paginationの扱いに応じて修正
-           $pagination = $paginator->paginate(
-               $qb,
-               $pageNo,
-               $pageCount,
-               array('wrap-queries' => true)
-           );
+            $pagination = $paginator->paginate(
+                $qb,
+                $pageNo,
+                $pageCount,
+                array('wrap-queries' => true)
+            );
 
             $searchData = FormUtil::getViewData($searchForm);
 
             // sessionのデータ保持
-            $session->set('plugin.product_review.admin.product_review.search', $searchData);
-            $session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
+            $this->session->set('plugin.product_review.admin.product_review.search', $searchData);
+            $this->session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
         } else {
             if (is_null($pageNo) && $request->get('resume') != Constant::ENABLED) {
                 // sessionを削除
-                $session->remove('plugin.product_review.admin.product_review.search');
-                $session->remove('plugin.product_review.admin.product_review.search.page_no');
+                $this->session->remove('plugin.product_review.admin.product_review.search');
+                $this->session->remove('plugin.product_review.admin.product_review.search.page_no');
                 $searchData = array();
             } else {
                 // pagingなどの処理
                 if (is_null($pageNo)) {
-                    $pageNo = intval($session->get('plugin.product_review.admin.product_review.search.page_no'));
+                    $pageNo = intval($this->session->get('plugin.product_review.admin.product_review.search.page_no'));
                 } else {
-                    $session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
+                    $this->session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
                 }
 
-                $searchData = $session->get('plugin.product_review.admin.product_review.search');
+                $searchData = $this->session->get('plugin.product_review.admin.product_review.search');
                 if (!is_null($searchData)) {
                     $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
                     $qb = $this->productReviewRepository
@@ -162,7 +137,6 @@ class ProductReviewController extends AbstractController
 
                     $pageCount = empty($pcount) ? $pageCount : $pcount;
 
-                    // todo paginationの扱いに応じて修正
                     $pagination = $paginator->paginate(
                         $qb,
                         $pageNo,
