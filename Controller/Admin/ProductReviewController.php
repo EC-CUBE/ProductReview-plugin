@@ -110,8 +110,6 @@ class ProductReviewController extends AbstractController
             $searchData = FormUtil::getViewData($searchForm);
 
             // sessionのデータ保持
-            dump($searchData);
-//            die;
             $this->session->set('plugin.product_review.admin.product_review.search', $searchData);
             $this->session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
         } else {
@@ -152,7 +150,7 @@ class ProductReviewController extends AbstractController
         // Get product preview config.
         /* @var $Config ProductReviewConfig */
         $Config = $this->productReviewConfigRepository->find(1);
-        $csvType = 1;//$Config->getCsvType()->getId();
+        $csvType = $Config->getCsvTypeId()->getId();
 
         return [
             'searchForm' => $searchForm->createView(),
@@ -276,8 +274,9 @@ class ProductReviewController extends AbstractController
         $em->getConfiguration()->setSQLLogger(null);
         $response = new StreamedResponse();
         $response->setCallback(function () use ($request) {
+            /** @var ProductReviewConfig $Config */
             $Config = $this->productReviewConfigRepository->find(1);
-            $csvType = 1;//$Config->getCsvType()->getId();
+            $csvType = $Config->getCsvTypeId();
 
             /* @var $csvService CsvExportService */
             $csvService = $this->csvExportService;
@@ -294,19 +293,11 @@ class ProductReviewController extends AbstractController
             $session = $request->getSession();
 
             $searchData = array();
-//            if (Version::isSupportNewSession()) {
-//                $searchData = $session->get('plugin.product_review.admin.product_review.search');
-//                $searchForm = $this->formFactory->createBuilder(ProductReviewSearchType::class, null, array('csrf_protection' => false));
-//                $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
-//            } else {
-                if ($session->has('plugin.product_review.admin.product_review.search')) {
-                    $searchData = $session->get('plugin.product_review.admin.product_review.search');
-                    $searchForm = $this->createForm(ProductReviewSearchType::class, null, array('csrf_protection' => false));
-//                    $searchForm->handleRequest($request);
-                    $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
-//                    $repo->findDeserializeObjects($searchData);
-                }
-//            }
+            if ($session->has('plugin.product_review.admin.product_review.search')) {
+                $searchData = $session->get('plugin.product_review.admin.product_review.search');
+                $searchForm = $this->createForm(ProductReviewSearchType::class, null, array('csrf_protection' => false));
+                $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
+            }
 
             $qb = $repo->getQueryBuilderBySearchData($searchData);
 
@@ -314,7 +305,7 @@ class ProductReviewController extends AbstractController
             $csvService->setExportQueryBuilder($qb);
             $csvService->exportData(function ($entity, CsvExportService $csvService) {
                 $arrCsv = $csvService->getCsvs();
-                dump($arrCsv);
+
                 $row = array();
                 // CSV出力項目と合致するデータを取得.
                 foreach ($arrCsv as $csv) {

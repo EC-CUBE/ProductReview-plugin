@@ -38,6 +38,17 @@ class ProductReviewConfig extends AbstractEntity
      */
     private $review_max;
 
+
+    /**
+     * @var Eccube\Entity\Master\CsvType
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\CsvType")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="csv_type_id", referencedColumnName="id")
+     * })
+     */
+    private $csv_type_id;
+
     /**
      * @var \DateTime
      *
@@ -96,6 +107,26 @@ class ProductReviewConfig extends AbstractEntity
     public function setReviewMax($max)
     {
         $this->review_max = $max;
+
+        return $this;
+    }
+
+    /**
+     * @return \Eccube\Entity\Master\CsvType
+     */
+    public function getCsvTypeId()
+    {
+        return $this->csv_type_id;
+    }
+
+    /**
+     * Set csv_type_id
+     * @param int $csv_type_id
+     * @return $this
+     */
+    public function setCsvTypeId($csv_type_id)
+    {
+        $this->csv_type_id = $csv_type_id;
 
         return $this;
     }

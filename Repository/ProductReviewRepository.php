@@ -85,7 +85,6 @@ class ProductReviewRepository extends ServiceEntityRepository
      */
     public function getQueryBuilderBySearchData($searchData)
     {
-//        dump($searchData);
         $qb = $this->createQueryBuilder('r')
             ->select('r')
             ->innerJoin('r.Product', 'p');

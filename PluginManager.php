@@ -13,8 +13,10 @@ use Eccube\Entity\Master\DeviceType;
 use Eccube\Entity\Page;
 use Eccube\Entity\PageLayout;
 use Eccube\Plugin\AbstractPluginManager;
+use Eccube\Repository\CsvRepository;
 use Eccube\Repository\LayoutRepository;
 use Eccube\Repository\Master\DeviceTypeRepository;
+use Eccube\Repository\MemberRepository;
 use Eccube\Repository\PageLayoutRepository;
 use Eccube\Repository\PageRepository;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
@@ -28,18 +30,12 @@ class PluginManager extends AbstractPluginManager
         'plugin_products_detail_review_error' => 'レビューを書く3'
     ];
 
-    /** @var  EntityManagerInterface */
-    private $entityManager;
-
     /**
-     * PluginManager constructor.
-     * @param EntityManagerInterface $entityManager
+     * @var array plugin entity
      */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
+    protected $entities = array(
+        'Plugin\ProductReview\Entity\ProductReviewConfig',
+    );
 
     /**
      * @param null $meta
@@ -48,12 +44,15 @@ class PluginManager extends AbstractPluginManager
      */
     public function enable($meta = null, Application $app = null, ContainerInterface $container)
     {
+        $CsvType = $this->createCsvData($container);
+
         $entityManager = $container->get('doctrine.orm.entity_manager');
         $ProductReviewConfig = $entityManager->find(ProductReviewConfig::class, 1);
         if (null === $ProductReviewConfig) {
             $ProductReviewConfig = new ProductReviewConfig();
             $ProductReviewConfig->setId(1);
             $ProductReviewConfig->setReviewMax(10);
+            $ProductReviewConfig->setCsvTypeId($CsvType);
             $entityManager->persist($ProductReviewConfig);
             $entityManager->flush();
         }
@@ -78,6 +77,8 @@ class PluginManager extends AbstractPluginManager
         foreach ($this->urls as $url => $name) {
             $this->removePageLayout($container);
         }
+
+        $this->deleteData($container);
     }
 
     /**
@@ -153,30 +154,30 @@ class PluginManager extends AbstractPluginManager
     /**
      * Create csv data.
      *
-     * @param Application $app
-     *
+     * @param ContainerInterface $container
      * @return CsvType
      */
-    protected function createCsvData(Application $app)
+    protected function createCsvData(ContainerInterface $container)
     {
         /** @var $em EntityManager */
-        $em = $app['orm.em'];
+        $em = $container->get('doctrine.orm.entity_manager');
 
         // Create csv type master
         /** @var $repos CsvTypeRepository */
-        $repos = $this->entityManager->getRepository('Eccube\Entity\Master\CsvType');
+        $repos = $em->getRepository('Eccube\Entity\Master\CsvType');
         $csvTypeId = $repos->createQueryBuilder('ct')
             ->select('Max(ct.id)')
             ->getQuery()
             ->getSingleScalarResult();
         $CsvType = new CsvType();
         $CsvType->setName('商品レビューCSV')
-            ->setId($csvTypeId + 1);
-        $this->entityManager->persist($CsvType);
-        $this->entityManager->flush();
+            ->setId($csvTypeId + 1)
+            ->setSortNo(1);
+        $em->persist($CsvType);
+        $em->flush();
 
         // Create csv data
-        $Member = $app['eccube.repository.member']->find(2);
+        $Member = $container->get(MemberRepository::class)->find(2);
         $rank = 1;
         $Csv = new Csv();
         $Csv->setCsvType($CsvType)
@@ -184,9 +185,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Product')
             ->setReferenceFieldName('name')
-            ->setDispName('商品名');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('商品名')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -195,9 +197,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Status')
             ->setReferenceFieldName('name')
-            ->setDispName('公開・非公開');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('公開・非公開')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -206,9 +209,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('create_date')
             ->setReferenceFieldName('create_date')
-            ->setDispName('投稿日');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('投稿日')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -217,9 +221,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('reviewer_name')
             ->setReferenceFieldName('reviewer_name')
-            ->setDispName('投稿者名');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('投稿者名')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -228,9 +233,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('reviewer_url')
             ->setReferenceFieldName('reviewer_url')
-            ->setDispName('投稿者URL');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('投稿者URL')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -239,9 +245,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Sex')
             ->setReferenceFieldName('name')
-            ->setDispName('性別');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('性別')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -250,9 +257,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('recommend_level')
             ->setReferenceFieldName('recommend_level')
-            ->setDispName('おすすめレベル');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('おすすめレベル')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -261,9 +269,10 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('title')
             ->setReferenceFieldName('title')
-            ->setDispName('タイトル');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('タイトル')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         $Csv = new Csv();
         ++$rank;
@@ -272,23 +281,26 @@ class PluginManager extends AbstractPluginManager
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('comment')
             ->setReferenceFieldName('comment')
-            ->setDispName('コメント');
-        $this->entityManager->persist($Csv);
-        $this->entityManager->flush();
+            ->setDispName('コメント')
+            ->setSortNo($rank);
+        $em->persist($Csv);
+        $em->flush();
 
         return $CsvType;
     }
 
     /**
-     * Delete data.
+     * Delete data
+     *
+     * @param ContainerInterface $container
      */
-    protected function deleteData()
+    protected function deleteData(ContainerInterface $container)
     {
         $app = new Application();
         $app->initialize();
         $app->boot();
         /** @var $em EntityManager */
-        $em = $this->entityManager;
+        $em = $container->get('doctrine.orm.entity_manager');
 
         $entity = $this->entities;
         $entityName = array_shift($entity);
@@ -301,7 +313,7 @@ class PluginManager extends AbstractPluginManager
         }
         $CsvType = $Config->getCsvType();
 
-        $arrCsv = $app['eccube.repository.csv']->findBy(array('CsvType' => $CsvType));
+        $arrCsv = $container->get(CsvRepository::class)->findBy(array('CsvType' => $CsvType));
         foreach ($arrCsv as $value) {
             if ($value instanceof Csv) {
                 $em->remove($value);
