@@ -10,7 +10,6 @@
 
 namespace Plugin\ProductReview\Form\Type;
 
-use Eccube\Application;
 use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Master\SexType;
 use Symfony\Component\Form\AbstractType;

@@ -50,7 +50,9 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
-        $this->assertContains('レビューの表示件数(1～30)', $crawler->html());
+        $min = $this->eccubeConfig['review_regist_min'];
+        $max = $this->eccubeConfig['review_regist_max'];
+        $this->assertContains('レビューの表示件数('.$min.'～'.$max.')', $crawler->html());
     }
 
     /**

@@ -88,7 +88,6 @@ class ProductReviewRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('r')
             ->select('r')
             ->innerJoin('r.Product', 'p');
-            // ->andWhere('r.del_flg = :del');
         // $qb->setParameter('del', Constant::DISABLED);
 
         // Do not allow search zero (number 0).

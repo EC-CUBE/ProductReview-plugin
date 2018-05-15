@@ -53,3 +53,5 @@ plugin.front.confirm.page.remind: "下記の内容で送信してもよろしい
 plugin.front.complete.thank.you: ありがとうございました。
 plugin.front.complete.message: "内容を確認後、反映させていただきます。<br>今しばらくお待ちくださいませ。"
 plugin.front.complete.btn.return: 商品ページに戻る
+
+plugin.admin.nav: 商品レビュー

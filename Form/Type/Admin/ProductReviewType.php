@@ -11,10 +11,8 @@
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Common\EccubeConfig;
-use Eccube\Entity\Master\ProductStatus;
 use Eccube\Form\Type\Master\ProductStatusType;
 use Eccube\Form\Type\Master\SexType;
-use Eccube\Form\Type\Master\StatusType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;

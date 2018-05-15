@@ -10,7 +10,6 @@
 
 namespace Plugin\ProductReview\Form\Type\Admin;
 
-use Eccube\Application;
 use Eccube\Common\EccubeConfig;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Symfony\Component\Form\AbstractType;
