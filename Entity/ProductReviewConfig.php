@@ -40,11 +40,11 @@ class ProductReviewConfig extends AbstractEntity
 
 
     /**
-     * @var Eccube\Entity\Master\CsvType
+     * @var \Eccube\Entity\Master\CsvType
      *
      * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\CsvType")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="csv_type_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="csv_type_id", nullable=true, referencedColumnName="id")
      * })
      */
     private $csv_type_id;

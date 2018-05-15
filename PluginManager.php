@@ -3,9 +3,7 @@
 namespace Plugin\ProductReview;
 
 
-use Doctrine\ORM\EntityManagerInterface;
 use Eccube\Application;
-use Eccube\Common\Constant;
 use Eccube\Entity\Csv;
 use Eccube\Entity\Layout;
 use Eccube\Entity\Master\CsvType;
@@ -24,6 +22,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
 {
+    /**
+     * @var array
+     */
     private $urls = [
         'plugin_products_detail_review' => 'レビューを書く1',
         'plugin_products_detail_review_complete' => 'レビューを書く2',
@@ -50,12 +51,11 @@ class PluginManager extends AbstractPluginManager
         $ProductReviewConfig = $entityManager->find(ProductReviewConfig::class, 1);
         if (null === $ProductReviewConfig) {
             $ProductReviewConfig = new ProductReviewConfig();
-            $ProductReviewConfig->setId(1);
             $ProductReviewConfig->setReviewMax(10);
-            $ProductReviewConfig->setCsvTypeId($CsvType);
-            $entityManager->persist($ProductReviewConfig);
-            $entityManager->flush();
         }
+        $ProductReviewConfig->setCsvTypeId($CsvType);
+        $entityManager->persist($ProductReviewConfig);
+        $entityManager->flush();
 
         foreach ($this->urls as $url => $name) {
             $PageLayout = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
@@ -75,7 +75,7 @@ class PluginManager extends AbstractPluginManager
     {
         // pagelayoutの削除
         foreach ($this->urls as $url => $name) {
-            $this->removePageLayout($container);
+            $this->removePageLayout($container, $url);
         }
 
         $this->deleteData($container);
@@ -299,31 +299,29 @@ class PluginManager extends AbstractPluginManager
         $app = new Application();
         $app->initialize();
         $app->boot();
-        /** @var $em EntityManager */
-        $em = $container->get('doctrine.orm.entity_manager');
 
-        $entity = $this->entities;
-        $entityName = array_shift($entity);
-        /** @var $repos PageLayoutRepository */
-        $repos = $em->getRepository($entityName);
         /* @var $Config ProductReviewConfig */
-        $Config = $repos->find(1);
+        $entityManager = $container->get('doctrine.orm.entity_manager');
+        $Config = $entityManager->find(ProductReviewConfig::class, 1);
         if (!$Config) {
             return;
         }
-        $CsvType = $Config->getCsvType();
+
+        $CsvType = $Config->getCsvTypeId();
 
         $arrCsv = $container->get(CsvRepository::class)->findBy(array('CsvType' => $CsvType));
         foreach ($arrCsv as $value) {
             if ($value instanceof Csv) {
-                $em->remove($value);
-                $em->flush();
+                $entityManager->remove($value);
+                $entityManager->flush();
             }
         }
 
-        $em->remove($Config);
-        $em->flush();
-        $em->remove($CsvType);
-        $em->flush();
+        $Config->setCsvTypeId(null);
+        $entityManager->persist($Config);
+        $entityManager->flush();
+
+        $entityManager->remove($CsvType);
+        $entityManager->flush();
     }
 }

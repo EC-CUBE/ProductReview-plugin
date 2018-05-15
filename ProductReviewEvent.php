@@ -37,13 +37,19 @@ class ProductReviewEvent implements EventSubscriberInterface
      * @param ProductStatusRepository $productStatusRepository
      * @param ProductReviewRepository $productReviewRepository
      */
-    public function __construct(ProductReviewConfigRepository $productReviewConfigRepository, ProductStatusRepository $productStatusRepository, ProductReviewRepository $productReviewRepository)
+    public function __construct(
+        ProductReviewConfigRepository $productReviewConfigRepository,
+        ProductStatusRepository $productStatusRepository,
+        ProductReviewRepository $productReviewRepository)
     {
         $this->productReviewConfigRepository = $productReviewConfigRepository;
         $this->productStatusRepository = $productStatusRepository;
         $this->productReviewRepository = $productReviewRepository;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -51,6 +57,9 @@ class ProductReviewEvent implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param TemplateEvent $event
+     */
     public function detail(TemplateEvent $event)
     {
         /** @var ProductReviewConfig $ProductReviewConfig */
