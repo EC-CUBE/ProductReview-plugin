@@ -210,21 +210,16 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $crawler = $this->client->request(
             'POST',
             $this->generateUrl('plugin_admin_product_review'),
-            array('admin_product_review_search' => $form)
+            array('product_review_search' => $form)
         );
 
-//        dump($this->client->getResponse()->getContent());
-//        die;
         $this->assertContains('検索', $crawler->html());
-        $numberResult = $crawler->filter('form#search_form span#search-result')->html();
 
-        dump($numberResult); die;
-        $numberResult = preg_replace('/\D/', '', $numberResult->html());
-
+        $numberResult = $crawler->filter('#search_form #search-result')->html();
+        $numberResult = preg_replace('/\D/', '', $numberResult);
         $this->assertContains('1', $numberResult);
 
-        $table = $crawler->filter('.table-striped tbody');
-
+        $table = $crawler->filter('.table tbody');
         $this->assertContains($review->getReviewerName(), $table->html());
     }
 
@@ -269,12 +264,10 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $crawler = $this->client->request(
             'POST',
             $this->generateUrl('plugin_admin_product_review'),
-            array('admin_product_review_search' => $form)
+            array('product_review_search' => $form)
         );
 
         $this->assertContains('検索', $crawler->html());
-        $form = $crawler->selectButton('検索')->form();
-        $crawler = $this->client->submit($form);
         $numberResult = $crawler->filter('form#search_form span#search-result')->html();
 
         $numberResult = preg_replace('/\D/', '', $numberResult);
@@ -310,8 +303,8 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             'product_code' => $review->getProduct()->getCodeMax(),
             'sex' => array($review->getSex()->getId()),
             'recommend_level' => $review->getRecommendLevel(),
-            'review_start' => $review->getCreateDate()->modify('-2 days')->format('mm/dd/Y'),
-            'review_end' => $review->getCreateDate()->modify('+2 days')->format('mm/dd/Y'),
+            'review_start' => $review->getCreateDate()->modify('-2 days')->format('Y/m/d'),
+            'review_end' => $review->getCreateDate()->modify('+2 days')->format('Y/m/d'),
         );
     }
 
@@ -334,8 +327,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     /**
      * Create data.
      *
-     * @param int|Product $product
-     *
+     * @param int $product
      * @return ProductReview
      */
     private function createProductReviewData($product = 1)

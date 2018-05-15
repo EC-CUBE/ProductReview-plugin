@@ -22,7 +22,6 @@ use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
 use Plugin\ProductReview\Form\Type\Admin\ProductReviewType;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -97,7 +96,6 @@ class ProductReviewController extends AbstractController
 
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData = $searchForm->getData();
-
             $qb = $this->productReviewRepository
                 ->getQueryBuilderBySearchData($searchData);
 
@@ -112,6 +110,8 @@ class ProductReviewController extends AbstractController
             $searchData = FormUtil::getViewData($searchForm);
 
             // sessionのデータ保持
+            dump($searchData);
+//            die;
             $this->session->set('plugin.product_review.admin.product_review.search', $searchData);
             $this->session->set('plugin.product_review.admin.product_review.search.page_no', $pageNo);
         } else {
@@ -299,10 +299,13 @@ class ProductReviewController extends AbstractController
 //                $searchForm = $this->formFactory->createBuilder(ProductReviewSearchType::class, null, array('csrf_protection' => false));
 //                $searchData = \Eccube\Util\FormUtil::submitAndGetData($searchForm, $searchData);
 //            } else {
-                /*if ($session->has('plugin.product_review.admin.product_review.search')) {
+                if ($session->has('plugin.product_review.admin.product_review.search')) {
                     $searchData = $session->get('plugin.product_review.admin.product_review.search');
-                    $repo->findDeserializeObjects($searchData);
-                }*/
+                    $searchForm = $this->createForm(ProductReviewSearchType::class, null, array('csrf_protection' => false));
+//                    $searchForm->handleRequest($request);
+                    $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
+//                    $repo->findDeserializeObjects($searchData);
+                }
 //            }
 
             $qb = $repo->getQueryBuilderBySearchData($searchData);
@@ -311,6 +314,7 @@ class ProductReviewController extends AbstractController
             $csvService->setExportQueryBuilder($qb);
             $csvService->exportData(function ($entity, CsvExportService $csvService) {
                 $arrCsv = $csvService->getCsvs();
+                dump($arrCsv);
                 $row = array();
                 // CSV出力項目と合致するデータを取得.
                 foreach ($arrCsv as $csv) {

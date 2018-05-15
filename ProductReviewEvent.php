@@ -2,10 +2,7 @@
 
 namespace Plugin\ProductReview;
 
-use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
-use Eccube\Event\EccubeEvents;
-use Eccube\Event\EventArgs;
 use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Plugin\ProductReview\Entity\ProductReview;

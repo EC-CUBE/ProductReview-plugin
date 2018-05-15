@@ -3,10 +3,12 @@
 namespace Plugin\ProductReview;
 
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Eccube\Application;
+use Eccube\Common\Constant;
+use Eccube\Entity\Csv;
 use Eccube\Entity\Layout;
+use Eccube\Entity\Master\CsvType;
 use Eccube\Entity\Master\DeviceType;
 use Eccube\Entity\Page;
 use Eccube\Entity\PageLayout;
@@ -17,21 +19,27 @@ use Eccube\Repository\PageLayoutRepository;
 use Eccube\Repository\PageRepository;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 class PluginManager extends AbstractPluginManager
 {
-    private $originalDir = __DIR__ . '/Resource/template/default/';
-
-    private $template1 = 'index.twig';
-//    private $template2 = 'coupon_shopping_item_confirm.twig';
-//    private $template3 = 'mypage_history_coupon.twig';
-
     private $urls = [
         'plugin_products_detail_review' => 'レビューを書く1',
         'plugin_products_detail_review_complete' => 'レビューを書く2',
         'plugin_products_detail_review_error' => 'レビューを書く3'
     ];
+
+    /** @var  EntityManagerInterface */
+    private $entityManager;
+
+    /**
+     * PluginManager constructor.
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
 
     /**
      * @param null $meta
@@ -50,7 +58,6 @@ class PluginManager extends AbstractPluginManager
             $entityManager->flush();
         }
 
-        $this->copyBlock($container);
         foreach ($this->urls as $url => $name) {
             $PageLayout = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
             if (is_null($PageLayout)) {
@@ -67,7 +74,6 @@ class PluginManager extends AbstractPluginManager
      */
     public function disable($meta = null, Application $app = null, ContainerInterface $container)
     {
-        $this->removeBlock($container);
         // pagelayoutの削除
         foreach ($this->urls as $url => $name) {
             $this->removePageLayout($container);
@@ -145,28 +151,167 @@ class PluginManager extends AbstractPluginManager
     }
 
     /**
-     * Copy block template.
+     * Create csv data.
      *
-     * @param ContainerInterface $container
+     * @param Application $app
+     *
+     * @return CsvType
      */
-    private function copyBlock(ContainerInterface $container)
+    protected function createCsvData(Application $app)
     {
-        $templateDir = $container->getParameter('eccube_theme_front_dir');
-        // ファイルコピー
-        $file = new Filesystem();
-        // ブロックファイルをコピー
-        $file->copy($this->originalDir . $this->template1, $templateDir . '/ProductReview/' . $this->template1);
+        /** @var $em EntityManager */
+        $em = $app['orm.em'];
+
+        // Create csv type master
+        /** @var $repos CsvTypeRepository */
+        $repos = $this->entityManager->getRepository('Eccube\Entity\Master\CsvType');
+        $csvTypeId = $repos->createQueryBuilder('ct')
+            ->select('Max(ct.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $CsvType = new CsvType();
+        $CsvType->setName('商品レビューCSV')
+            ->setId($csvTypeId + 1);
+        $this->entityManager->persist($CsvType);
+        $this->entityManager->flush();
+
+        // Create csv data
+        $Member = $app['eccube.repository.member']->find(2);
+        $rank = 1;
+        $Csv = new Csv();
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('Product')
+            ->setReferenceFieldName('name')
+            ->setDispName('商品名');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('Status')
+            ->setReferenceFieldName('name')
+            ->setDispName('公開・非公開');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('create_date')
+            ->setReferenceFieldName('create_date')
+            ->setDispName('投稿日');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('reviewer_name')
+            ->setReferenceFieldName('reviewer_name')
+            ->setDispName('投稿者名');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('reviewer_url')
+            ->setReferenceFieldName('reviewer_url')
+            ->setDispName('投稿者URL');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('Sex')
+            ->setReferenceFieldName('name')
+            ->setDispName('性別');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('recommend_level')
+            ->setReferenceFieldName('recommend_level')
+            ->setDispName('おすすめレベル');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('title')
+            ->setReferenceFieldName('title')
+            ->setDispName('タイトル');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        $Csv = new Csv();
+        ++$rank;
+        $Csv->setCsvType($CsvType)
+            ->setCreator($Member)
+            ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
+            ->setFieldName('comment')
+            ->setReferenceFieldName('comment')
+            ->setDispName('コメント');
+        $this->entityManager->persist($Csv);
+        $this->entityManager->flush();
+
+        return $CsvType;
     }
 
     /**
-     * Remove block template.
-     *
-     * @param ContainerInterface $container
+     * Delete data.
      */
-    private function removeBlock(ContainerInterface $container)
+    protected function deleteData()
     {
-        $templateDir = $container->getParameter('eccube_theme_front_dir');
-        $file = new Filesystem();
-        $file->remove($templateDir . '/ProductReview/' . $this->template1);
+        $app = new Application();
+        $app->initialize();
+        $app->boot();
+        /** @var $em EntityManager */
+        $em = $this->entityManager;
+
+        $entity = $this->entities;
+        $entityName = array_shift($entity);
+        /** @var $repos PageLayoutRepository */
+        $repos = $em->getRepository($entityName);
+        /* @var $Config ProductReviewConfig */
+        $Config = $repos->find(1);
+        if (!$Config) {
+            return;
+        }
+        $CsvType = $Config->getCsvType();
+
+        $arrCsv = $app['eccube.repository.csv']->findBy(array('CsvType' => $CsvType));
+        foreach ($arrCsv as $value) {
+            if ($value instanceof Csv) {
+                $em->remove($value);
+                $em->flush();
+            }
+        }
+
+        $em->remove($Config);
+        $em->flush();
+        $em->remove($CsvType);
+        $em->flush();
     }
 }
