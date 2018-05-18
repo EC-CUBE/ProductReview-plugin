@@ -41,7 +41,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
             $Config = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($Config);
-            $em->flush($Config);
+            $em->flush();
 
             $logger->info('Product review config', array('status' => 'Success'));
             $this->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');

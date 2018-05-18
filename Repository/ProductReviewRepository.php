@@ -48,9 +48,8 @@ class ProductReviewRepository extends ServiceEntityRepository
     {
         try {
             $this->entityManager->persist($ProductReview);
-            $this->entityManager->flush($ProductReview);
+            $this->entityManager->flush();
         } catch (\Exception $e) {
-            dump($e->getMessage());
             return false;
         }
 
@@ -68,7 +67,7 @@ class ProductReviewRepository extends ServiceEntityRepository
     {
         try {
             $this->entityManager->remove($ProductReview);
-            $this->entityManager->flush($ProductReview);
+            $this->entityManager->flush();
         } catch (\Exception $e) {
             return false;
         }

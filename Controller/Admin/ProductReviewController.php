@@ -167,9 +167,8 @@ class ProductReviewController extends AbstractController
      * @Template("ProductReview/Resource/template/admin/edit.twig")
      *
      * @param Request $request
-     * @param int $id
-     *
-     * @return array
+     * @param $id
+     * @return array|RedirectResponse
      */
     public function edit(Request $request, $id)
     {
