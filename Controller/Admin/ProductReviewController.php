@@ -184,7 +184,7 @@ class ProductReviewController extends AbstractController
 
         $Product = $ProductReview->getProduct();
         if (!$Product) {
-            $this->addError('admin.product.not_found', 'admin');
+            $this->addError('admin.product.product_review.not_found', 'admin');
 
             return $this->redirectToRoute('plugin_admin_product_review');
         }

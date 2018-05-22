@@ -136,7 +136,7 @@
                     {% set positive_avg_star = avg %}
                     {% set nagative_avg_star = 5 - positive_avg_star %}
                     <dt class="heading02 sp">
-                        {{ 'plugin.front.review.product'|trans }}
+                        {{ 'plugin.front.product_review.review.product'|trans }}
 
                         <!--平均の星の数-->
                         <span class="recommend_average">
@@ -152,7 +152,7 @@
                         </svg>
                     </dt>
                     <dt class="heading02 pc active">
-                        {{ 'plugin.front.review.product'|trans }}
+                        {{ 'plugin.front.product_review.review.product'|trans }}
 
                         <!--平均の星の数-->
                         <span class="recommend_average">
@@ -175,9 +175,9 @@
                                             <!--投稿者-->
                                             <span class="recommend_name">
                                             {% if ProductReview.reviewer_url %}
-                                                <a href="{{ ProductReview.reviewer_url }}" target="_blank">{{ ProductReview.reviewer_name }}{{ 'plugin.front.reviewer.name'|trans }}</a>
+                                                <a href="{{ ProductReview.reviewer_url }}" target="_blank">{{ ProductReview.reviewer_name }}{{ 'plugin.front.product_review.reviewer.name'|trans }}</a>
                                             {% else %}
-                                                {{ ProductReview.reviewer_name }}{{ 'plugin.front.reviewer.name'|trans }}
+                                                {{ ProductReview.reviewer_name }}{{ 'plugin.front.product_review.reviewer.name'|trans }}
                                             {% endif %}
                                         </span>
 
@@ -202,7 +202,7 @@
                 </dl>
             </div>
             <div class="review_btn">
-                <a href="{{ url('plugin_products_detail_review', {'id' : id}) }}" class="btn btn-info">{{ 'plugin.front.review'|trans }}</a>
+                <a href="{{ url('plugin_products_detail_review', {'id' : id}) }}" class="btn btn-info">{{ 'plugin.front.product_review.review'|trans }}</a>
             </div>
         </div>
     </div>

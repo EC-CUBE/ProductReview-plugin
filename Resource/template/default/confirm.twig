@@ -110,17 +110,17 @@
 {% form_theme form 'Form/form_layout.twig' %}
 
 {% block main %}
-<h1 class="page-heading">{{ 'plugin.front.review'|trans }}</h1>
+<h1 class="page-heading">{{ 'plugin.front.product_review.review'|trans }}</h1>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <p id="confirm_box__message">{{ 'plugin.front.confirm.page.remind'|trans|raw }}</p>
+            <p id="confirm_box__message">{{ 'plugin.front.product_review.confirm.page.remind'|trans|raw }}</p>
 
             <form method="post" action="{{ url('plugin_products_detail_review', { id : Product.id }) }}">
                 {{ form_widget(form._token) }}
                 <div class="dl_table">
                     <dl>
-                        <dt><label>{{ 'plugin.front.product.name'|trans }}</label></dt>
+                        <dt><label>{{ 'plugin.front.product_review.product.name'|trans }}</label></dt>
                         <dd class="form-group">
                             {{ Product.name }}
                         </dd>
@@ -168,10 +168,10 @@
                 <div class="row no-padding">
                     <div class="btn_group col-sm-offset-4 col-sm-4">
                         <p>
-                            <button type="submit" class="btn btn-primary btn-block" name="mode" value="complete">{{ 'plugin.front.form.send'|trans }}</button>
+                            <button type="submit" class="btn btn-primary btn-block" name="mode" value="complete">{{ 'plugin.front.product_review.form.send'|trans }}</button>
                         </p>
                         <p>
-                            <button type="submit" class="btn btn-info btn-block" name="mode" value="back">{{ 'plugin.front.form.back'|trans }}</button>
+                            <button type="submit" class="btn btn-info btn-block" name="mode" value="back">{{ 'plugin.front.product_review.form.back'|trans }}</button>
                         </p>
                     </div>
                 </div>

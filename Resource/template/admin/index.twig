@@ -104,32 +104,32 @@ function fnChangeActionSubmit(action) {
         <div class="c-subContents collapse ec-collapse" id="searchDetail">
             <div class="row mb-2">
                 <div class="col-6 col-sm-4">
-                    <label>{{ searchForm.product_name.vars.label }}</label>
+                    <label>{{ form_label(searchForm.product_name) }}</label>
                     <div class="form-group">{{ form_widget(searchForm.product_name) }}</div>
                 </div>
                 <div class="col-6 col-sm-4">
-                    <label>{{ searchForm.product_code.vars.label }}</label>
+                    <label>{{ form_label(searchForm.product_code) }}</label>
                     <div class="form-group">{{ form_widget(searchForm.product_code) }}</div>
                 </div>
                 <div class="col-6 col-sm-4">
-                    <label>{{ searchForm.recommend_level.vars.label }}</label>
+                    <label>{{ form_label(searchForm.recommend_level) }}</label>
                     <div class="form-group">{{ form_widget(searchForm.recommend_level) }}</div>
                 </div>
 
                 <div class="col-6 col-sm-4">
-                    <label>{{ searchForm.review_start.vars.label }}</label>
+                    <label>{{ form_label(searchForm.review_start) }}</label>
                     <div class="form-group range">
                         {{ form_widget(searchForm.review_start, {'attr': {'class': 'input_cal'}}) }} ～ {{ form_widget(searchForm.review_end, {'attr': {'class': 'input_cal'}}) }}
                     </div>
                 </div>
 
                 <div class="col-6 col-sm-4">
-                    <label>{{ searchForm.sex.vars.label }}</label>
+                    <label>{{ form_label(searchForm.sex) }}</label>
                     <div class="form-group">{{ form_widget(searchForm.sex) }}</div>
                 </div>
 
                 <div class="col-6 col-sm-4">
-                    <label>{{ searchForm.status.vars.label }}</label>
+                    <label>{{ form_label(searchForm.status) }}</label>
                     <div class="form-group">{{ form_widget(searchForm.status) }}</div>
                 </div>
             </div>

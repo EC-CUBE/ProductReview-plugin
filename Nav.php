@@ -18,7 +18,7 @@ class Nav implements EccubeNav
         return [
             'product' => [
                 'id' => 'product_review',
-                'name' => 'plugin.admin.nav',
+                'name' => 'plugin.admin.product_review.nav',
                 'url' => 'plugin_admin_product_review',
             ],
         ];

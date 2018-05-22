@@ -62,7 +62,7 @@ class ProductReviewSearchType extends AbstractType
                 ),
             ))
             ->add('product_name', TextType::class, array(
-                'label' => 'plugin.front.product.name',
+                'label' => 'plugin.front.product_review.product.name',
                 'required' => false,
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['eccube_stext_len'])),

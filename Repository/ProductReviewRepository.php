@@ -11,7 +11,6 @@
 namespace Plugin\ProductReview\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Master\ProductStatus;
@@ -29,11 +28,13 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ProductReviewRepository extends AbstractRepository
 {
-    protected $entityManager;
 
-    public function __construct(RegistryInterface $registry, EntityManagerInterface $entityManager)
+    /**
+     * ProductReviewRepository constructor.
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RegistryInterface $registry)
     {
-        $this->entityManager = $entityManager;
         parent::__construct($registry, ProductReview::class);
     }
 
@@ -44,11 +45,11 @@ class ProductReviewRepository extends AbstractRepository
      *
      * @return bool
      */
-    public function save(ProductReview $ProductReview)
+    public function save($ProductReview)
     {
         try {
-            $this->entityManager->persist($ProductReview);
-            $this->entityManager->flush();
+            $this->getEntityManager()->persist($ProductReview);
+            $this->getEntityManager()->flush();
         } catch (\Exception $e) {
             return false;
         }
@@ -63,11 +64,11 @@ class ProductReviewRepository extends AbstractRepository
      *
      * @return bool
      */
-    public function delete(ProductReview $ProductReview)
+    public function delete($ProductReview)
     {
         try {
-            $this->entityManager->remove($ProductReview);
-            $this->entityManager->flush();
+            $this->getEntityManager()->remove($ProductReview);
+            $this->getEntityManager()->flush();
         } catch (\Exception $e) {
             return false;
         }
