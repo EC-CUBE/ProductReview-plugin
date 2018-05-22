@@ -24,7 +24,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
 
     /**
      * @Route("/%eccube_admin_route%/plugin/product/review/config", name="plugin_ProductReview_config")
-     * @Template("ProductReview/Resource/template/admin/config.twig");
+     * @Template("ProductReview/Resource/template/admin/config.twig")
      *
      * @param Request $request
      * @param ProductReviewConfigRepository $configRepository
@@ -41,7 +41,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
             $Config = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($Config);
-            $em->flush();
+            $em->flush($Config);
 
             $logger->info('Product review config', array('status' => 'Success'));
             $this->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');
