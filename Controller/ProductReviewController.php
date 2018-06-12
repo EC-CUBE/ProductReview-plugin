@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,35 +31,36 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ProductReviewController extends AbstractController
 {
-
-    /** @var  ProductStatusRepository */
+    /** @var ProductStatusRepository */
     private $productStatusRepository;
 
-    /** @var  ProductReviewRepository */
+    /** @var ProductReviewRepository */
     private $productReviewRepository;
 
     /**
      * ProductReviewController constructor.
+     *
      * @param ProductStatusRepository $productStatusRepository
      * @param ProductReviewRepository $productReviewRepository
      */
-    public function __construct(ProductStatusRepository $productStatusRepository, ProductReviewRepository $productReviewRepository){
+    public function __construct(ProductStatusRepository $productStatusRepository, ProductReviewRepository $productReviewRepository)
+    {
         $this->productStatusRepository = $productStatusRepository;
         $this->productReviewRepository = $productReviewRepository;
     }
-
 
     /**
      * @Route("/plugin/products/detail/{id}/review", name="plugin_products_detail_review", requirements={"id" = "\d+"})
      *
      * @param Request $request
      * @param Product $Product
+     *
      * @return RedirectResponse|Response
      */
     public function review(Request $request, Product $Product)
     {
         if (!$this->session->has('_security_admin') && $Product->getStatus()->getId() !== ProductStatus::DISPLAY_SHOW) {
-            log_info('Product review', array('status' => 'Not permission'));
+            log_info('Product review', ['status' => 'Not permission']);
 
             throw new NotFoundHttpException();
         }
@@ -76,10 +80,10 @@ class ProductReviewController extends AbstractController
                     $form = $builder->getForm();
                     $form->handleRequest($request);
 
-                    return $this->render('ProductReview/Resource/template/default/confirm.twig', array(
+                    return $this->render('ProductReview/Resource/template/default/confirm.twig', [
                         'form' => $form->createView(),
                         'Product' => $Product,
-                    ));
+                    ]);
                     break;
 
                 case 'complete':
@@ -87,7 +91,7 @@ class ProductReviewController extends AbstractController
                     /** @var $ProductReview ProductReview */
                     $ProductReview = $form->getData();
                     if ($this->isGranted('ROLE_USER')) {
-                        $Customer = $this->getUser();;
+                        $Customer = $this->getUser();
                         $ProductReview->setCustomer($Customer);
                     }
                     $ProductReview->setProduct($Product);
@@ -97,11 +101,11 @@ class ProductReviewController extends AbstractController
 
                     if (!$status) {
                         $this->addError('plugin.front.product_review.system.error');
-                        log_info('Product review complete', array('status' => 'fail'));
+                        log_info('Product review complete', ['status' => 'fail']);
 
                         return $this->redirectToRoute('plugin_products_detail_review_error');
                     } else {
-                        log_info('Product review complete', array('id' => $Product->getId()));
+                        log_info('Product review complete', ['id' => $Product->getId()]);
 
                         return $this->redirectToRoute('plugin_products_detail_review_complete', ['id' => $Product->getId()]);
                     }
@@ -114,10 +118,10 @@ class ProductReviewController extends AbstractController
             }
         }
 
-        return $this->render('ProductReview/Resource/template/default/index.twig', array(
+        return $this->render('ProductReview/Resource/template/default/index.twig', [
             'Product' => $Product,
             'form' => $form->createView(),
-        ));
+        ]);
     }
 
     /**
@@ -131,7 +135,7 @@ class ProductReviewController extends AbstractController
      */
     public function complete($id)
     {
-        return $this->render('ProductReview/Resource/template/default/complete.twig', array('id' => $id));
+        return $this->render('ProductReview/Resource/template/default/complete.twig', ['id' => $id]);
     }
 
     /**

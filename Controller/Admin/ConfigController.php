@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,7 +24,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ConfigController extends \Eccube\Controller\AbstractController
 {
-
     /**
      * @Route("/%eccube_admin_route%/plugin/product/review/config", name="plugin_ProductReview_config")
      * @Template("ProductReview/Resource/template/admin/config.twig")
@@ -29,6 +31,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
      * @param Request $request
      * @param ProductReviewConfigRepository $configRepository
      * @param \Eccube\Log\Logger $logger
+     *
      * @return array
      */
     public function index(Request $request, ProductReviewConfigRepository $configRepository, \Eccube\Log\Logger $logger)
@@ -43,7 +46,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
             $em->persist($Config);
             $em->flush($Config);
 
-            $logger->info('Product review config', array('status' => 'Success'));
+            $logger->info('Product review config', ['status' => 'Success']);
             $this->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');
         }
 

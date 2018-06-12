@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,7 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProductReviewSearchType extends AbstractType
 {
-
     /**
      * @var EccubeConfig
      */
@@ -42,7 +44,6 @@ class ProductReviewSearchType extends AbstractType
         $this->eccubeConfig = $eccubeConfig;
     }
 
-
     /**
      * {@inheritdoc}
      * build form method.
@@ -54,34 +55,34 @@ class ProductReviewSearchType extends AbstractType
     {
         $config = $this->eccubeConfig;
         $builder
-            ->add('multi', TextType::class, array(
+            ->add('multi', TextType::class, [
                 'label' => 'plugin.admin.product_review.search.inputsearch.placeholder',
                 'required' => false,
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-            ))
-            ->add('product_name', TextType::class, array(
+                'constraints' => [
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+            ])
+            ->add('product_name', TextType::class, [
                 'label' => 'plugin.front.product_review.product.name',
                 'required' => false,
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-            ))
-            ->add('product_code', TextType::class, array(
+                'constraints' => [
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+            ])
+            ->add('product_code', TextType::class, [
                 'label' => 'plugin.admin.product_review.form.product.code',
                 'required' => false,
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-            ))
-            ->add('sex', SexType::class, array(
+                'constraints' => [
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+            ])
+            ->add('sex', SexType::class, [
                 'label' => 'plugin.admin.product_review.form.sex',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
-            ))
-            ->add('recommend_level', ChoiceType::class, array(
+            ])
+            ->add('recommend_level', ChoiceType::class, [
                 'label' => 'plugin.admin.product_review.list.level',
                 'choices' => array_flip([
                     '5' => '★★★★★',
@@ -94,26 +95,26 @@ class ProductReviewSearchType extends AbstractType
                 'expanded' => false,
                 'multiple' => false,
                 'required' => false,
-            ))
-            ->add('review_start', DateType::class, array(
+            ])
+            ->add('review_start', DateType::class, [
                 'label' => 'plugin.admin.product_review.list.posted.date',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
-            ))
-            ->add('review_end', DateType::class, array(
+            ])
+            ->add('review_end', DateType::class, [
                 'label' => 'plugin.admin.product_review.list.posted.date',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
-            ))
+            ])
             // fixme 商品レビュー用のステータスを作成する
-            ->add('status', ProductStatusType::class, array(
+            ->add('status', ProductStatusType::class, [
                 'label' => 'plugin.admin.product_review.search.multi',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
-            ));
+            ]);
     }
 
     /**

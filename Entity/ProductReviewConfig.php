@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +15,6 @@ namespace Plugin\ProductReview\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
-use Eccube\Entity\Master\CsvType;
 
 /**
  * ProductReviewConfig
@@ -37,7 +39,6 @@ class ProductReviewConfig extends AbstractEntity
      * @ORM\Column(name="review_max", type="smallint", nullable=true, options={"unsigned":true, "default":5})
      */
     private $review_max;
-
 
     /**
      * @var \Eccube\Entity\Master\CsvType
@@ -121,7 +122,9 @@ class ProductReviewConfig extends AbstractEntity
 
     /**
      * Set csv_type_id
+     *
      * @param int $csv_type_id
+     *
      * @return $this
      */
     public function setCsvTypeId($csv_type_id)

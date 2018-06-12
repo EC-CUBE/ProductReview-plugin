@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,7 +26,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProductReviewConfigType extends AbstractType
 {
-
     /**
      * @var EccubeConfig
      */
@@ -39,7 +41,6 @@ class ProductReviewConfigType extends AbstractType
         $this->eccubeConfig = $eccubeConfig;
     }
 
-
     /**
      * Build form.
      *
@@ -52,14 +53,14 @@ class ProductReviewConfigType extends AbstractType
         $max = $this->eccubeConfig['review_regist_max'];
 
         $builder
-            ->add('review_max', IntegerType::class, array(
+            ->add('review_max', IntegerType::class, [
                 'required' => true,
                 'label' => "レビューの表示件数({$min}～{$max})",
-                'constraints' => array(
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Range(array('min' => $min, 'max' => $max)),
-                ),
-            ));
+                    new Assert\Range(['min' => $min, 'max' => $max]),
+                ],
+            ]);
     }
 
     /**
@@ -70,7 +71,7 @@ class ProductReviewConfigType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ProductReviewConfig::class
+            'data_class' => ProductReviewConfig::class,
         ]);
     }
 

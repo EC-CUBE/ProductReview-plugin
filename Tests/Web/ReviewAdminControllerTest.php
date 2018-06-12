@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -59,7 +62,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     {
         parent::setUp();
         $this->faker = $this->getFaker();
-        $this->deleteAllRows(array('plg_product_review'));
+        $this->deleteAllRows(['plg_product_review']);
 
         $this->productRepo = $this->container->get(ProductRepository::class);
         $this->sexMasterRepo = $this->container->get(SexRepository::class);
@@ -94,7 +97,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     public function testReviewDeleteIdNotFound()
     {
         $this->client->request('DELETE',
-            $this->generateUrl('plugin_admin_product_review_delete', array('id' => 99999))
+            $this->generateUrl('plugin_admin_product_review_delete', ['id' => 99999])
         );
 
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
@@ -108,7 +111,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $Review = $this->createProductReviewData();
         $productReviewId = $Review->getId();
         $this->client->request('DELETE',
-            $this->generateUrl('plugin_admin_product_review_delete', array('id' => $productReviewId))
+            $this->generateUrl('plugin_admin_product_review_delete', ['id' => $productReviewId])
         );
         $this->assertTrue($this->client->getResponse()->isRedirection());
 
@@ -125,7 +128,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
          */
         $this->client->request(
             'GET',
-            $this->generateUrl('plugin_admin_product_review_edit', array('id' => 99999))
+            $this->generateUrl('plugin_admin_product_review_edit', ['id' => 99999])
         );
         /**
          * @var Client
@@ -153,7 +156,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
         $this->client->request(
             'GET',
-            $this->generateUrl('plugin_admin_product_review_edit', array('id' => $reviewId))
+            $this->generateUrl('plugin_admin_product_review_edit', ['id' => $reviewId])
         );
         /**
          * @var Client
@@ -179,7 +182,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
         $crawler = $this->client->request(
             'GET',
-            $this->generateUrl('plugin_admin_product_review_edit', array('id' => $reviewId))
+            $this->generateUrl('plugin_admin_product_review_edit', ['id' => $reviewId])
         );
         $form = $crawler->selectButton('更新')->form();
         $form['product_review[recommend_level]'] = 1;
@@ -210,7 +213,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $crawler = $this->client->request(
             'POST',
             $this->generateUrl('plugin_admin_product_review'),
-            array('product_review_search' => $form)
+            ['product_review_search' => $form]
         );
 
         $this->assertContains('検索', $crawler->html());
@@ -241,7 +244,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $this->assertContains((string) $number, $numberResult);
 
         /* @var $crawler Crawler */
-        $crawler = $this->client->request('GET', $this->generateUrl('plugin_admin_product_review_page', array('page_no' => 2)));
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_admin_product_review_page', ['page_no' => 2]));
 
         // page 2
         $paging = $crawler->filter('ul.pagination .page-item')->last();
@@ -264,7 +267,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $crawler = $this->client->request(
             'POST',
             $this->generateUrl('plugin_admin_product_review'),
-            array('product_review_search' => $form)
+            ['product_review_search' => $form]
         );
 
         $this->assertContains('検索', $crawler->html());
@@ -296,16 +299,16 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      */
     private function initForm(ProductReview $review)
     {
-        return array(
+        return [
             '_token' => 'dummy',
             'multi' => $review->getReviewerName(),
             'product_name' => $review->getProduct()->getName(),
             'product_code' => $review->getProduct()->getCodeMax(),
-            'sex' => array($review->getSex()->getId()),
+            'sex' => [$review->getSex()->getId()],
             'recommend_level' => $review->getRecommendLevel(),
             'review_start' => $review->getCreateDate()->modify('-2 days')->format('Y/m/d'),
             'review_end' => $review->getCreateDate()->modify('+2 days')->format('Y/m/d'),
-        );
+        ];
     }
 
     /**
@@ -328,6 +331,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      * Create data.
      *
      * @param int $product
+     *
      * @return ProductReview
      */
     private function createProductReviewData($product = 1)

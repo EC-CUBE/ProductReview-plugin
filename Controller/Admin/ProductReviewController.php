@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -50,12 +53,12 @@ class ProductReviewController extends AbstractController
      */
     protected $productReviewConfigRepository;
 
-    /** @var  CsvExportService */
+    /** @var CsvExportService */
     protected $csvExportService;
-
 
     /**
      * ProductReviewController constructor.
+     *
      * @param PageMaxRepository $pageMaxRepository
      * @param ProductReviewRepository $productReviewRepository
      * @param ProductReviewConfigRepository $productReviewConfigRepository
@@ -82,6 +85,7 @@ class ProductReviewController extends AbstractController
      *
      * @param Request $request
      * @param null $page_no
+     *
      * @return array
      */
     public function index(Request $request, $page_no = null, PaginatorInterface $paginator)
@@ -104,7 +108,7 @@ class ProductReviewController extends AbstractController
                 $qb,
                 $pageNo,
                 $pageCount,
-                array('wrap-queries' => true)
+                ['wrap-queries' => true]
             );
 
             $searchData = FormUtil::getViewData($searchForm);
@@ -117,7 +121,7 @@ class ProductReviewController extends AbstractController
                 // sessionを削除
                 $this->session->remove('plugin.product_review.admin.product_review.search');
                 $this->session->remove('plugin.product_review.admin.product_review.search.page_no');
-                $searchData = array();
+                $searchData = [];
             } else {
                 // pagingなどの処理
                 if (is_null($pageNo)) {
@@ -141,7 +145,7 @@ class ProductReviewController extends AbstractController
                         $qb,
                         $pageNo,
                         $pageCount,
-                        array('wrap-queries' => true)
+                        ['wrap-queries' => true]
                     );
                 }
             }
@@ -163,11 +167,13 @@ class ProductReviewController extends AbstractController
 
     /**
      * 編集.
+     *
      * @Route("%eccube_admin_route%/plugin/product/review/{id}/edit", name="plugin_admin_product_review_edit")
      * @Template("ProductReview/Resource/template/admin/edit.twig")
      *
      * @param Request $request
      * @param $id
+     *
      * @return array|RedirectResponse
      */
     public function edit(Request $request, $id)
@@ -199,7 +205,7 @@ class ProductReviewController extends AbstractController
             $ProductReview = $form->getData();
             $status = $this->productReviewRepository->save($ProductReview);
 
-            log_info('Product review add/edit', array('status' => $status));
+            log_info('Product review add/edit', ['status' => $status]);
 
             if (!$status) {
                 $this->addError('plugin.admin.product_review.save.error', 'admin');
@@ -217,6 +223,7 @@ class ProductReviewController extends AbstractController
 
     /**
      * Product review delete function.
+     *
      * @Route("%eccube_admin_route%/plugin/product/review/{id}/delete", name="plugin_admin_product_review_delete")
      *
      * @param Request $request
@@ -249,9 +256,9 @@ class ProductReviewController extends AbstractController
             $this->addError('plugin.admin.product_review.delete.error', 'admin');
         }
 
-        log_info('Product review delete', array('status' => isset($status) ? $status : 0));
+        log_info('Product review delete', ['status' => isset($status) ? $status : 0]);
 
-        return $this->redirect($this->generateUrl('plugin_admin_product_review_page', array('page_no' => $pageNo)).'?resume='.$resume);
+        return $this->redirect($this->generateUrl('plugin_admin_product_review_page', ['page_no' => $pageNo]).'?resume='.$resume);
     }
 
     /**
@@ -291,10 +298,10 @@ class ProductReviewController extends AbstractController
 
             $session = $request->getSession();
 
-            $searchData = array();
+            $searchData = [];
             if ($session->has('plugin.product_review.admin.product_review.search')) {
                 $searchData = $session->get('plugin.product_review.admin.product_review.search');
-                $searchForm = $this->createForm(ProductReviewSearchType::class, null, array('csrf_protection' => false));
+                $searchForm = $this->createForm(ProductReviewSearchType::class, null, ['csrf_protection' => false]);
                 $searchData = FormUtil::submitAndGetData($searchForm, $searchData);
             }
 
@@ -305,7 +312,7 @@ class ProductReviewController extends AbstractController
             $csvService->exportData(function ($entity, CsvExportService $csvService) {
                 $arrCsv = $csvService->getCsvs();
 
-                $row = array();
+                $row = [];
                 // CSV出力項目と合致するデータを取得.
                 foreach ($arrCsv as $csv) {
                     // 受注データを検索.
@@ -323,7 +330,7 @@ class ProductReviewController extends AbstractController
         $response->headers->set('Content-Disposition', 'attachment; filename='.$filename);
         $response->send();
 
-        log_info('商品レビューCSV出力ファイル名', array($filename));
+        log_info('商品レビューCSV出力ファイル名', [$filename]);
 
         return $response;
     }

@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -40,7 +43,6 @@ class ProductReviewType extends AbstractType
         $this->eccubeConfig = $eccubeConfig;
     }
 
-
     /**
      * build form.
      *
@@ -51,67 +53,67 @@ class ProductReviewType extends AbstractType
     {
         $config = $this->eccubeConfig;
         $builder
-            ->add('reviewer_name', TextType::class, array(
+            ->add('reviewer_name', TextType::class, [
                 'label' => 'plugin.admin.product_review.form.name.contributor',
                 'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_stext_len'],
-                ),
-            ))
-            ->add('reviewer_url', TextType::class, array(
+                ],
+            ])
+            ->add('reviewer_url', TextType::class, [
                 'label' => 'plugin.admin.product_review.form.authorURL',
                 'required' => false,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\Url(),
-                    new Assert\Length(array('max' => $config['eccube_mltext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_mltext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_mltext_len'],
-                ),
-            ))
-            ->add('sex', SexType::class, array(
+                ],
+            ])
+            ->add('sex', SexType::class, [
                 'required' => false,
-            ))
-            ->add('recommend_level', ChoiceType::class, array(
+            ])
+            ->add('recommend_level', ChoiceType::class, [
                 'required' => true,
                 'label' => 'plugin.admin.product_review.list.level',
-                'choices' => array_flip(array(
+                'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
                     '3' => '★★★',
                     '2' => '★★',
                     '1' => '★',
-                )),
+                ]),
                 'expanded' => true,
                 'multiple' => false,
                 'placeholder' => false,
-            ))
-            ->add('title', TextType::class, array(
+            ])
+            ->add('title', TextType::class, [
                 'label' => 'plugin.admin.product_review.form.comment.title',
                 'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_stext_len'],
-                ),
-            ))
-            ->add('comment', TextareaType::class, array(
+                ],
+            ])
+            ->add('comment', TextareaType::class, [
                 'label' => 'plugin.admin.product_review.form.comment.content',
                 'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_ltext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_ltext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_ltext_len'],
-                ),
-            ));
+                ],
+            ]);
     }
 
     /**

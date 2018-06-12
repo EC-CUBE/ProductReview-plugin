@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,9 +31,9 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ProductReviewRepository extends AbstractRepository
 {
-
     /**
      * ProductReviewRepository constructor.
+     *
      * @param RegistryInterface $registry
      */
     public function __construct(RegistryInterface $registry)
@@ -117,7 +120,7 @@ class ProductReviewRepository extends AbstractRepository
 
         // 性別
         if (!empty($searchData['sex']) && count($searchData['sex']) > 0) {
-            $arrSexId = array();
+            $arrSexId = [];
             $arrSex = $searchData['sex'];
             foreach ($arrSex as $sex) {
                 if ($sex instanceof Sex) {
@@ -156,7 +159,7 @@ class ProductReviewRepository extends AbstractRepository
         }
         // status
         if (!empty($searchData['status']) && count($searchData['status']) > 0) {
-            $arrId = array();
+            $arrId = [];
             $arrStatus = $searchData['status'];
             foreach ($arrStatus as $status) {
                 if ($status instanceof ProductStatus) {
@@ -209,10 +212,10 @@ class ProductReviewRepository extends AbstractRepository
      */
     public function getAvgAll(Product $Product)
     {
-        $defaults = array(
+        $defaults = [
             'recommend_avg' => 0,
             'review_num' => 0,
-        );
+        ];
         try {
             $qb = $this->createQueryBuilder('r')
                 ->select('avg(r.recommend_level) as recommend_avg, count(r.id) as review_num')

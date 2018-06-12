@@ -1,7 +1,17 @@
 <?php
 
-namespace Plugin\ProductReview;
+/*
+ * This file is part of EC-CUBE
+ *
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Plugin\ProductReview;
 
 use Eccube\Application;
 use Eccube\Entity\Csv;
@@ -28,15 +38,15 @@ class PluginManager extends AbstractPluginManager
     private $urls = [
         'plugin_products_detail_review' => 'レビューを書く1',
         'plugin_products_detail_review_complete' => 'レビューを書く2',
-        'plugin_products_detail_review_error' => 'レビューを書く3'
+        'plugin_products_detail_review_error' => 'レビューを書く3',
     ];
 
     /**
      * @var array plugin entity
      */
-    protected $entities = array(
+    protected $entities = [
         'Plugin\ProductReview\Entity\ProductReviewConfig',
-    );
+    ];
 
     /**
      * @param null $meta
@@ -88,13 +98,12 @@ class PluginManager extends AbstractPluginManager
      */
     public function update($meta = null, Application $app = null, ContainerInterface $container)
     {
-        $PageLayout = $container->get(PageRepository::class)->findOneBy(array('url' => 'plugin_coupon_shopping'));
+        $PageLayout = $container->get(PageRepository::class)->findOneBy(['url' => 'plugin_coupon_shopping']);
         if (is_null($PageLayout)) {
             // pagelayoutの作成
             $this->pageLayout($container);
         }
     }
-
 
     /**
      * @param ContainerInterface $container
@@ -136,12 +145,12 @@ class PluginManager extends AbstractPluginManager
     private function removePageLayout(ContainerInterface $container, $url)
     {
         // ページ情報の削除
-        $Page = $container->get(PageRepository::class)->findOneBy(array('url' => $url));
+        $Page = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
         if ($Page) {
             $Layout = $container->get(LayoutRepository::class)->find(Layout::DEFAULT_LAYOUT_UNDERLAYER_PAGE);
             $PageLayout = $container->get(PageLayoutRepository::class)->findOneBy([
                 'Page' => $Page,
-                'Layout' => $Layout
+                'Layout' => $Layout,
             ]);
             // Blockの削除
             $entityManager = $container->get('doctrine.orm.entity_manager');
@@ -155,6 +164,7 @@ class PluginManager extends AbstractPluginManager
      * Create csv data.
      *
      * @param ContainerInterface $container
+     *
      * @return CsvType
      */
     protected function createCsvData(ContainerInterface $container)
@@ -296,9 +306,9 @@ class PluginManager extends AbstractPluginManager
      */
     protected function deleteData(ContainerInterface $container)
     {
-        $app = new Application();
-        $app->initialize();
-        $app->boot();
+        //$app = new Application();
+        //$app->initialize();
+        //$app->boot();
 
         /* @var $Config ProductReviewConfig */
         $entityManager = $container->get('doctrine.orm.entity_manager');
@@ -309,7 +319,7 @@ class PluginManager extends AbstractPluginManager
 
         $CsvType = $Config->getCsvTypeId();
 
-        $arrCsv = $container->get(CsvRepository::class)->findBy(array('CsvType' => $CsvType));
+        $arrCsv = $container->get(CsvRepository::class)->findBy(['CsvType' => $CsvType]);
         foreach ($arrCsv as $value) {
             if ($value instanceof Csv) {
                 $entityManager->remove($value);
@@ -321,7 +331,7 @@ class PluginManager extends AbstractPluginManager
         $entityManager->persist($Config);
         $entityManager->flush();
 
-        $entityManager->remove($CsvType);
-        $entityManager->flush();
+//        $entityManager->remove($CsvType);
+//        $entityManager->flush();
     }
 }

@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -53,7 +56,7 @@ class ReviewControllerTest extends AbstractWebTestCase
     {
         parent::setUp();
         $this->faker = $this->getFaker();
-        $this->deleteAllRows(array('plg_product_review'));
+        $this->deleteAllRows(['plg_product_review']);
 
         $this->productRepo = $this->container->get(ProductRepository::class);
         $this->sexMasterRepo = $this->container->get(SexRepository::class);
@@ -68,9 +71,9 @@ class ReviewControllerTest extends AbstractWebTestCase
         $productId = 1;
         $crawler = $this->client->request(
             'POST',
-            $this->generateUrl('plugin_products_detail_review', array('id' => $productId)),
-            array(
-                'product_review' => array(
+            $this->generateUrl('plugin_products_detail_review', ['id' => $productId]),
+            [
+                'product_review' => [
                     'comment' => $this->faker->text(2999),
                     'title' => $this->faker->word,
                     'sex' => 1,
@@ -78,9 +81,9 @@ class ReviewControllerTest extends AbstractWebTestCase
                     'reviewer_url' => $this->faker->url,
                     'reviewer_name' => $this->faker->word,
                     '_token' => 'dummy',
-                ),
+                ],
                 'mode' => 'confirm',
-            )
+            ]
         );
         $this->assertContains('送信する', $crawler->html());
 
@@ -88,7 +91,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $form = $crawler->selectButton('送信する')->form();
         $this->client->submit($form);
 
-        $this->assertTrue($this->client->getResponse()->isRedirect($this->generateUrl('plugin_products_detail_review_complete', array('id' => $productId))));
+        $this->assertTrue($this->client->getResponse()->isRedirect($this->generateUrl('plugin_products_detail_review_complete', ['id' => $productId])));
 
         // Verify back to product detail link.
         /**
@@ -99,7 +102,7 @@ class ReviewControllerTest extends AbstractWebTestCase
 
         $this->actual = $link->getUri();
 
-        $this->expected = $this->generateUrl('product_detail', array('id' => $productId), UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->expected = $this->generateUrl('product_detail', ['id' => $productId], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->verify();
     }
 
@@ -109,7 +112,7 @@ class ReviewControllerTest extends AbstractWebTestCase
     public function testProductReviewAddConfirmBack()
     {
         $productId = 1;
-        $inputForm = array(
+        $inputForm = [
             'comment' => $this->faker->text(2999),
             'title' => $this->faker->word,
             'sex' => 1,
@@ -117,13 +120,13 @@ class ReviewControllerTest extends AbstractWebTestCase
             'reviewer_url' => $this->faker->url,
             'reviewer_name' => $this->faker->word,
             '_token' => 'dummy',
-        );
+        ];
         $crawler = $this->client->request(
             'POST',
-            $this->generateUrl('plugin_products_detail_review', array('id' => $productId)),
-            array('product_review' => $inputForm,
+            $this->generateUrl('plugin_products_detail_review', ['id' => $productId]),
+            ['product_review' => $inputForm,
                 'mode' => 'confirm',
-            )
+            ]
         );
         $this->assertContains('送信する', $crawler->html());
 
@@ -146,8 +149,10 @@ class ReviewControllerTest extends AbstractWebTestCase
         $ProductReview = $this->createProductReviewData($productId);
         $crawler = $this->client->request(
             'GET',
-            $this->generateUrl('product_detail', array('id' => $productId))
+            $this->generateUrl('product_detail', ['id' => $productId])
         );
+
+        $codeStatus = $this->client->getResponse()->getStatusCode();
 
         // review area
         $this->assertContains('id="product_review_area"', $crawler->html());
@@ -172,7 +177,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $this->createProductReviewByNumber($max, $productId);
         $crawler = $this->client->request(
             'GET',
-            $this->generateUrl('product_detail', array('id' => $productId))
+            $this->generateUrl('product_detail', ['id' => $productId])
         );
 
         // review area
