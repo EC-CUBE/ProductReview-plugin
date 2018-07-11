@@ -34,9 +34,15 @@
             padding-bottom: 0;
         }
 
+        #product_review_area .heading02 span.chevron i{ display: none;}
+        #product_review_area .heading02[aria-expanded="true"] span.chevron i.glyphicon-chevron-up{ display: inline-block;}
+        #product_review_area .heading02[aria-expanded="false"] span.chevron i.glyphicon-chevron-down{ display: inline-block;}
+
         #product_review_area .heading02{
             font-weight: bold;
             cursor: pointer;
+            background: #dedede;
+            padding: 15px;
         }
 
         #product_review_area dl dt {
@@ -156,6 +162,10 @@
                     <!--レビュー数-->
                     <span>
                         ({{ number }})
+                    </span>
+                    <span class="chevron pull-right">
+                        <i class="glyphicon glyphicon-chevron-up"></i>
+                        <i class="glyphicon glyphicon-chevron-down"></i>
                     </span>
                 </h4>
             </dl>
