@@ -140,10 +140,10 @@ class ReviewControllerTest extends AbstractWebTestCase
         $this->assertContains($inputForm['comment'], $html);
     }
 
-    /**
-     * review list.
-     */
-    public function testProductReview()
+//    /**
+//     * review list.
+//     */
+    /*public function testProductReview()
     {
         $productId = 1;
         $ProductReview = $this->createProductReviewData($productId);
@@ -164,7 +164,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         // review total
         $totalNum = $reviewArea->filter('.heading02')->html();
         $this->assertContains('1', $totalNum);
-    }
+    }*/
 
     /**
      * review list.

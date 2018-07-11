@@ -9,6 +9,13 @@
  * file that was distributed with this source code.
  */
 #}
+<script>
+    $(function () {
+        var template = $('#product_review_area').get(0).outerHTML;
+        var wrap = $('#page_product_detail .ec-layoutRole .ec-layoutRole__contents .ec-layoutRole__main .ec-productRole .ec-grid2');
+        wrap.after(template).parent().find('#product_review_area').removeClass('d-none');
+    });
+</script>
 
 {% block review %}.
     {% import _self as stars %}
@@ -21,9 +28,15 @@
     {% endmacro %}
 
     <style type="text/css">
+        .d-none{ display: none; }
         #product_review_area {
             border-top: 1px solid #E8E8E8;
             padding-bottom: 0;
+        }
+
+        #product_review_area .heading02{
+            font-weight: bold;
+            cursor: pointer;
         }
 
         #product_review_area dl dt {
@@ -129,40 +142,25 @@
     </style>
 
     <!--▼レビューエリア-->
-    <div id="product_review_area" class="row">
-        <div class="col-sm-10 col-sm-offset-1">
-            <div class="accordion">
-                <dl>
-                    {% set positive_avg_star = avg %}
-                    {% set nagative_avg_star = 5 - positive_avg_star %}
-                    <dt class="heading02 sp">
-                        {{ 'plugin.front.product_review.review.product'|trans }}
-
-                        <!--平均の星の数-->
-                        <span class="recommend_average">
+    <div id="product_review_area" class="row d-none">
+        <div class="col-sm-12">
+            <dl>
+                {% set positive_avg_star = avg %}
+                {% set nagative_avg_star = 5 - positive_avg_star %}
+                <h4 class="heading02 sp" data-toggle="collapse" data-target="#reviewContent" aria-expanded="true">
+                    {{ 'plugin.front.product_review.review.product'|trans }}
+                    <!--平均の星の数-->
+                    <span class="recommend_average">
                         {{ stars.stars(positive_avg_star, nagative_avg_star) }}
                     </span>
-
-                        <!--レビュー数-->
-                        <span>
+                    <!--レビュー数-->
+                    <span>
                         ({{ number }})
                     </span>
-                        <svg class="cb cb-angle-down">
-                            <use xlink:href="#cb-angle-down"/>
-                        </svg>
-                    </dt>
-                    <dt class="heading02 pc active">
-                        {{ 'plugin.front.product_review.review.product'|trans }}
-
-                        <!--平均の星の数-->
-                        <span class="recommend_average">
-                        {{ stars.stars(positive_avg_star, nagative_avg_star) }}
-                    </span>
-
-                        <svg class="cb cb-angle-down">
-                            <use xlink:href="#cb-angle-down"/>
-                        </svg>
-                    </dt>
+                </h4>
+            </dl>
+            <div id="reviewContent" class="collapse in">
+                <dl>
                     <dd>
                         {% if ProductReviews %}
                             <ul class="review_list">
@@ -197,6 +195,8 @@
                                     </li>
                                 {% endfor %}
                             </ul>
+                        {% else %}
+                            <p>{{ 'plugin.admin.product_review.no.review'|trans }}</p>
                         {% endif %}
                     </dd>
                 </dl>
@@ -207,6 +207,4 @@
         </div>
     </div>
     <!-- ▲レビューエリア -->
-
-
 {% endblock %}

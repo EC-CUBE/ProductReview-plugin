@@ -71,6 +71,9 @@ class ProductReviewEvent implements EventSubscriberInterface
      */
     public function detail(TemplateEvent $event)
     {
+        $twig = '@ProductReview/default/review.twig';
+        $event->addSnippet($twig);
+
         /** @var ProductReviewConfig $ProductReviewConfig */
         $ProductReviewConfig = $this->productReviewConfigRepository->find(1);
 
@@ -89,6 +92,7 @@ class ProductReviewEvent implements EventSubscriberInterface
         $parameters['ProductReviews'] = $ProductReviews;
         $parameters['avg'] = $avgRecommend;
         $parameters['number'] = $reviewNumber;
+        $parameters['id'] = $Product->getId();
         $event->setParameters($parameters);
     }
 }

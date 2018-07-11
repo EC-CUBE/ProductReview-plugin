@@ -12,7 +12,7 @@
 [商品管理]-[商品レビュー]-[一覧・検索]画面
 #}
 
-{% extends '@admin/styleguide_frame.twig' %}
+{% extends '@admin/default_frame.twig' %}
 
 {% set menus = ['product', 'product_review'] %}
 {% block title %}{{ 'plugin.admin.product.management.title'|trans }}{% endblock %}
@@ -266,7 +266,7 @@ function fnChangeActionSubmit(action) {
 
                 <div class="row justify-content-md-center mb-4">
                     {% if pagination|length > 0 %}
-                        {% include "@admin/styleguide_pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'plugin_admin_product_review_page' } %}
+                        {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'plugin_admin_product_review_page' } %}
                     {% endif %}
                 </div>
             </div>

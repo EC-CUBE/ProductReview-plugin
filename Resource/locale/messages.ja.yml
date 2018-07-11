@@ -55,3 +55,4 @@ plugin.front.product_review.complete.message: "内容を確認後、反映させ
 plugin.front.product_review.complete.btn.return: 商品ページに戻る
 
 plugin.admin.product_review.nav: 商品レビュー
+plugin.admin.product_review.no.review: まだクチコミはありません
