@@ -115,17 +115,17 @@
 {% endblock stylesheet %}
 
 {% block main %}
-<h1 class="page-heading">{{ 'plugin.front.product_review.review'|trans }}</h1>
+<h1 class="page-heading">{{ 'plugin.product_review.front.review'|trans }}</h1>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <p>{{ 'plugin.front.product_review.title'|trans }}</p>
+            <p>{{ 'plugin.product_review.front.title'|trans }}</p>
             <form method="post" action="{{ url('plugin_products_detail_review', { id : Product.id }) }}">
                 <input type="hidden" name="mode" value="confirm">
                 {{ form_widget(form._token) }}
                 <div class="dl_table">
                     <dl>
-                        <dt><label>{{ 'plugin.front.product_review.product.name'|trans }}</label></dt>
+                        <dt><label>{{ 'plugin.product_review.front.product.name'|trans }}</label></dt>
                         <dd class="form-group">
                             {{ Product.name }}
                         </dd>
@@ -181,10 +181,10 @@
                 <div class="row no-padding">
                     <div class="btn_group col-sm-offset-4 col-sm-4">
                         <p>
-                            <button type="submit" class="btn btn-primary btn-block">{{ 'plugin.front.product_review.form.confirm'|trans }}</button>
+                            <button type="submit" class="btn btn-primary btn-block">{{ 'plugin.product_review.front.form.confirm'|trans }}</button>
                         </p>
                         <p>
-                            <a href="{{ url('product_detail', {'id':Product.id}) }}" class="btn btn-info btn-block">{{ 'plugin.front.product_review.form.back'|trans }}</a>
+                            <a href="{{ url('product_detail', {'id':Product.id}) }}" class="btn btn-info btn-block">{{ 'plugin.product_review.front.form.back'|trans }}</a>
                         </p>
                     </div>
                 </div>

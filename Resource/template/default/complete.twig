@@ -42,7 +42,7 @@
 {% endblock stylesheet %}
 
 {% block main %}
-<h1 class="page-heading">{{ 'plugin.front.product_review.review'|trans }}</h1>
+<h1 class="page-heading">{{ 'plugin.product_review.front.review'|trans }}</h1>
 
 <div class="container-fluid">
     <div class="row">
@@ -51,13 +51,13 @@
                 <div id="deliveradd_input" class="row">
                     <div class="col-sm-10 col-sm-offset-1">
                         <div class="complete_message">
-                            <h2 class="heading01">{{ 'plugin.front.product_review.complete.thank.you'|trans }}</h2>
-                            <p>{{ 'plugin.front.product_review.complete.message'|trans|raw }}</p>
+                            <h2 class="heading01">{{ 'plugin.product_review.front.complete.thank.you'|trans }}</h2>
+                            <p>{{ 'plugin.product_review.front.complete.message'|trans|raw }}</p>
                         </div>
                         <div class="row no-padding">
                             <div class="btn_group col-sm-offset-4 col-sm-4">
                                 <p>
-                                    <a href="{{ url('product_detail', {'id': id}) }}" class="btn btn-info btn-block">{{ 'plugin.front.product_review.complete.btn.return'|trans }}</a>
+                                    <a href="{{ url('product_detail', {'id': id}) }}" class="btn btn-info btn-block">{{ 'plugin.product_review.front.complete.btn.return'|trans }}</a>
                                 </p>
                             </div>
                         </div>

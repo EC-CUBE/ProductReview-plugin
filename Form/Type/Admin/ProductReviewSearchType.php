@@ -56,34 +56,34 @@ class ProductReviewSearchType extends AbstractType
         $config = $this->eccubeConfig;
         $builder
             ->add('multi', TextType::class, [
-                'label' => 'plugin.admin.product_review.search.inputsearch.placeholder',
+                'label' => 'plugin.product_review.admin.search.inputsearch.placeholder',
                 'required' => false,
                 'constraints' => [
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
                 ],
             ])
             ->add('product_name', TextType::class, [
-                'label' => 'plugin.front.product_review.product.name',
+                'label' => 'plugin.product_review.front.product.name',
                 'required' => false,
                 'constraints' => [
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
                 ],
             ])
             ->add('product_code', TextType::class, [
-                'label' => 'plugin.admin.product_review.form.product.code',
+                'label' => 'plugin.product_review.admin.form.product.code',
                 'required' => false,
                 'constraints' => [
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
                 ],
             ])
             ->add('sex', SexType::class, [
-                'label' => 'plugin.admin.product_review.form.sex',
+                'label' => 'plugin.product_review.admin.form.sex',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
             ])
             ->add('recommend_level', ChoiceType::class, [
-                'label' => 'plugin.admin.product_review.list.level',
+                'label' => 'plugin.product_review.admin.list.level',
                 'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -91,26 +91,26 @@ class ProductReviewSearchType extends AbstractType
                     '2' => '★★',
                     '1' => '★',
                 ]),
-                'placeholder' => 'plugin.admin.product_review.form.level',
+                'placeholder' => 'plugin.product_review.admin.form.level',
                 'expanded' => false,
                 'multiple' => false,
                 'required' => false,
             ])
             ->add('review_start', DateType::class, [
-                'label' => 'plugin.admin.product_review.list.posted.date',
+                'label' => 'plugin.product_review.admin.list.posted.date',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
             ])
             ->add('review_end', DateType::class, [
-                'label' => 'plugin.admin.product_review.list.posted.date',
+                'label' => 'plugin.product_review.admin.list.posted.date',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
             ])
             // fixme 商品レビュー用のステータスを作成する
             ->add('status', ProductStatusType::class, [
-                'label' => 'plugin.admin.product_review.search.multi',
+                'label' => 'plugin.product_review.admin.search.multi',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,

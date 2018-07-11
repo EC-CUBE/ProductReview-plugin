@@ -30,11 +30,10 @@ class ConfigController extends \Eccube\Controller\AbstractController
      *
      * @param Request $request
      * @param ProductReviewConfigRepository $configRepository
-     * @param \Eccube\Log\Logger $logger
      *
      * @return array
      */
-    public function index(Request $request, ProductReviewConfigRepository $configRepository, \Eccube\Log\Logger $logger)
+    public function index(Request $request, ProductReviewConfigRepository $configRepository)
     {
         $Config = $configRepository->find(1);
         $form = $this->createForm(ProductReviewConfigType::class, $Config);
@@ -42,12 +41,11 @@ class ConfigController extends \Eccube\Controller\AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $Config = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($Config);
-            $em->flush($Config);
+            $this->entityManager->persist($Config);
+            $this->entityManager->flush($Config);
 
-            $logger->info('Product review config', ['status' => 'Success']);
-            $this->addSuccess('plugin.admin.product_review_config.save.complete', 'admin');
+            log_info('Product review config', ['status' => 'Success']);
+            $this->addSuccess('plugin.product_review.admin_config.save.complete', 'admin');
         }
 
         return [

@@ -183,14 +183,14 @@ class ProductReviewController extends AbstractController
         $ProductReview = $this->productReviewRepository->find($id);
 
         if (!$ProductReview) {
-            $this->addError('plugin.admin.product_review.not_found', 'admin');
+            $this->addError('plugin.product_review.admin.not_found', 'admin');
 
             return $this->redirectToRoute('plugin_admin_product_review');
         }
 
         $Product = $ProductReview->getProduct();
         if (!$Product) {
-            $this->addError('admin.product.product_review.not_found', 'admin');
+            $this->addError('plugin.product_review.admin.product.not_found', 'admin');
 
             return $this->redirectToRoute('plugin_admin_product_review');
         }
@@ -208,9 +208,9 @@ class ProductReviewController extends AbstractController
             log_info('Product review add/edit', ['status' => $status]);
 
             if (!$status) {
-                $this->addError('plugin.admin.product_review.save.error', 'admin');
+                $this->addError('plugin.product_review.admin.save.error', 'admin');
             } else {
-                $this->addSuccess('plugin.admin.product_review.save.complete', 'admin');
+                $this->addSuccess('plugin.product_review.admin.save.complete', 'admin');
             }
         }
 
@@ -248,12 +248,12 @@ class ProductReviewController extends AbstractController
             $status = $this->productReviewRepository->delete($TargetProductReview);
 
             if ($status === true) {
-                $this->addSuccess('plugin.admin.product_review.delete.complete', 'admin');
+                $this->addSuccess('plugin.product_review.admin.delete.complete', 'admin');
             } else {
-                $this->addError('plugin.admin.product_review.delete.error', 'admin');
+                $this->addError('plugin.product_review.admin.delete.error', 'admin');
             }
         } else {
-            $this->addError('plugin.admin.product_review.delete.error', 'admin');
+            $this->addError('plugin.product_review.admin.delete.error', 'admin');
         }
 
         log_info('Product review delete', ['status' => isset($status) ? $status : 0]);

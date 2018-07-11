@@ -100,7 +100,7 @@ class ProductReviewController extends AbstractController
                     $status = $this->productReviewRepository->save($ProductReview);
 
                     if (!$status) {
-                        $this->addError('plugin.front.product_review.system.error');
+                        $this->addError('plugin.product_review.front.system.error');
                         log_info('Product review complete', ['status' => 'fail']);
 
                         return $this->redirectToRoute('plugin_products_detail_review_error');

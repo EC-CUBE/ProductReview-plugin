@@ -49,8 +49,8 @@ class ProductReviewConfigType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $min = $this->eccubeConfig['review_regist_min'];
-        $max = $this->eccubeConfig['review_regist_max'];
+        $min = $this->eccubeConfig['product_review_regist_min'];
+        $max = $this->eccubeConfig['product_review_regist_max'];
 
         $builder
             ->add('review_max', IntegerType::class, [

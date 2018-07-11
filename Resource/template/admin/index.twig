@@ -16,7 +16,7 @@
 
 {% set menus = ['product', 'product_review'] %}
 {% block title %}{{ 'plugin.admin.product.management.title'|trans }}{% endblock %}
-{% block sub_title %}{{ 'plugin.admin.product_review.form.product'|trans }}{% endblock %}
+{% block sub_title %}{{ 'plugin.product_review.admin.form.product'|trans }}{% endblock %}
 
 {% form_theme searchForm '@admin/Form/bootstrap_4_layout.html.twig' %}
 
@@ -91,7 +91,7 @@ function fnChangeActionSubmit(action) {
                 <div class="col-6">
                     <div class="mb-2">
                         <label class="col-form-label">{{ 'admin.product.index.470'|trans }}</label>
-                        {{ form_widget(searchForm.multi, { attr: { placeholder: 'plugin.admin.product_review.search.inputsearch.placeholder'|trans, class : 'input_search' } } ) }}
+                        {{ form_widget(searchForm.multi, { attr: { placeholder: 'plugin.product_review.admin.search.inputsearch.placeholder'|trans, class : 'input_search' } } ) }}
                     </div>
                     <div class="d-inline-block mb-3" data-toggle="collapse" href="#searchDetail"
                          aria-expanded="false" aria-controls="searchDetail"><a><i
@@ -187,12 +187,12 @@ function fnChangeActionSubmit(action) {
                         <thead>
                         <tr>
                             <th class="text-center">ID</th>
-                            <th>{{ 'plugin.admin.product_review.list.posted.date'|trans }}</th>
-                            <th>{{ 'plugin.admin.product_review.list.contributor'|trans }}</th>
-                            <th>{{ 'plugin.admin.product_review.list.product.name'|trans }}</th>
-                            <th>{{ 'plugin.admin.product_review.list.title'|trans }}</th>
-                            <th>{{ 'plugin.admin.product_review.list.level'|trans }}</th>
-                            <th>{{ 'plugin.admin.product_review.list.status'|trans }}</th>
+                            <th>{{ 'plugin.product_review.admin.list.posted.date'|trans }}</th>
+                            <th>{{ 'plugin.product_review.admin.list.contributor'|trans }}</th>
+                            <th>{{ 'plugin.product_review.admin.list.product.name'|trans }}</th>
+                            <th>{{ 'plugin.product_review.admin.list.title'|trans }}</th>
+                            <th>{{ 'plugin.product_review.admin.list.level'|trans }}</th>
+                            <th>{{ 'plugin.product_review.admin.list.status'|trans }}</th>
                             <th>&nbsp;</th>
                         </tr>
                         </thead>
@@ -212,7 +212,7 @@ function fnChangeActionSubmit(action) {
                                            class="btn btn-ec-actionIcon mr-3 action-edit"
                                            data-toggle="tooltip"
                                            data-placement="top" title=""
-                                           data-original-title="{{ 'plugin.admin.product_review.list.title.edit.name'|trans }}"><i class="fa fa-pencil fa-lg text-secondary"></i></a>
+                                           data-original-title="{{ 'plugin.product_review.admin.list.title.edit.name'|trans }}"><i class="fa fa-pencil fa-lg text-secondary"></i></a>
 
                                         <a
                                                 class="btn btn-ec-actionIcon mr-3"

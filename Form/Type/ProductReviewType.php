@@ -54,7 +54,7 @@ class ProductReviewType extends AbstractType
         $config = $this->eccubeConfig;
         $builder
             ->add('reviewer_name', TextType::class, [
-                'label' => 'plugin.admin.product_review.form.name.contributor',
+                'label' => 'plugin.product_review.admin.form.name.contributor',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
@@ -65,7 +65,7 @@ class ProductReviewType extends AbstractType
                 ],
             ])
             ->add('reviewer_url', TextType::class, [
-                'label' => 'plugin.admin.product_review.form.authorURL',
+                'label' => 'plugin.product_review.admin.form.authorURL',
                 'required' => false,
                 'constraints' => [
                     new Assert\Url(),
@@ -80,7 +80,7 @@ class ProductReviewType extends AbstractType
             ])
             ->add('recommend_level', ChoiceType::class, [
                 'required' => true,
-                'label' => 'plugin.admin.product_review.list.level',
+                'label' => 'plugin.product_review.admin.list.level',
                 'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -93,7 +93,7 @@ class ProductReviewType extends AbstractType
                 'placeholder' => false,
             ])
             ->add('title', TextType::class, [
-                'label' => 'plugin.admin.product_review.form.comment.title',
+                'label' => 'plugin.product_review.admin.form.comment.title',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
@@ -104,7 +104,7 @@ class ProductReviewType extends AbstractType
                 ],
             ])
             ->add('comment', TextareaType::class, [
-                'label' => 'plugin.admin.product_review.form.comment.content',
+                'label' => 'plugin.product_review.admin.form.comment.content',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),

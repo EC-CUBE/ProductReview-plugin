@@ -57,7 +57,7 @@ class ProductReviewType extends AbstractType
         $builder
             ->add('id', HiddenType::class)
             ->add('create_date', HiddenType::class, [
-                'label' => 'plugin.admin.product_review.list.posted.date',
+                'label' => 'plugin.product_review.admin.list.posted.date',
                 'mapped' => false,
             ])
             ->add('status', ProductStatusType::class, [
@@ -67,7 +67,7 @@ class ProductReviewType extends AbstractType
                 ],
             ])
             ->add('reviewer_name', TextType::class, [
-                'label' => 'plugin.admin.product_review.form.name.contributor',
+                'label' => 'plugin.product_review.admin.form.name.contributor',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
@@ -78,7 +78,7 @@ class ProductReviewType extends AbstractType
                 ],
             ])
             ->add('reviewer_url', TextType::class, [
-                'label' => 'plugin.admin.product_review.form.authorURL',
+                'label' => 'plugin.product_review.admin.form.authorURL',
                 'required' => false,
                 'constraints' => [
                     new Assert\Url(),
@@ -92,7 +92,7 @@ class ProductReviewType extends AbstractType
                 'required' => false,
             ])
             ->add('recommend_level', ChoiceType::class, [
-                'label' => 'plugin.admin.product_review.list.level',
+                'label' => 'plugin.product_review.admin.list.level',
                 'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -105,7 +105,7 @@ class ProductReviewType extends AbstractType
                 'required' => true,
             ])
             ->add('title', TextType::class, [
-                'label' => 'plugin.admin.product_review.form.comment.title',
+                'label' => 'plugin.product_review.admin.form.comment.title',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
@@ -116,7 +116,7 @@ class ProductReviewType extends AbstractType
                 ],
             ])
             ->add('comment', TextareaType::class, [
-                'label' => 'plugin.admin.product_review.form.comment.content',
+                'label' => 'plugin.product_review.admin.form.comment.content',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
