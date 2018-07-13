@@ -29,18 +29,18 @@ trait ProductTrait
      * @ORM\OneToMany(targetEntity="Plugin\ProductReview\Entity\ProductReview", mappedBy="Product", cascade={"remove"})
      * @ORM\OrderBy({"create_date" = "DESC"})
      */
-    private $ProductReviews;
+    private $ProductReviewProductReviews;
 
     /**
      * @return ProductReview[]|ArrayCollection|Collection
      */
-    public function getProductReviews()
+    public function getLockonProductReviews()
     {
-        if (null === $this->ProductReviews) {
-            $this->ProductReviews = new ArrayCollection();
+        if (null === $this->ProductReviewProductReviews) {
+            $this->ProductReviewProductReviews = new ArrayCollection();
         }
 
-        return $this->ProductReviews;
+        return $this->ProductReviewProductReviews;
     }
 
     /**
@@ -48,9 +48,9 @@ trait ProductTrait
      *
      * @return $this
      */
-    public function addProductReview(ProductReview $ProductReview)
+    public function addProductReviewProductReview(ProductReview $ProductReview)
     {
-        $ProductReviews = $this->getProductReviews();
+        $ProductReviews = $this->getProductReviewProductReviews();
         $ProductReviews[] = $ProductReview;
 
         return $this;
@@ -61,7 +61,7 @@ trait ProductTrait
      *
      * @return bool
      */
-    public function removeProductReview(ProductReview $ProductReview)
+    public function removeProductReviewProductReview(ProductReview $ProductReview)
     {
         $ProductReviews = $this->getProductReviews();
 

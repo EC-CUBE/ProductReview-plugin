@@ -1,0 +1,86 @@
+# flash messages
+product_review.admin.save.complete: 登録しました。
+product_review.admin.save.error: 登録に失敗しました。
+product_review.admin.not_found: 商品レビューは見つかりませんでした。
+product_review.admin.delete.complete: 商品レビューを削除しました。
+product_review.admin.product.not_found: 商品が見つかりません。
+product_review.front.system.error: 登録処理でシステムエラーが発生しました。大変お手数ですが、サイト管理者までご連絡ください。
+
+# 共通
+product_review.common.required: 必須
+# 設定画面
+product_review.admin.config.title: 商品レビュー設定
+product_review.admin.config.sub_title: プラグイン一覧
+product_review.admin.config.config_title: 設定
+product_review.admin.config.review_max: レビューの表示件数
+product_review.admin.config.conversion.save: 登録
+product_review.admin.config.conversion.back: プラグイン一覧
+# レビュー一覧画面
+product_review.admin.product_review.title: 商品レビュー一覧
+product_review.admin.product_review.sub_title: 商品管理
+product_review.admin.product_review.search_detail: 詳細検索
+product_review.admin.product_review.search_button: 検索
+product_review.admin.product_review.search_clear: 検索条件をクリア
+product_review.admin.product_review.search_result_count: 検索結果：%count%件が該当しました。
+product_review.admin.product_review.search_multi: 商品名・商品ID・商品コード
+product_review.admin.product_review.search_product_name: 商品名
+product_review.admin.product_review.search_product_code: 商品コード
+product_review.admin.product_review.search_posted_date: 投稿日
+product_review.admin.product_review.search_posted_date_start: 投稿日(開始)
+product_review.admin.product_review.search_posted_date_end: 投稿日(終了)
+product_review.admin.product_review.search_sex: 性別
+product_review.admin.product_review.search_recommend_level: おすすめレベル
+product_review.admin.product_review.search_review_status: 公開・非公開
+product_review.admin.product_review.search_no_result: 検索条件に合致するデータが見つかりませんでした
+product_review.admin.product_review.search_invalid_condition: 検索条件に誤りがあります
+product_review.admin.product_review.search_change_condition_and_retry: 検索条件を変えて、再度検索をお試しください。
+product_review.admin.product_review.search_try_detail_condition: '[詳細検索]も試してみましょう。'
+product_review.admin.product_review.diaply_count: %count%件
+product_review.admin.product_review.csv_download: CSVダウンロード
+product_review.admin.product_review.csv_download_setting: CSV出力項目設定
+product_review.admin.product_review.th_posted_date: 投稿日
+product_review.admin.product_review.th_contributor: 投稿者
+product_review.admin.product_review.th_product_name: 商品名
+product_review.admin.product_review.th_title: タイトル
+product_review.admin.product_review.th_level: おすすめレベル
+product_review.admin.product_review.th_status: 公開・非公開
+product_review.admin.product_review.delete: 削除
+product_review.admin.product_review.delete_cancel: キャンセル
+product_review.admin.product_review.delete_confirm_title: レビューを削除します
+product_review.admin.product_review.delete_confirm_message: 削除してよろしいですか？
+# レビュー編集画面
+product_review.admin.product_review_edit.title: 商品レビュー登録・編集
+product_review.admin.product_review_edit.sub_title: 商品管理
+product_review.admin.product_review_edit.review_dettail: レビュー詳細
+product_review.admin.product_review_edit.product_name: 商品名
+product_review.admin.product_review_edit.posted_date: 投稿日時
+product_review.admin.product_review_edit.conversion.save: 登録
+product_review.admin.product_review_edit.conversion.back: 商品レビュー一覧
+
+
+
+
+
+
+
+
+
+product_review.front.review: レビューを書く
+product_review.front.title: 商品について、お客様のご感想をお待ちしております。
+product_review.front.product.name: 商品名
+product_review.front.review.product: この商品のレビュー
+product_review.front.review.write.down: レビューを書く
+product_review.front.reviewer.name: さん
+product_review.front.form.confirm: 確認ページヘ
+product_review.front.form.back: 戻る
+product_review.front.form.send: 送信する
+product_review.front.error: レビューを書く - エラー
+product_review.front.top.page.link: トップページへ
+product_review.front.confirm.page.tile: レビューを書く
+product_review.front.confirm.page.remind: "下記の内容で送信してもよろしいでしょうか？<br/>よろしければ、一番下の「送信する」ボタンをクリックしてください。"
+product_review.front.complete.thank.you: ありがとうございました。
+product_review.front.complete.message: "内容を確認後、反映させていただきます。<br>今しばらくお待ちくださいませ。"
+product_review.front.complete.btn.return: 商品ページに戻る
+
+product_review.admin.nav: 商品レビュー
+product_review.admin.no.review: まだクチコミはありません

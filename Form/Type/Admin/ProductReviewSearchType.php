@@ -16,6 +16,8 @@ namespace Plugin\ProductReview\Form\Type\Admin;
 use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Master\ProductStatusType;
 use Eccube\Form\Type\Master\SexType;
+use Plugin\ProductReview\Entity\ProductReviewStatus;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -56,34 +58,34 @@ class ProductReviewSearchType extends AbstractType
         $config = $this->eccubeConfig;
         $builder
             ->add('multi', TextType::class, [
-                'label' => 'plugin.product_review.admin.search.inputsearch.placeholder',
+                'label' => 'product_review.admin.product_review.search_multi',
                 'required' => false,
                 'constraints' => [
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
                 ],
             ])
             ->add('product_name', TextType::class, [
-                'label' => 'plugin.product_review.front.product.name',
+                'label' => 'product_review.admin.product_review.search_product_name',
                 'required' => false,
                 'constraints' => [
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
                 ],
             ])
             ->add('product_code', TextType::class, [
-                'label' => 'plugin.product_review.admin.form.product.code',
+                'label' => 'product_review.admin.product_review.search_product_code',
                 'required' => false,
                 'constraints' => [
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
                 ],
             ])
             ->add('sex', SexType::class, [
-                'label' => 'plugin.product_review.admin.form.sex',
+                'label' => 'product_review.admin.product_review.search_sex',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
             ])
             ->add('recommend_level', ChoiceType::class, [
-                'label' => 'plugin.product_review.admin.list.level',
+                'label' => 'product_review.admin.product_review.search_recommend_level',
                 'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -91,37 +93,29 @@ class ProductReviewSearchType extends AbstractType
                     '2' => '★★',
                     '1' => '★',
                 ]),
-                'placeholder' => 'plugin.product_review.admin.form.level',
+                'placeholder' => 'product_review.admin.product_review.search_recommend_level',
                 'expanded' => false,
                 'multiple' => false,
                 'required' => false,
             ])
             ->add('review_start', DateType::class, [
-                'label' => 'plugin.product_review.admin.list.posted.date',
+                'label' => 'product_review.admin.product_review.search_posted_date_start',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
             ])
             ->add('review_end', DateType::class, [
-                'label' => 'plugin.product_review.admin.list.posted.date',
+                'label' => 'product_review.admin.product_review.search_posted_date_end',
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
             ])
-            // fixme 商品レビュー用のステータスを作成する
-            ->add('status', ProductStatusType::class, [
-                'label' => 'plugin.product_review.admin.search.multi',
+            ->add('status', EntityType::class, [
+                'class' => ProductReviewStatus::class,
+                'label' => 'product_review.admin.product_review.search_review_status',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'admin_product_review_search';
     }
 }

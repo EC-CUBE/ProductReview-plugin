@@ -13,13 +13,12 @@
 
 namespace Plugin\ProductReview\Repository;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
-use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 use Eccube\Repository\AbstractRepository;
+use Eccube\Util\StringUtil;
 use Plugin\ProductReview\Entity\ProductReview;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -52,7 +51,7 @@ class ProductReviewRepository extends AbstractRepository
     {
         try {
             $this->getEntityManager()->persist($ProductReview);
-            $this->getEntityManager()->flush();
+            $this->getEntityManager()->flush($ProductReview);
         } catch (\Exception $e) {
             return false;
         }
@@ -71,7 +70,7 @@ class ProductReviewRepository extends AbstractRepository
     {
         try {
             $this->getEntityManager()->remove($ProductReview);
-            $this->getEntityManager()->flush();
+            $this->getEntityManager()->flush($ProductReview);
         } catch (\Exception $e) {
             return false;
         }
@@ -89,118 +88,78 @@ class ProductReviewRepository extends AbstractRepository
     public function getQueryBuilderBySearchData($searchData)
     {
         $qb = $this->createQueryBuilder('r')
-            ->select('r')
-            ->innerJoin('r.Product', 'p');
-        // $qb->setParameter('del', Constant::DISABLED);
+            ->select('r, p, pc')
+            ->innerJoin('r.Product', 'p')
+            ->innerJoin('p.ProductClasses', 'pc');
 
-        // Do not allow search zero (number 0).
-        if (!empty($searchData['multi'])) {
+        // 商品名・商品ID・コード
+        if (isset($searchData['multi']) && StringUtil::isNotBlank($searchData['multi'])) {
             $qb
-                ->andWhere('r.reviewer_name LIKE :reviewer_name OR r.reviewer_url LIKE :reviewer_url')
-                ->setParameter('reviewer_name', '%'.$searchData['multi'].'%')
-                ->setParameter('reviewer_url', '%'.$searchData['multi'].'%');
+                ->andWhere('p.id LIKE :multi_product_id OR p.name LIKE :multi_product_name OR pc.code LIKE :multi_product_code')
+                ->setParameter('multi_product_id', '%'.str_replace('%', '\\%', $searchData['multi']).'%')
+                ->setParameter('multi_product_name', '%'.str_replace('%', '\\%', $searchData['multi']).'%')
+                ->setParameter('multi_product_code', '%'.str_replace('%', '\\%', $searchData['multi']).'%');
         }
 
         // 商品名
-        // Allow search zero.
-        if (isset($searchData['product_name']) && !is_null($searchData['product_name'])) {
+        if (isset($searchData['product_name']) && StringUtil::isNotBlank($searchData['product_name'])) {
             $qb
                 ->andWhere('p.name LIKE :product_name')
-                ->setParameter('product_name', '%'.$searchData['product_name'].'%');
+                ->setParameter('product_name', '%'.str_replace('%', '\\%', $searchData['product_name']).'%');
         }
 
         // 商品コード
-        // Allow search zero.
-        if (isset($searchData['product_code']) && !is_null($searchData['product_code'])) {
+        if (isset($searchData['product_code']) && StringUtil::isNotBlank($searchData['product_code'])) {
             $qb
-                ->innerJoin('p.ProductClasses', 'pc')
                 ->andWhere('pc.code LIKE :code')
-                ->setParameter('code', '%'.$searchData['product_code'].'%');
+                ->setParameter('code', '%'.str_replace('%', '\\%', $searchData['product_code']).'%');
         }
 
         // 性別
         if (!empty($searchData['sex']) && count($searchData['sex']) > 0) {
-            $arrSexId = [];
-            $arrSex = $searchData['sex'];
-            foreach ($arrSex as $sex) {
-                if ($sex instanceof Sex) {
-                    $arrSexId[] = $sex->getId();
-                } elseif (is_numeric($sex)) {
-                    $arrSexId[] = $sex;
-                }
-            }
+
             $qb
-                ->andWhere($qb->expr()->in('r.Sex', ':arrSexId'))
-                ->setParameter('arrSexId', $arrSexId);
+                ->andWhere($qb->expr()->in('r.Sex', ':Sex'))
+                ->setParameter(':Sex', $searchData['sex']);
         }
 
         // おすすめレベル
-        if (isset($searchData['recommend_level']) && !is_null($searchData['recommend_level'])) {
+        if (isset($searchData['recommend_level']) && StringUtil::isNotBlank($searchData['recommend_level'])) {
             $qb
                 ->andWhere($qb->expr()->in('r.recommend_level', ':recommend_level'))
                 ->setParameter('recommend_level', $searchData['recommend_level']);
         }
 
-        // 投稿日
+        // 投稿日(開始)
         if (isset($searchData['review_start']) && !is_null($searchData['review_start'])) {
-            $date = $searchData['review_start']
-                ->format('Y-m-d H:i:s');
+            $date = $searchData['review_start'];
             $qb
                 ->andWhere('r.create_date >= :review_start')
                 ->setParameter('review_start', $date);
         }
+
+        // 投稿日(終了)
         if (isset($searchData['review_end']) && !is_null($searchData['review_end'])) {
-            $date = $searchData['review_end']
-                ->modify('+1 days')
-                ->format('Y-m-d H:i:s');
+            $date = clone $searchData['review_end'];
+            $date
+                ->modify('+1 days');
             $qb
                 ->andWhere('r.create_date < :review_end')
                 ->setParameter('review_end', $date);
         }
-        // status
+
+        // 公開・非公開
         if (!empty($searchData['status']) && count($searchData['status']) > 0) {
-            $arrId = [];
-            $arrStatus = $searchData['status'];
-            foreach ($arrStatus as $status) {
-                if ($status instanceof ProductStatus) {
-                    $arrId[] = $status->getId();
-                } elseif (is_numeric($status)) {
-                    $arrId[] = $status;
-                }
-            }
             $qb
-                ->andWhere($qb->expr()->in('r.Status', ':arrId'))
-                ->setParameter('arrId', $arrId);
+                ->andWhere($qb->expr()->in('r.Status', ':Status'))
+                ->setParameter('Status', $searchData['status']);
         }
 
         // Order By
         $qb->addOrderBy('r.update_date', 'DESC');
+        $qb->addOrderBy('r.id', 'DESC');
 
         return $qb;
-    }
-
-    /**
-     * Find entity.
-     *
-     * @param array $searchData セッションから取得した検索条件の配列
-     */
-    public function findDeserializeObjects(array &$searchData)
-    {
-        $em = $this->_em;
-        foreach ($searchData as &$conditions) {
-            if ($conditions instanceof ArrayCollection) {
-                $conditions = new ArrayCollection(
-                    array_map(
-                        function (AbstractEntity $entity) use ($em) {
-                            return $em->getRepository(get_class($entity))->find($entity->getId());
-                        },
-                        $conditions->toArray()
-                    )
-                );
-            } elseif ($conditions instanceof AbstractEntity) {
-                $conditions = $em->getRepository(get_class($conditions))->find($conditions->getId());
-            }
-        }
     }
 
     /**

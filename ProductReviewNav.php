@@ -15,15 +15,15 @@ namespace Plugin\ProductReview;
 
 use Eccube\Common\EccubeNav;
 
-class Nav implements EccubeNav
+class ProductReviewNav implements EccubeNav
 {
     public static function getNav()
     {
         return [
             'product' => [
                 'id' => 'product_review',
-                'name' => 'plugin.product_review.admin.nav',
-                'url' => 'plugin_admin_product_review',
+                'name' => 'product_review.admin.product_review.title',
+                'url' => 'product_review_admin_product_review',
             ],
         ];
     }

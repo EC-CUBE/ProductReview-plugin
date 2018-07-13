@@ -15,6 +15,7 @@ namespace Plugin\ProductReview\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
+use Eccube\Entity\Master\CsvType;
 
 /**
  * ProductReviewConfig
@@ -48,7 +49,7 @@ class ProductReviewConfig extends AbstractEntity
      *   @ORM\JoinColumn(name="csv_type_id", nullable=true, referencedColumnName="id")
      * })
      */
-    private $csv_type_id;
+    private $CsvType;
 
     /**
      * @var \DateTime
@@ -113,23 +114,25 @@ class ProductReviewConfig extends AbstractEntity
     }
 
     /**
+     * Get CsvType
+     *
      * @return \Eccube\Entity\Master\CsvType
      */
-    public function getCsvTypeId()
+    public function getCsvType()
     {
-        return $this->csv_type_id;
+        return $this->CsvType;
     }
 
     /**
-     * Set csv_type_id
+     * Set CsvType
      *
-     * @param int $csv_type_id
+     * @param CsvType $CsvType
      *
      * @return $this
      */
-    public function setCsvTypeId($csv_type_id)
+    public function setCsvType(CsvType $CsvType)
     {
-        $this->csv_type_id = $csv_type_id;
+        $this->CsvType = $CsvType;
 
         return $this;
     }

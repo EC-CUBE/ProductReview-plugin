@@ -14,16 +14,16 @@
 
 {% extends '@admin/default_frame.twig' %}
 
-{% set menus = ['product', 'product_review'] %}
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
 
-{% block title %}{{ 'plugin.admin.product.management.title'|trans }}{% endblock %}
-{% block sub_title %}{{ 'plugin.admin.product.management.title.sub'|trans }}{% endblock %}
+{% block title %}{{ 'product_review.admin.config.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'product_review.admin.config.sub_title'|trans }}{% endblock %}
 
 {% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
 
 {% block main %}
 
-    <form method="post" action="{{ url('plugin_ProductReview_config') }}">
+    <form method="post" action="{{ url('product_review_admin_config') }}">
         {{ form_widget(form._token) }}
         <div class="c-contentsArea__cols">
             <div class="c-contentsArea__primaryCol">
@@ -34,10 +34,7 @@
                                 <div class="col-8">
                                     <div class="d-inline-block" data-toggle="tooltip" data-placement="top"
                                          title="Tooltip">
-                                    <span class="card-title">
-                                        {{ 'plugin.product_review.admin.config.form'|trans }}
-                                    </span>
-                                        <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                        <span class="card-title">{{ 'product_review.admin.config.config_title'|trans }}</span>
                                     </div>
                                 </div>
                                 <div class="col-4 text-right">
@@ -53,7 +50,7 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <label>{{ 'plugin.product_review.admin.config.input.limit'|trans }}</label>
+                                        <label>{{ 'product_review.admin.config.review_max'|trans }}</label>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.review_max) }}
@@ -73,13 +70,13 @@
                     <div class="col-6">
                         <div class="c-conversionArea__leftBlockItem">
                             <a class="c-beseLink" href="{{ url('admin_store_plugin') }}"><i class="fa fa-backward" aria-hidden="true"></i>
-                                <span>オーナーズストアプラグイン一覧</span></a>
+                                <span>{{ 'product_review.admin.config.conversion.back'|trans }}</span></a>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="row align-items-center justify-content-end">
                             <div class="col-auto">
-                                <button class="btn btn-ec-conversion px-5" type="submit">{{ 'plugin.product_review.admin.configration'|trans }}</button>
+                                <button class="btn btn-ec-conversion px-5" type="submit">{{ 'product_review.admin.config.conversion.save'|trans }}</button>
                             </div>
                         </div>
                     </div>

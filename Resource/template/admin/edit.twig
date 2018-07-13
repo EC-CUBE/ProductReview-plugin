@@ -16,17 +16,16 @@
 
 {% set menus = ['product', 'product_review'] %}
 
-{% block title %}{{ 'plugin.admin.product.management.title'|trans }}{% endblock %}
-{% block sub_title %}{{ 'plugin.product_review.admin.edit.title.sub'|trans }}{% endblock %}
+{% block title %}{{ 'product_review.admin.product_review_edit.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'product_review.admin.product_review_edit.sub_title'|trans }}{% endblock %}
 
 {% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
 
 {% block main %}
 
-    <form name="customer_form" role="form" id="customer_form" method="post"
-          action="{{ url('plugin_admin_product_review_edit', { id : form.id.vars.value }) }}">
+    <form role="form" method="post"
+          action="{{ url('product_review_admin_product_review_edit', { id : ProductReview.id }) }}">
         {{ form_widget(form._token) }}
-        {{ form_widget(form.id) }}
         <div class="c-contentsArea__cols">
             <div class="c-contentsArea__primaryCol">
                 <div class="c-primaryCol">
@@ -37,15 +36,13 @@
                                     <div class="d-inline-block" data-toggle="tooltip" data-placement="top"
                                          title="Tooltip">
                                     <span class="card-title">
-                                        {{ 'plugin.product_review.admin.form.product'|trans }}
+                                        {{ 'product_review.admin.product_review_edit.review_dettail'|trans }}
                                     </span>
-                                        <i class="fa fa-question-circle fa-lg ml-1"></i>
                                     </div>
                                 </div>
                                 <div class="col-4 text-right">
                                     <a data-toggle="collapse" href="#basicConfig" aria-expanded="false"
                                        aria-controls="basicConfig">
-                                        <i class="fa fa-angle-up fa-lg"></i>
                                     </a>
                                 </div>
                             </div>
@@ -55,7 +52,7 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <label class="control-label">{{ 'plugin.product_review.admin.form.product.name'|trans }}</label>
+                                        <span>{{ 'product_review.admin.product_review_edit.product_name'|trans }}</span>
                                     </div>
                                     <div class="col">
                                         <div>{{ Product.name }}</div>
@@ -64,22 +61,17 @@
 
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>{{ 'plugin.product_review.admin.form.post.date'|trans }}</span>
-                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
-                                        </div>
+                                        <span>{{ 'product_review.admin.product_review_edit.posted_date'|trans }}</span>
                                     </div>
                                     <div class="col">
-                                        {{ post_date|date('Y/m/d H:i') }}
+                                        {{ ProductReview.create_date|date_min }}
                                     </div>
                                 </div>
 
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>{{ 'plugin.product_review.admin.form.name.contributor'|trans }}</span>
-                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
-                                        </div>
+                                        <span>{{ '投稿者'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.reviewer_name) }}
@@ -88,10 +80,7 @@
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>{{ 'plugin.product_review.admin.form.authorURL'|trans }}</span>
-                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
-                                        </div>
+                                        <span>{{ 'URL'|trans }}</span>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.reviewer_url) }}
@@ -100,10 +89,8 @@
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>{{ 'plugin.product_review.admin.form.sex'|trans }}</span>
-                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
-                                        </div>
+                                        <span>{{ '性別'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.sex) }}
@@ -113,10 +100,8 @@
 
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>{{ 'plugin.product_review.admin.form.recommended.level'|trans }}</span>
-                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
-                                        </div>
+                                        <span>{{ 'おすすめレベル'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.recommend_level) }}
@@ -126,10 +111,8 @@
 
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>{{ 'plugin.product_review.admin.form.comment.title'|trans }}</span>
-                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
-                                        </div>
+                                        <span>{{ 'タイトル'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.title) }}
@@ -139,10 +122,8 @@
 
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="Tooltip">
-                                            <span>{{ 'plugin.product_review.admin.form.comment.content'|trans }}</span>
-                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
-                                        </div>
+                                        <span>{{ 'コメント'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.comment, {'attr': {'rows': '6'}}) }}
@@ -161,21 +142,21 @@
                 <div class="row justify-content-between align-items-center">
                     <div class="col-6">
                         <div class="c-conversionArea__leftBlockItem">
-                            <a class="c-beseLink" href="{{ url('plugin_admin_product_review_page', { page_no : app.session.get('eccube.admin.product.search.page_no')|default('1') } ) }}?resume=1"
-                               data-action="confirm"
-                               title="{{ 'admin.product.product.text11'|trans({
-                                   '%name%' : 'admin.product.product.title_product_screen'|trans })
-                               }}"><i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'plugin.product_review.admin.form.return.to.search.screen'|trans }}</span></a>
+                            <a class="c-beseLink"
+                               href="{{ url('product_review_admin_product_review_page', { resule: 1 }) }}"><i
+                                        class="fa fa-backward"
+                                        aria-hidden="true"></i><span>{{ 'product_review.admin.product_review_edit.conversion.back'|trans }}</span></a>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="row align-items-center justify-content-end">
                             <div class="col-auto">
-                                {{ form_widget(form.status) }}
-                                {{ form_errors(form.status) }}
+                                {{ form_widget(form.Status) }}
+                                {{ form_errors(form.Status) }}
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-ec-conversion px-5" type="submit">{{ 'admin.product.product.510'|trans }}</button>
+                                <button class="btn btn-ec-conversion px-5"
+                                        type="submit">{{ 'product_review.admin.product_review_edit.conversion.save'|trans }}</button>
                             </div>
                         </div>
                     </div>

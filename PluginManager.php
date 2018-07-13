@@ -28,6 +28,7 @@ use Eccube\Repository\MemberRepository;
 use Eccube\Repository\PageLayoutRepository;
 use Eccube\Repository\PageRepository;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
+use Plugin\ProductReview\Entity\ProductReviewStatus;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
@@ -63,7 +64,7 @@ class PluginManager extends AbstractPluginManager
             $ProductReviewConfig = new ProductReviewConfig();
             $ProductReviewConfig->setReviewMax(10);
         }
-        $ProductReviewConfig->setCsvTypeId($CsvType);
+        $ProductReviewConfig->setCsvType($CsvType);
         $entityManager->persist($ProductReviewConfig);
         $entityManager->flush();
 
@@ -306,10 +307,6 @@ class PluginManager extends AbstractPluginManager
      */
     protected function deleteData(ContainerInterface $container)
     {
-        //$app = new Application();
-        //$app->initialize();
-        //$app->boot();
-
         /* @var $Config ProductReviewConfig */
         $entityManager = $container->get('doctrine.orm.entity_manager');
         $Config = $entityManager->find(ProductReviewConfig::class, 1);
@@ -317,21 +314,35 @@ class PluginManager extends AbstractPluginManager
             return;
         }
 
-        $CsvType = $Config->getCsvTypeId();
+        $CsvType = $Config->getCsvType();
 
-        $arrCsv = $container->get(CsvRepository::class)->findBy(['CsvType' => $CsvType]);
-        foreach ($arrCsv as $value) {
-            if ($value instanceof Csv) {
-                $entityManager->remove($value);
-                $entityManager->flush();
-            }
+        $CsvTypes = $container->get(CsvRepository::class)->findBy(['CsvType' => $CsvType]);
+        foreach ($CsvType as $Type) {
+            $entityManager->remove($Type);
+            $entityManager->flush($Type);
         }
 
-        $Config->setCsvTypeId(null);
+        $Config->setCsvType(null);
         $entityManager->persist($Config);
-        $entityManager->flush();
+        $entityManager->flush($Config);
 
-//        $entityManager->remove($CsvType);
-//        $entityManager->flush();
+    }
+
+    protected function createStatus(ContainerInterface $container)
+    {
+        $entityManager = $container->get('doctrine.orm.entity_manager');
+
+        $Status = new ProductReviewStatus();
+        $Status->setId(1);
+        $Status->setName('公開');
+        $Status->setSortNo(1);
+
+        $entityManager->persist($Status);
+        $entityManager->flush($Status);
+
+        $Status = new ProductReviewStatus();
+        $Status->setId(2);
+        $Status->setName('非公開');
+        $Status->setSortNo(2);
     }
 }

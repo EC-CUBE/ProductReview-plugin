@@ -49,13 +49,11 @@ class ProductReviewConfigType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $min = $this->eccubeConfig['product_review_regist_min'];
-        $max = $this->eccubeConfig['product_review_regist_max'];
+        $min = $this->eccubeConfig['product_review_display_count_min'];
+        $max = $this->eccubeConfig['product_review_display_count_max'];
 
         $builder
             ->add('review_max', IntegerType::class, [
-                'required' => true,
-                'label' => "レビューの表示件数({$min}～{$max})",
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Range(['min' => $min, 'max' => $max]),
@@ -73,13 +71,5 @@ class ProductReviewConfigType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ProductReviewConfig::class,
         ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'admin_product_review_config';
     }
 }

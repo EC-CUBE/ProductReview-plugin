@@ -25,8 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 class ConfigController extends \Eccube\Controller\AbstractController
 {
     /**
-     * @Route("/%eccube_admin_route%/plugin/product/review/config", name="plugin_ProductReview_config")
-     * @Template("ProductReview/Resource/template/admin/config.twig")
+     * @Route("/%eccube_admin_route%/product_review/config", name="product_review_admin_config")
+     * @Template("@ProductReview/admin/config.twig")
      *
      * @param Request $request
      * @param ProductReviewConfigRepository $configRepository
@@ -35,7 +35,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
      */
     public function index(Request $request, ProductReviewConfigRepository $configRepository)
     {
-        $Config = $configRepository->find(1);
+        $Config = $configRepository->get();
         $form = $this->createForm(ProductReviewConfigType::class, $Config);
         $form->handleRequest($request);
 
@@ -45,7 +45,9 @@ class ConfigController extends \Eccube\Controller\AbstractController
             $this->entityManager->flush($Config);
 
             log_info('Product review config', ['status' => 'Success']);
-            $this->addSuccess('plugin.product_review.admin_config.save.complete', 'admin');
+            $this->addSuccess('product_review.admin.save.complete', 'admin');
+
+            return $this->redirectToRoute('product_review_admin_config');
         }
 
         return [
