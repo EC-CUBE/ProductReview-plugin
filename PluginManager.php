@@ -13,6 +13,7 @@
 
 namespace Plugin\ProductReview;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Eccube\Application;
 use Eccube\Entity\Csv;
 use Eccube\Entity\Layout;
@@ -21,11 +22,6 @@ use Eccube\Entity\Master\DeviceType;
 use Eccube\Entity\Page;
 use Eccube\Entity\PageLayout;
 use Eccube\Plugin\AbstractPluginManager;
-use Eccube\Repository\CsvRepository;
-use Eccube\Repository\LayoutRepository;
-use Eccube\Repository\Master\DeviceTypeRepository;
-use Eccube\Repository\MemberRepository;
-use Eccube\Repository\PageLayoutRepository;
 use Eccube\Repository\PageRepository;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Entity\ProductReviewStatus;
@@ -37,162 +33,151 @@ class PluginManager extends AbstractPluginManager
      * @var array
      */
     private $urls = [
-        'plugin_products_detail_review' => 'レビューを書く1',
-        'plugin_products_detail_review_complete' => 'レビューを書く2',
-        'plugin_products_detail_review_error' => 'レビューを書く3',
+        'product_review_index' => 'レビューを投稿',
+        'product_review_complete' => 'レビューを投稿(完了)',
     ];
 
-    /**
-     * @var array plugin entity
-     */
-    protected $entities = [
-        'Plugin\ProductReview\Entity\ProductReviewConfig',
-    ];
-
-    /**
-     * @param null $meta
-     * @param Application|null $app
-     * @param ContainerInterface $container
-     */
     public function enable($meta = null, Application $app = null, ContainerInterface $container)
     {
-        $CsvType = $this->createCsvData($container);
+        $em = $container->get('doctrine.orm.entity_manager');
 
-        $entityManager = $container->get('doctrine.orm.entity_manager');
-        $ProductReviewConfig = $entityManager->find(ProductReviewConfig::class, 1);
-        if (null === $ProductReviewConfig) {
-            $ProductReviewConfig = new ProductReviewConfig();
-            $ProductReviewConfig->setReviewMax(10);
+        // プラグイン設定を追加
+        $Config = $this->createConfig($em);
+
+        // レビューステータス(公開・非公開)を追加
+        $this->createStatus($em);
+
+        // CSV出力項目設定を追加
+        $CsvType = $Config->getCsvType();
+        if (null === $CsvType) {
+            $CsvType = $this->createCsvType($em);
+            $this->createCsvData($em, $CsvType);
+
+            $Config->setCsvType($CsvType);
+            $em->flush($Config);
         }
-        $ProductReviewConfig->setCsvType($CsvType);
-        $entityManager->persist($ProductReviewConfig);
-        $entityManager->flush();
 
+        // ページを追加
         foreach ($this->urls as $url => $name) {
-            $PageLayout = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
-            if (is_null($PageLayout)) {
-                // pagelayoutの作成
-                $this->createPageLayout($container, $name, $url);
+            $Page = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
+            if (null === $Page) {
+                $this->createPage($em, $name, $url);
             }
         }
     }
 
-    /**
-     * @param null $meta
-     * @param Application|null $app
-     * @param ContainerInterface $container
-     */
-    public function disable($meta = null, Application $app = null, ContainerInterface $container)
+    public function uninstall($meta = null, Application $app = null, ContainerInterface $container)
     {
-        // pagelayoutの削除
-        foreach ($this->urls as $url => $name) {
-            $this->removePageLayout($container, $url);
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        // ページを削除
+        foreach ($this->urls as $url) {
+            $this->removePage($em, $url);
         }
 
-        $this->deleteData($container);
+        $Config = $em->find(ProductReviewConfig::class, 1);
+        $CsvType = $Config->getCsvType();
+
+        // CSV出力項目設定を削除
+        $this->removeCsvData($em, $CsvType);
+
+        $Config->setCsvType(null);
+        $em->flush($Config);
+
+        $em->remove($CsvType);
+        $em->flush($CsvType);
     }
 
-    /**
-     * @param null $meta
-     * @param Application|null $app
-     * @param ContainerInterface $container
-     */
-    public function update($meta = null, Application $app = null, ContainerInterface $container)
+    protected function createConfig(EntityManagerInterface $em)
     {
-        $PageLayout = $container->get(PageRepository::class)->findOneBy(['url' => 'plugin_coupon_shopping']);
-        if (is_null($PageLayout)) {
-            // pagelayoutの作成
-            $this->pageLayout($container);
+        $Config = $em->find(ProductReviewConfig::class, 1);
+        if ($Config) {
+            return $Config;
         }
+        $Config = new ProductReviewConfig();
+        $Config->setReviewMax(5);
+
+        $em->persist($Config);
+        $em->flush($Config);
+
+        return $Config;
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @param $name
-     * @param $url
-     */
-    private function createPageLayout(ContainerInterface $container, $name, $url)
+    protected function createStatus(EntityManagerInterface $em)
     {
-        // ページレイアウトにプラグイン使用時の値を代入
-        $DeviceType = $container->get(DeviceTypeRepository::class)->find(DeviceType::DEVICE_TYPE_PC);
-        /** @var \Eccube\Entity\Page $Page */
-        $Page = $container->get(PageRepository::class)->findOrCreate(null, $DeviceType);
+        $Status = $em->find(ProductReviewStatus::class, 1);
+        if ($Status) {
+            return;
+        }
+
+        $Status = new ProductReviewStatus();
+        $Status->setId(1);
+        $Status->setName('公開');
+        $Status->setSortNo(1);
+
+        $em->persist($Status);
+        $em->flush($Status);
+
+        $Status = new ProductReviewStatus();
+        $Status->setId(2);
+        $Status->setName('非公開');
+        $Status->setSortNo(2);
+
+        $em->persist($Status);
+        $em->flush($Status);
+    }
+
+    protected function createCsvType(EntityManagerInterface $em)
+    {
+        $result = $em->createQueryBuilder('ct')
+            ->select('COALESCE(MAX(ct.id), 0) AS id, COALESCE(MAX(ct.sort_no), 0) AS sort_no')
+            ->from(CsvType::class, 'ct')
+            ->getQuery()
+            ->getSingleResult();
+
+        $result['id']++;
+        $result['sort_no']++;
+
+        $CsvType = new CsvType();
+        $CsvType
+            ->setId($result['id'])
+            ->setName('商品レビューCSV')
+            ->setSortNo($result['sort_no']);
+        $em->persist($CsvType);
+        $em->flush($CsvType);
+
+        return $CsvType;
+    }
+
+    protected function createPage(EntityManagerInterface $em, $name, $url)
+    {
+        $DeviceType = $em->find(DeviceType::class, DeviceType::DEVICE_TYPE_PC);
+        $Page = new Page();
+        $Page->setDeviceType($DeviceType);
         $Page->setEditType(Page::EDIT_TYPE_DEFAULT);
         $Page->setName($name);
         $Page->setUrl($url);
-        $Page->setFileName('../../Plugin/ProductReview/Resource/template/default/index');
-        $Page->setMetaRobots('noindex');
+        $Page->setFileName('@ProductReview/default/index');
+
         // DB登録
-        $entityManager = $container->get('doctrine.orm.entity_manager');
-        $entityManager->persist($Page);
-        $entityManager->flush($Page);
-        $Layout = $container->get(LayoutRepository::class)->find(Layout::DEFAULT_LAYOUT_UNDERLAYER_PAGE);
+        $em->persist($Page);
+        $em->flush($Page);
+        $Layout = $em->find(Layout::class, Layout::DEFAULT_LAYOUT_UNDERLAYER_PAGE);
         $PageLayout = new PageLayout();
         $PageLayout->setPage($Page)
             ->setPageId($Page->getId())
             ->setLayout($Layout)
             ->setLayoutId($Layout->getId())
             ->setSortNo(0);
-        $entityManager->persist($PageLayout);
-        $entityManager->flush($PageLayout);
+        $em->persist($PageLayout);
+        $em->flush($PageLayout);
     }
 
-    /**
-     * クーポン用ページレイアウトを削除.
-     *
-     * @param ContainerInterface $container
-     * @param $url
-     */
-    private function removePageLayout(ContainerInterface $container, $url)
+    protected function createCsvData(EntityManagerInterface $em, CsvType $CsvType)
     {
-        // ページ情報の削除
-        $Page = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
-        if ($Page) {
-            $Layout = $container->get(LayoutRepository::class)->find(Layout::DEFAULT_LAYOUT_UNDERLAYER_PAGE);
-            $PageLayout = $container->get(PageLayoutRepository::class)->findOneBy([
-                'Page' => $Page,
-                'Layout' => $Layout,
-            ]);
-            // Blockの削除
-            $entityManager = $container->get('doctrine.orm.entity_manager');
-            $entityManager->remove($PageLayout);
-            $entityManager->remove($Page);
-            $entityManager->flush();
-        }
-    }
-
-    /**
-     * Create csv data.
-     *
-     * @param ContainerInterface $container
-     *
-     * @return CsvType
-     */
-    protected function createCsvData(ContainerInterface $container)
-    {
-        /** @var $em EntityManager */
-        $em = $container->get('doctrine.orm.entity_manager');
-
-        // Create csv type master
-        /** @var $repos CsvTypeRepository */
-        $repos = $em->getRepository('Eccube\Entity\Master\CsvType');
-        $csvTypeId = $repos->createQueryBuilder('ct')
-            ->select('Max(ct.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-        $CsvType = new CsvType();
-        $CsvType->setName('商品レビューCSV')
-            ->setId($csvTypeId + 1)
-            ->setSortNo(1);
-        $em->persist($CsvType);
-        $em->flush();
-
-        // Create csv data
-        $Member = $container->get(MemberRepository::class)->find(2);
         $rank = 1;
         $Csv = new Csv();
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Product')
             ->setReferenceFieldName('name')
@@ -204,7 +189,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Status')
             ->setReferenceFieldName('name')
@@ -216,7 +200,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('create_date')
             ->setReferenceFieldName('create_date')
@@ -228,7 +211,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('reviewer_name')
             ->setReferenceFieldName('reviewer_name')
@@ -240,7 +222,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('reviewer_url')
             ->setReferenceFieldName('reviewer_url')
@@ -252,7 +233,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('Sex')
             ->setReferenceFieldName('name')
@@ -264,7 +244,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('recommend_level')
             ->setReferenceFieldName('recommend_level')
@@ -276,7 +255,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('title')
             ->setReferenceFieldName('title')
@@ -288,7 +266,6 @@ class PluginManager extends AbstractPluginManager
         $Csv = new Csv();
         ++$rank;
         $Csv->setCsvType($CsvType)
-            ->setCreator($Member)
             ->setEntityName('Plugin\ProductReview\Entity\ProductReview')
             ->setFieldName('comment')
             ->setReferenceFieldName('comment')
@@ -300,49 +277,28 @@ class PluginManager extends AbstractPluginManager
         return $CsvType;
     }
 
-    /**
-     * Delete data
-     *
-     * @param ContainerInterface $container
-     */
-    protected function deleteData(ContainerInterface $container)
+    protected function removePage(EntityManagerInterface $em, $url)
     {
-        /* @var $Config ProductReviewConfig */
-        $entityManager = $container->get('doctrine.orm.entity_manager');
-        $Config = $entityManager->find(ProductReviewConfig::class, 1);
-        if (!$Config) {
+        $Page = $em->getRepository(Page::class)->findOneBy(['url' => $url]);
+
+        if (!$Page) {
             return;
         }
-
-        $CsvType = $Config->getCsvType();
-
-        $CsvTypes = $container->get(CsvRepository::class)->findBy(['CsvType' => $CsvType]);
-        foreach ($CsvType as $Type) {
-            $entityManager->remove($Type);
-            $entityManager->flush($Type);
+        foreach ($Page->getPageLayouts() as $PageLayout) {
+            $em->remove($PageLayout);
+            $em->flush($PageLayout);
         }
 
-        $Config->setCsvType(null);
-        $entityManager->persist($Config);
-        $entityManager->flush($Config);
-
+        $em->remove($Page);
+        $em->flush($Page);
     }
 
-    protected function createStatus(ContainerInterface $container)
+    protected function removeCsvData(EntityManagerInterface $em, CsvType $CsvType)
     {
-        $entityManager = $container->get('doctrine.orm.entity_manager');
-
-        $Status = new ProductReviewStatus();
-        $Status->setId(1);
-        $Status->setName('公開');
-        $Status->setSortNo(1);
-
-        $entityManager->persist($Status);
-        $entityManager->flush($Status);
-
-        $Status = new ProductReviewStatus();
-        $Status->setId(2);
-        $Status->setName('非公開');
-        $Status->setSortNo(2);
+        $CsvData = $em->getRepository(Csv::class)->findBy(['CsvType' => $CsvType]);
+        foreach ($CsvData as $Csv) {
+            $em->remove($Csv);
+            $em->flush($Csv);
+        }
     }
 }

@@ -130,7 +130,7 @@ class ProductReviewConfig extends AbstractEntity
      *
      * @return $this
      */
-    public function setCsvType(CsvType $CsvType)
+    public function setCsvType(CsvType $CsvType = null)
     {
         $this->CsvType = $CsvType;
 
