@@ -102,13 +102,6 @@ class ProductReview extends AbstractEntity
     private $Customer;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="enabled", type="boolean")
-     */
-    private $enabled;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_date", type="datetimetz")
@@ -131,36 +124,6 @@ class ProductReview extends AbstractEntity
      * })
      */
     private $Status;
-
-    /**
-     * @return \Plugin\ProductReview\Entity\ProductReviewStatus
-     */
-    public function getStatus()
-    {
-        return $this->Status;
-    }
-
-    /**
-     * @param \Plugin\ProductReview\Entity\ProductReviewStatus $status
-     */
-    public function setStatus(\Plugin\ProductReview\Entity\ProductReviewStatus $Status)
-    {
-        $this->Status = $Status;
-    }
-
-    /**
-     * Set product_review id.
-     *
-     * @param string $id
-     *
-     * @return ProductReview
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * Get id.
@@ -365,27 +328,19 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * Set enabled.
-     *
-     * @param bool $enabled
-     *
-     * @return $this
+     * @return \Plugin\ProductReview\Entity\ProductReviewStatus
      */
-    public function setEnabled($enabled)
+    public function getStatus()
     {
-        $this->enabled = $enabled;
-
-        return $this;
+        return $this->Status;
     }
 
     /**
-     * Get enabled.
-     *
-     * @return bool
+     * @param \Plugin\ProductReview\Entity\ProductReviewStatus $status
      */
-    public function isEnabled()
+    public function setStatus(\Plugin\ProductReview\Entity\ProductReviewStatus $Status)
     {
-        return $this->enabled;
+        $this->Status = $Status;
     }
 
     /**

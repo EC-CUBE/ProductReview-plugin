@@ -18,6 +18,7 @@ use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Plugin\ProductReview\Entity\ProductReview;
 use Plugin\ProductReview\Entity\ProductReviewConfig;
+use Plugin\ProductReview\Entity\ProductReviewStatus;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -28,11 +29,6 @@ class ProductReviewEvent implements EventSubscriberInterface
      * @var ProductReviewConfigRepository
      */
     protected $productReviewConfigRepository;
-
-    /**
-     * @var ProductStatusRepository
-     */
-    protected $productStatusRepository;
 
     /**
      * @var ProductReviewRepository
@@ -71,28 +67,27 @@ class ProductReviewEvent implements EventSubscriberInterface
      */
     public function detail(TemplateEvent $event)
     {
-        $twig = '@ProductReview/default/review.twig';
-        $event->addSnippet($twig);
+        $Config = $this->productReviewConfigRepository->get();
 
-        /** @var ProductReviewConfig $ProductReviewConfig */
-        $ProductReviewConfig = $this->productReviewConfigRepository->find(1);
+        $searchData = [
+            'status' => [ProductReviewStatus::SHOW]
+        ];
+
+        $qb = $this->productReviewRepository->getQueryBuilderBySearchData($searchData);
+        $qb->setMaxResults($Config->getReviewMax());
+        $ProductReviews = $qb->getQuery()->getResult();
 
         /** @var Product $Product */
         $Product = $event->getParameter('Product');
 
-        /** @var ProductReview[] $ProductReviews */
-        $ProductReviews = $Product->getProductReviews()
-            ->slice(0, $ProductReviewConfig->getReviewMax());
-
         $rate = $this->productReviewRepository->getAvgAll($Product);
-        $avgRecommend = round($rate['recommend_avg']);
-        $reviewNumber = intval($rate['review_num']);
+        $avg = round($rate['recommend_avg']);
+        $count = intval($rate['review_num']);
 
         $parameters = $event->getParameters();
         $parameters['ProductReviews'] = $ProductReviews;
-        $parameters['avg'] = $avgRecommend;
-        $parameters['number'] = $reviewNumber;
-        $parameters['id'] = $Product->getId();
+        $parameters['ProductReviewAvg'] = $avg;
+        $parameters['ProductReviewCount'] = $count;
         $event->setParameters($parameters);
     }
 }

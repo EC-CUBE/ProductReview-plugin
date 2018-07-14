@@ -50,7 +50,10 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <label>{{ 'product_review.admin.config.review_max'|trans }}</label>
+                                        <label>{{ 'product_review.admin.config.review_max'|trans({
+                                                '%min%': eccube_config.product_review_display_count_min,
+                                                '%max%': eccube_config.product_review_display_count_max,
+                                            }) }}</label>
                                     </div>
                                     <div class="col">
                                         {{ form_widget(form.review_max) }}

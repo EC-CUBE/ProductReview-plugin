@@ -1,196 +1,127 @@
 {#
-/*
- * This file is part of the ProductReview plugin
- *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+This file is part of EC-CUBE
+
+Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
 #}
 {% extends 'default_frame.twig' %}
 
-{% set body_class = 'product_review_page' %}
+{% set body_class = 'product_review' %}
 
-{% block stylesheet %}
-<style>
-    .product_review_page p{
-        display: block;
-        -webkit-margin-before: 1em;
-        -webkit-margin-after: 1em;
-        -webkit-margin-start: 0px;
-        -webkit-margin-end: 0px;
-    }
-    .product_review_page .dl_table {
-        margin: 0 0 16px;
-    }
-    .product_review_page .dl_table dt {
-        margin-bottom: 5px;
-    }
-    .product_review_page .dl_table dt label {
-        font-weight: bold;
-    }
-    .product_review_page .dl_table dt legend {
-        border-bottom: none;
-    }
-    .product_review_page textarea {
-        vertical-align: top;
-    }
-    .product_review_page #product_review_sex .radio {
-        display: inline-block;
-        margin-right: 10px;
-    }
-    .product_review_page #product_review_sex .radio input[type="radio"] {
-        margin-right: 10px;
-    }
-    .product_review_page form dl #product_review_sex .form-check{
-        display: inline-block;
-        margin-right: 10px;
-    }
-    .product_review_page form dl .form-control{
-        border: 1px solid #C4CCCE;
-        border-radius: 3px !important;
-        box-shadow: none;
-        font-size: 16px;
-        height: 40px;
-        padding: 6px 12px;
-        line-height: 1.5;
-    }
-    .product_review_page form dl textarea.form-control{
-        border: 1px solid #C4CCCE;
-        border-radius: 3px !important;
-        box-shadow: none;
-        font-size: 16px;
-        height: 6em;
-        padding: 6px 12px;
-        line-height: 1.5;
-    }
-    .product_review_page form .btn-primary{
-        color: #fff;
-        background-color: #DE5D50;
-        border-color: #DE5D50;
-        font-size: 16px;
-        padding: 10px 16px;
-        font-weight: bold;
-        height: 44px;
-        border-radius: 0;
-        margin-bottom: 20px;
-    }
-    .product_review_page form .btn-info {
-        color: #fff;
-        background-color: #525263;
-        border-color: #525263;
-        font-size: 16px;
-        padding: 10px 16px;
-        font-weight: bold;
-        height: 44px;
-        border-radius: 0;
-    }
-
-    @media only screen and (min-width: 768px) {
-        .dl_table {
-            display: table;
-            width: 100%;
-            border-top: 1px dotted #ccc;
-        }
-        .dl_table dl {
-            display: table-row;
-            border: 0 none;
-            padding: 8px 0;
-        }
-        .dl_table dt {
-            width: 30%;
-        }
-        .dl_table dt, .dl_table dd {
-            display: table-cell;
-            border-bottom: 1px dotted #ccc;
-            padding: 16px 0;
-        }
-        .dl_table dd {
-            padding: 16px;
-            width: 70%;
-        }
-    }
-</style>
-{% endblock stylesheet %}
+{% form_theme form 'Form/form_div_layout.twig' %}
 
 {% block main %}
-<h1 class="page-heading">{{ 'plugin.product_review.front.review'|trans }}</h1>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <p>{{ 'plugin.product_review.front.title'|trans }}</p>
-            <form method="post" action="{{ url('plugin_products_detail_review', { id : Product.id }) }}">
-                <input type="hidden" name="mode" value="confirm">
-                {{ form_widget(form._token) }}
-                <div class="dl_table">
-                    <dl>
-                        <dt><label>{{ 'plugin.product_review.front.product.name'|trans }}</label></dt>
-                        <dd class="form-group">
-                            {{ Product.name }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.reviewer_name) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.reviewer_name) }}
-                            {{ form_errors(form.reviewer_name) }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.reviewer_url) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.reviewer_url) }}
-                            {{ form_errors(form.reviewer_url) }}
-                        </dd>
-                    </dl>
-                    <dl id="product_review_sex">
-                        <dt>{{ form_label(form.sex) }}</dt>
-                        <dd>
-                            <div class="form-group form-inline">
-                                {{ form_widget(form.sex) }}
-                                {{ form_errors(form.sex) }}
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.recommend_level) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.recommend_level) }}
-                            {{ form_errors(form.recommend_level) }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.title) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.title) }}
-                            {{ form_errors(form.title) }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.comment) }}</dt>
-                        <dd class="form-group">
-                            <div class="column">
-                            {{ form_widget(form.comment, {'attr': {'rows': '6'}}) }}
-                            {{ form_errors(form.comment) }}
-                            </div>
-                        </dd>
-                    </dl>
-                </div>
-
-                <div class="row no-padding">
-                    <div class="btn_group col-sm-offset-4 col-sm-4">
-                        <p>
-                            <button type="submit" class="btn btn-primary btn-block">{{ 'plugin.product_review.front.form.confirm'|trans }}</button>
-                        </p>
-                        <p>
-                            <a href="{{ url('product_detail', {'id':Product.id}) }}" class="btn btn-info btn-block">{{ 'plugin.product_review.front.form.back'|trans }}</a>
-                        </p>
+    <div class="ec-registerRole">
+        <div class="ec-pageHeader">
+            <h1>{{ 'product_review.front.review.title'|trans }}</h1>
+        </div>
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <form method="post" action="{{ url('product_review_index', { id: Product.id }) }}">
+                    {{ form_widget(form._token) }}
+                    <p class="ec-para-nomal">{{ 'product_review.front.review.description'|trans }}</p>
+                    <div class="ec-borderedDefs">
+                        {# 商品名 #}
+                        <dl>
+                            <dt>
+                                <label class="">{{ 'product_review.front.review.product_name'|trans }}</label>
+                            </dt>
+                            <dd>
+                                <div class="ec-input">
+                                    {{ Product.name }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 投稿者名 #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.reviewer_name) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.reviewer_name) ? ' error' }}">
+                                    {{ form_widget(form.reviewer_name) }}
+                                    {{ form_errors(form.reviewer_name) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 投稿者URL #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.reviewer_url) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.reviewer_url) ? ' error' }}">
+                                    {{ form_widget(form.reviewer_url) }}
+                                    {{ form_errors(form.reviewer_url) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 性別 #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.sex) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-radio{{ has_errors(form.sex) ? ' error' }}">
+                                    {{ form_widget(form.sex) }}
+                                    {{ form_errors(form.sex) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# おすすめレベル #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.recommend_level) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-radio{{ has_errors(form.recommend_level) ? ' error' }}">
+                                    {{ form_widget(form.recommend_level) }}
+                                    {{ form_errors(form.recommend_level) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# タイトル #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.title) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.title) ? ' error' }}">
+                                    {{ form_widget(form.title) }}
+                                    {{ form_errors(form.title) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# コメント #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.comment) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.comment) ? ' error' }}">
+                                    {{ form_widget(form.comment) }}
+                                    {{ form_errors(form.comment) }}
+                                </div>
+                            </dd>
+                        </dl>
                     </div>
-                </div>
-            </form>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</div>
+                    <div class="ec-registerRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <button class="ec-blockBtn--action" type="submit" name="mode"
+                                        value="confirm">{{ 'product_review.front.review.confirm'|trans }}</button>
+                                <a class="ec-blockBtn--cancel"
+                                   href="{{ url('product_detail', { id: Product.id }) }}">{{ 'product_review.front.review.back'|trans }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

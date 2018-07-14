@@ -54,8 +54,7 @@ class ProductReviewType extends AbstractType
         $config = $this->eccubeConfig;
         $builder
             ->add('reviewer_name', TextType::class, [
-                'label' => 'plugin.product_review.admin.form.name.contributor',
-                'required' => true,
+                'label' => 'product_review.form.product_review.reviewer_name',
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
@@ -65,7 +64,7 @@ class ProductReviewType extends AbstractType
                 ],
             ])
             ->add('reviewer_url', TextType::class, [
-                'label' => 'plugin.product_review.admin.form.authorURL',
+                'label' => 'product_review.form.product_review.reviewer_url',
                 'required' => false,
                 'constraints' => [
                     new Assert\Url(),
@@ -79,8 +78,7 @@ class ProductReviewType extends AbstractType
                 'required' => false,
             ])
             ->add('recommend_level', ChoiceType::class, [
-                'required' => true,
-                'label' => 'plugin.product_review.admin.list.level',
+                'label' => 'product_review.form.product_review.recommend_level',
                 'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
@@ -91,10 +89,12 @@ class ProductReviewType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'placeholder' => false,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ]
             ])
             ->add('title', TextType::class, [
-                'label' => 'plugin.product_review.admin.form.comment.title',
-                'required' => true,
+                'label' => 'product_review.form.product_review.title',
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(['max' => $config['eccube_stext_len']]),
@@ -104,8 +104,7 @@ class ProductReviewType extends AbstractType
                 ],
             ])
             ->add('comment', TextareaType::class, [
-                'label' => 'plugin.product_review.admin.form.comment.content',
-                'required' => true,
+                'label' => 'product_review.form.product_review.comment',
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(['max' => $config['eccube_ltext_len']]),
@@ -114,13 +113,5 @@ class ProductReviewType extends AbstractType
                     'maxlength' => $config['eccube_ltext_len'],
                 ],
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'product_review';
     }
 }

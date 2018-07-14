@@ -41,44 +41,6 @@ class ProductReviewRepository extends AbstractRepository
     }
 
     /**
-     * Save method.
-     *
-     * @param ProductReview $ProductReview
-     *
-     * @return bool
-     */
-    public function save($ProductReview)
-    {
-        try {
-            $this->getEntityManager()->persist($ProductReview);
-            $this->getEntityManager()->flush($ProductReview);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Delete method.
-     *
-     * @param ProductReview $ProductReview
-     *
-     * @return bool
-     */
-    public function delete($ProductReview)
-    {
-        try {
-            $this->getEntityManager()->remove($ProductReview);
-            $this->getEntityManager()->flush($ProductReview);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * 検索条件での検索を行う。
      *
      * @param array $searchData
@@ -92,13 +54,12 @@ class ProductReviewRepository extends AbstractRepository
             ->innerJoin('r.Product', 'p')
             ->innerJoin('p.ProductClasses', 'pc');
 
-        // 商品名・商品ID・コード
+        // 投稿者名・投稿者URL
         if (isset($searchData['multi']) && StringUtil::isNotBlank($searchData['multi'])) {
             $qb
-                ->andWhere('p.id LIKE :multi_product_id OR p.name LIKE :multi_product_name OR pc.code LIKE :multi_product_code')
-                ->setParameter('multi_product_id', '%'.str_replace('%', '\\%', $searchData['multi']).'%')
-                ->setParameter('multi_product_name', '%'.str_replace('%', '\\%', $searchData['multi']).'%')
-                ->setParameter('multi_product_code', '%'.str_replace('%', '\\%', $searchData['multi']).'%');
+                ->andWhere('r.reviewer_name LIKE :reviewer_name OR r.reviewer_url LIKE :reviewer_url')
+                ->setParameter('reviewer_name', '%'.str_replace('%', '\\%', $searchData['multi']).'%')
+                ->setParameter('reviewer_url', '%'.str_replace('%', '\\%', $searchData['multi']).'%');
         }
 
         // 商品名
@@ -156,7 +117,6 @@ class ProductReviewRepository extends AbstractRepository
         }
 
         // Order By
-        $qb->addOrderBy('r.update_date', 'DESC');
         $qb->addOrderBy('r.id', 'DESC');
 
         return $qb;
@@ -173,16 +133,14 @@ class ProductReviewRepository extends AbstractRepository
     {
         $defaults = [
             'recommend_avg' => 0,
-            'review_num' => 0,
+            'review_count' => 0,
         ];
         try {
             $qb = $this->createQueryBuilder('r')
-                ->select('avg(r.recommend_level) as recommend_avg, count(r.id) as review_num')
+                ->select('avg(r.recommend_level) as recommend_avg, count(r.id) as review_count')
                 ->leftJoin('r.Product', 'p')
                 ->where('r.Product = :Product')
                 ->setParameter('Product', $Product)
-                ->andWhere('r.enabled = :enabled')
-                ->setParameter('enabled', true)
                 ->groupBy('r.Product');
 
             return $qb->getQuery()->getSingleResult();

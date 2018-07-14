@@ -26,4 +26,13 @@ use Eccube\Entity\Master\CsvType;
  */
 class ProductReviewStatus extends AbstractMasterEntity
 {
+    /**
+     * 表示
+     */
+    const SHOW = 1;
+
+    /**
+     * 非表示
+     */
+    const HIDE = 2;
 }
