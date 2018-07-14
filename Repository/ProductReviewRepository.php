@@ -14,8 +14,6 @@
 namespace Plugin\ProductReview\Repository;
 
 use Doctrine\ORM\QueryBuilder;
-use Eccube\Entity\Master\ProductStatus;
-use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 use Eccube\Repository\AbstractRepository;
 use Eccube\Util\StringUtil;
@@ -78,7 +76,6 @@ class ProductReviewRepository extends AbstractRepository
 
         // 性別
         if (!empty($searchData['sex']) && count($searchData['sex']) > 0) {
-
             $qb
                 ->andWhere($qb->expr()->in('r.Sex', ':Sex'))
                 ->setParameter(':Sex', $searchData['sex']);

@@ -13,7 +13,6 @@
 
 namespace Plugin\ProductReview;
 
-use Eccube\Common\EccubeNav;
 use Eccube\Common\EccubeTwigBlock;
 
 class ProductReviewBlock implements EccubeTwigBlock

@@ -14,9 +14,7 @@
 namespace Plugin\ProductReview\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Eccube\Entity\AbstractEntity;
 use Eccube\Entity\Master\AbstractMasterEntity;
-use Eccube\Entity\Master\CsvType;
 
 /**
  * ProductReviewStatus

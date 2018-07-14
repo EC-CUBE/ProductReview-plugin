@@ -14,7 +14,6 @@
 namespace Plugin\ProductReview\Repository;
 
 use Eccube\Repository\AbstractRepository;
-use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Entity\ProductReviewStatus;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -28,6 +27,7 @@ class ProductReviewStatusRepository extends AbstractRepository
 {
     /**
      * ProductReviewStatusRepository constructor.
+     *
      * @param RegistryInterface $registry
      */
     public function __construct(RegistryInterface $registry)

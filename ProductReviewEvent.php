@@ -17,7 +17,6 @@ use Eccube\Entity\Product;
 use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Plugin\ProductReview\Entity\ProductReview;
-use Plugin\ProductReview\Entity\ProductReviewConfig;
 use Plugin\ProductReview\Entity\ProductReviewStatus;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
@@ -72,7 +71,7 @@ class ProductReviewEvent implements EventSubscriberInterface
         $Config = $this->productReviewConfigRepository->get();
 
         $searchData = [
-            'status' => [ProductReviewStatus::SHOW]
+            'status' => [ProductReviewStatus::SHOW],
         ];
 
         $qb = $this->productReviewRepository->getQueryBuilderBySearchData($searchData);

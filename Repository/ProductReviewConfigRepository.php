@@ -27,6 +27,7 @@ class ProductReviewConfigRepository extends AbstractRepository
 {
     /**
      * ProductReviewConfigRepository constructor.
+     *
      * @param RegistryInterface $registry
      */
     public function __construct(RegistryInterface $registry)
@@ -36,6 +37,7 @@ class ProductReviewConfigRepository extends AbstractRepository
 
     /**
      * @param int $id
+     *
      * @return null|ProductReviewConfig
      */
     public function get($id = 1)

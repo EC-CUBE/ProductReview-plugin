@@ -130,7 +130,7 @@ class ProductReviewController extends AbstractController
         } else {
             if (null !== $page_no || $request->get('resume')) {
                 if ($page_no) {
-                    $this->session->set('product_review.admin.product_review.search.page_no', (int)$page_no);
+                    $this->session->set('product_review.admin.product_review.search.page_no', (int) $page_no);
                 } else {
                     $page_no = $this->session->get('product_review.admin.product_review.search.page_no', 1);
                 }

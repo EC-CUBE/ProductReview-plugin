@@ -14,7 +14,6 @@
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Common\EccubeConfig;
-use Eccube\Form\Type\Master\ProductStatusType;
 use Eccube\Form\Type\Master\SexType;
 use Plugin\ProductReview\Entity\ProductReviewStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -96,7 +95,7 @@ class ProductReviewType extends AbstractType
                 'multiple' => false,
                 'constraints' => [
                     new Assert\NotBlank(),
-                ]
+                ],
             ])
             ->add('title', TextType::class, [
                 'constraints' => [

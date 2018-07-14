@@ -91,7 +91,7 @@ class ProductReviewType extends AbstractType
                 'placeholder' => false,
                 'constraints' => [
                     new Assert\NotBlank(),
-                ]
+                ],
             ])
             ->add('title', TextType::class, [
                 'label' => 'product_review.form.product_review.title',

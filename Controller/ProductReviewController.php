@@ -132,6 +132,7 @@ class ProductReviewController extends AbstractController
      * @Template("@ProductReview/default/complete.twig")
      *
      * @param $id
+     *
      * @return array
      */
     public function complete($id)
