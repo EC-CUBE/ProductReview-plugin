@@ -82,7 +82,7 @@ class ProductReviewEvent implements EventSubscriberInterface
 
         $rate = $this->productReviewRepository->getAvgAll($Product);
         $avg = round($rate['recommend_avg']);
-        $count = intval($rate['review_num']);
+        $count = intval($rate['review_count']);
 
         $parameters = $event->getParameters();
         $parameters['ProductReviews'] = $ProductReviews;

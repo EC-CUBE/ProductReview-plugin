@@ -9,15 +9,16 @@
  * file that was distributed with this source code.
  */
 #}
-<script>
-    $(function () {
-        var template = $('#product_review_area').get(0).outerHTML;
-        var wrap = $('#page_product_detail .ec-layoutRole .ec-layoutRole__contents .ec-layoutRole__main .ec-productRole .ec-grid2');
-        wrap.after(template).parent().find('#product_review_area').removeClass('d-none');
-    });
-</script>
 
-{% block review %}.
+{#
+
+以下のタグをProduct/detail.twigに貼り付けることで動作します。
+
+{{ eccube_block_product_review({ Product: Product, ProductReviews: ProductReviews, avg: ProductReviewAvg, count: ProductReviewCount, max: ProductReviewMax }) }}
+
+#}
+
+{% block product_review %}.
     {% import _self as stars %}
 
     {# 星テキスト生成用マクロ #}
@@ -148,20 +149,20 @@
     </style>
 
     <!--▼レビューエリア-->
-    <div id="product_review_area" class="row d-none">
+    <div id="product_review_area" class="row">
         <div class="col-sm-12">
             <dl>
                 {% set positive_avg_star = avg %}
                 {% set nagative_avg_star = 5 - positive_avg_star %}
                 <h4 class="heading02 sp" data-toggle="collapse" data-target="#reviewContent" aria-expanded="true">
-                    {{ 'plugin.product_review.front.review.product'|trans }}
+                    {{ 'product_review.front.product_detail.title'|trans }}
                     <!--平均の星の数-->
                     <span class="recommend_average">
                         {{ stars.stars(positive_avg_star, nagative_avg_star) }}
                     </span>
                     <!--レビュー数-->
                     <span>
-                        ({{ number }})
+                        ({{ count }})
                     </span>
                     <span class="chevron pull-right">
                         <i class="glyphicon glyphicon-chevron-up"></i>
@@ -178,14 +179,14 @@
                                     <li>
                                         <p class="review_date">
                                             <!--投稿日-->
-                                            {{ ProductReview.create_date|date_format }}
+                                            {{ ProductReview.create_date|date_day }}
 
                                             <!--投稿者-->
                                             <span class="recommend_name">
                                             {% if ProductReview.reviewer_url %}
-                                                <a href="{{ ProductReview.reviewer_url }}" target="_blank">{{ ProductReview.reviewer_name }}{{ 'plugin.product_review.front.reviewer.name'|trans }}</a>
+                                                <a href="{{ ProductReview.reviewer_url }}" target="_blank">{{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}</a>
                                             {% else %}
-                                                {{ ProductReview.reviewer_name }}{{ 'plugin.product_review.front.reviewer.name'|trans }}
+                                                {{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}
                                             {% endif %}
                                         </span>
 
@@ -206,13 +207,13 @@
                                 {% endfor %}
                             </ul>
                         {% else %}
-                            <p>{{ 'plugin.product_review.admin.no.review'|trans }}</p>
+                            <p>{{ 'product_review.front.product_detail.no_review'|trans }}</p>
                         {% endif %}
                     </dd>
                 </dl>
             </div>
-            <div class="review_btn">
-                <a href="{{ url('plugin_products_detail_review', {'id' : id}) }}" class="btn btn-info">{{ 'plugin.product_review.front.review'|trans }}</a>
+            <div>
+                <a href="{{ url('product_review_index', { id: Product.id }) }}" class="ec-inlineBtn--action">{{ 'product_review.front.product_detail.post_review'|trans }}</a>
             </div>
         </div>
     </div>

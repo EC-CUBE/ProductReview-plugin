@@ -60,7 +60,7 @@ product_review.admin.product_review_edit.conversion.save: 登録
 product_review.admin.product_review_edit.conversion.back: レビュー管理
 
 # レビュー投稿画面
-product_review.front.review.title: レビューを書く
+product_review.front.review.title: レビューを投稿
 product_review.front.review.description: 商品について、お客様のご感想をお待ちしております。
 product_review.front.review.product_name: 商品名
 product_review.front.review.back: 戻る
@@ -85,3 +85,13 @@ product_review.form.product_review.reviewer_url: URL
 product_review.form.product_review.title: タイトル
 product_review.form.product_review.comment: コメント
 product_review.form.product_review.recommend_level: おすすめレベル
+
+# 商品詳細画面への差し込みブロック
+product_review.front.product_detail.title: この商品のレビュー
+product_review.front.product_detail.no_review: レビューはありません。
+product_review.front.product_detail.post_review: レビューを投稿
+product_review.front.product_detail.name: %name% さん
+
+
+
+
