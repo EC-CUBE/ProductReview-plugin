@@ -67,6 +67,8 @@ class ProductReviewEvent implements EventSubscriberInterface
      */
     public function detail(TemplateEvent $event)
     {
+        $event->addSnippet('@ProductReview/default/review.twig');
+
         $Config = $this->productReviewConfigRepository->get();
 
         $searchData = [
