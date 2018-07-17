@@ -16,111 +16,153 @@
 
 {% set menus = ['product', 'product_review'] %}
 
-{% block title %}商品管理{% endblock %}
-{% block sub_title %}商品レビュー管理{% endblock %}
+{% block title %}{{ 'product_review.admin.product_review_edit.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'product_review.admin.product_review_edit.sub_title'|trans }}{% endblock %}
 
-{% form_theme form '@admin/Form/bootstrap_3_horizontal_layout.html.twig' %}
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
 
 {% block main %}
-    <div class="row" id="aside_wrap">
-        <form name="customer_form" role="form" id="customer_form" method="post" action="{{ url('plugin_admin_product_review_edit', { id : form.id.vars.value }) }}">
-            {{ form_widget(form._token) }}
-            {{ form_widget(form.id) }}
-            <div class="col-md-9">
-                <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title">商品レビュー</h3>
-                    </div><!-- /.box-header -->
-                    <div class="box-body accpanel" style="display: block;">
-                        <div class="form-horizontal">
-                            <div class="form-group">
-                                <label class="col-sm-3 col-lg-2 control-label">商品名</label>
-                                <div class="col-sm-9 col-lg-10">{{ Product.name }}</div>
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.create_date) }}
-                                <div class="col-sm-9 col-lg-10">
-                                    <div class="form-inline">
-                                        {{ post_date|date('Y/m/d H:i') }}
+
+    <form role="form" method="post"
+          action="{{ url('product_review_admin_product_review_edit', { id : ProductReview.id }) }}">
+        {{ form_widget(form._token) }}
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                                         title="Tooltip">
+                                    <span class="card-title">
+                                        {{ 'product_review.admin.product_review_edit.review_detail'|trans() }}
+                                    </span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.reviewer_name) }}
-                                <div class="col-sm-9 col-lg-10">
-                                    {{ form_widget(form.reviewer_name) }}
-                                    {{ form_errors(form.reviewer_name) }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.reviewer_url) }}
-                                <div class="col-sm-9 col-lg-10">
-                                    {{ form_widget(form.reviewer_url) }}
-                                    {{ form_errors(form.reviewer_url) }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.sex) }}
-                                <div class="col-sm-9 col-lg-10">
-                                    {{ form_widget(form.sex) }}
-                                    {{ form_errors(form.sex) }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.recommend_level) }}
-                                <div class="col-sm-9 col-lg-10">
-                                    {{ form_widget(form.recommend_level) }}
-                                    {{ form_errors(form.recommend_level) }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.title) }}
-                                <div class="col-sm-9 col-lg-10">
-                                    {{ form_widget(form.title) }}
-                                    {{ form_errors(form.title) }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.comment) }}
-                                <div class="col-sm-9 col-lg-10">
-                                    {{ form_widget(form.comment, {'attr': {'rows': '6'}}) }}
-                                    {{ form_errors(form.comment) }}
+                                <div class="col-4 text-right">
+                                    <a data-toggle="collapse" href="#basicConfig" aria-expanded="false"
+                                       aria-controls="basicConfig">
+                                    </a>
                                 </div>
                             </div>
                         </div>
 
-                    </div><!-- /.box-body -->
-                </div><!-- /.box -->
+                        <div class="collapse show ec-cardCollapse" id="basicConfig">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ 'product_review.admin.product_review_edit.product_name'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        <div>{{ Product.name }}</div>
+                                    </div>
+                                </div>
 
-                <div class="row hidden-xs hidden-sm">
-                    <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 text-center btn_area">
-                        <p><a href="{{ url('plugin_admin_product_review_page', { page_no: app.session.get('plugin.product_review.admin.product_review.search.page_no')|default('1') }) }}?resume=1">検索画面に戻る</a></p>
-                    </div>
-                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ 'product_review.admin.product_review_edit.posted_date'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ ProductReview.create_date|date_min }}
+                                    </div>
+                                </div>
 
-            </div><!-- /.col -->
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ '投稿者'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ form_widget(form.reviewer_name) }}
+                                        {{ form_errors(form.reviewer_name) }}
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ 'URL'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ form_widget(form.reviewer_url) }}
+                                        {{ form_errors(form.reviewer_url) }}
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ '性別'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ form_widget(form.sex) }}
+                                        {{ form_errors(form.sex) }}
+                                    </div>
+                                </div>
 
-            <div class="col-md-3" id="aside_column">
-                <div class="col_inner">
-                    <div class="box no-header">
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        {{ form_widget(form.status) }}
-                                        {{ form_errors(form.status) }}
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ 'おすすめレベル'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ form_widget(form.recommend_level) }}
+                                        {{ form_errors(form.recommend_level) }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ 'タイトル'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ form_widget(form.title) }}
+                                        {{ form_errors(form.title) }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ 'コメント'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'product_review.common.required'|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ form_widget(form.comment, {'attr': {'rows': '6'}}) }}
+                                        {{ form_errors(form.comment) }}
                                     </div>
                                 </div>
                             </div>
-                            <div class="row text-center">
-                                <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
-                                    <button class="btn btn-primary btn-block btn-lg" type="submit">登録</button>
-                                </div>
-                            </div>
-                        </div><!-- /.box-body -->
-                    </div><!-- /.box -->
+                        </div>
+                    </div>
                 </div>
-            </div><!-- /.col -->
-        </form>
-    </div>
+            </div>
+        </div>
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-beseLink"
+                               href="{{ url('product_review_admin_product_review_page', { resule: 1 }) }}"><i
+                                        class="fa fa-backward"
+                                        aria-hidden="true"></i><span>{{ 'product_review.admin.product_review_edit.conversion.back'|trans }}</span></a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                {{ form_widget(form.Status) }}
+                                {{ form_errors(form.Status) }}
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5"
+                                        type="submit">{{ 'product_review.admin.product_review_edit.conversion.save'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 {% endblock %}

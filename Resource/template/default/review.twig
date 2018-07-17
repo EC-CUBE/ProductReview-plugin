@@ -9,58 +9,135 @@
  * file that was distributed with this source code.
  */
 #}
-{% block hoge %}
-    <script>alert("hoge")</script>
-{% endblock %}
 
-{% block review %}.
-    {% import _self as stars %}
+{% import _self as stars %}
 
-    {# 星テキスト生成用マクロ #}
-    {% macro stars(positive, negative) %}
-        {% set positive_stars = ["", "★", "★★", "★★★", "★★★★", "★★★★★"] %}
-        {% set negative_stars = ["", "☆", "☆☆", "☆☆☆", "☆☆☆☆", "☆☆☆☆☆"] %}
-        {{ positive_stars[positive] }}{{ negative_stars[negative] }}
-    {% endmacro %}
+{# 星テキスト生成用マクロ #}
+{% macro stars(positive, negative) %}
+    {% set positive_stars = ["", "★", "★★", "★★★", "★★★★", "★★★★★"] %}
+    {% set negative_stars = ["", "☆", "☆☆", "☆☆☆", "☆☆☆☆", "☆☆☆☆☆"] %}
+    {{ positive_stars[positive] }}{{ negative_stars[negative] }}
+{% endmacro %}
 
-    <style type="text/css">
+<style type="text/css">
+    .d-none {
+        display: none;
+    }
+
+    #product_review_area {
+        border-top: 1px solid #E8E8E8;
+        padding-bottom: 0;
+    }
+
+    #product_review_area .heading02 span.chevron i {
+        display: none;
+    }
+
+    #product_review_area .heading02[aria-expanded="true"] span.chevron i.glyphicon-chevron-up {
+        display: inline-block;
+    }
+
+    #product_review_area .heading02[aria-expanded="false"] span.chevron i.glyphicon-chevron-down {
+        display: inline-block;
+    }
+
+    #product_review_area .heading02 {
+        font-weight: bold;
+        cursor: pointer;
+        background: #dedede;
+        padding: 15px;
+    }
+
+    #product_review_area dl dt {
+        padding: 16px 0;
+        cursor: pointer;
+    }
+
+    #product_review_area dl dt:hover {
+        color: #9797A0;
+    }
+
+    #product_review_area dl dt.active .cb {
+        transform: rotate(180deg);
+    }
+
+    #product_review_area dl dt .cb {
+        position: absolute;
+        right: 16px;
+        top: 17px;
+    }
+
+    #product_review_area dl dd {
+        display: none;
+        padding-bottom: 0;
+    }
+
+    #product_review_area .review_btn a {
+        margin: 0 auto;
+        padding: 16px;
+        width: 100%;
+    }
+
+    #product_review_area .review_list {
+        padding: 8px 0;
+    }
+
+    #product_review_area .review_list li {
+        padding: 8px 0;
+    }
+
+    #product_review_area .review_list p {
+        margin: 0px 0;
+    }
+
+    #product_review_area .review_list .review_date {
+        font-weight: bold;
+    }
+
+    #product_review_area .recommend_average {
+        margin-left: 16px;
+        color: #DE5D50;
+    }
+
+    #product_review_area .review_list .recommend_level {
+        margin-left: 16px;
+        color: #DE5D50;
+    }
+
+    #product_review_area .review_list .recommend_name {
+        margin-left: 16px;
+    }
+
+    @media only screen and (min-width: 768px) {
         #product_review_area {
-            border-top: 1px solid #E8E8E8;
-            padding-bottom: 0;
+            border-top: none;
+            padding-bottom: 16px;
         }
 
         #product_review_area dl dt {
-            padding: 16px 0;
-            cursor: pointer;
-        }
-
-        #product_review_area dl dt:hover {
-            color: #9797A0;
-        }
-
-        #product_review_area dl dt.active .cb {
-            transform: rotate(180deg);
+            padding: 16px;
         }
 
         #product_review_area dl dt .cb {
             position: absolute;
-            right: 16px;
-            top: 17px;
+            right: 32px;
+            top: 24px;
+            font-size: 1.6rem;
         }
 
         #product_review_area dl dd {
-            display: none;
-            padding-bottom: 0;
+            display: block;
+            padding: 0 16px 0;
+        }
+
+        #product_review_area .review_btn {
+            padding: 16px 0 0;
+            text-align: center;
         }
 
         #product_review_area .review_btn a {
-            margin: 0 auto;
-            padding: 16px;
-            width: 100%;
-        }
-
-        #product_review_area .review_list {
-            padding: 8px 0;
+            width: auto;
+            min-width: 350px;
         }
 
         #product_review_area .review_list li {
@@ -68,149 +145,86 @@
         }
 
         #product_review_area .review_list p {
-            margin: 0px 0;
+            margin: 0;
         }
+    }
+</style>
 
-        #product_review_area .review_list .review_date {
-            font-weight: bold;
-        }
+<script>
+    $(function () {
+        $('#product_review_area').appendTo($('div.ec-layoutRole__main'));
+    });
+</script>
 
-        #product_review_area .recommend_average {
-            margin-left: 16px;
-            color: #DE5D50;
-        }
-
-        #product_review_area .review_list .recommend_level {
-            margin-left: 16px;
-            color: #DE5D50;
-        }
-
-        #product_review_area .review_list .recommend_name {
-            margin-left: 16px;
-        }
-
-        @media only screen and (min-width: 768px) {
-            #product_review_area {
-                border-top: none;
-                padding-bottom: 16px;
-            }
-
-            #product_review_area dl dt {
-                padding: 16px;
-            }
-
-            #product_review_area dl dt .cb {
-                position: absolute;
-                right: 32px;
-                top: 24px;
-                font-size: 16px;
-                font-size: 1.6rem;
-            }
-
-            #product_review_area dl dd {
-                display: block;
-                padding: 0 16px 0;
-            }
-
-            #product_review_area .review_btn {
-                padding: 16px 0 0;
-                text-align: center;
-            }
-
-            #product_review_area .review_btn a {
-                width: auto;
-                min-width: 350px;
-            }
-
-            #product_review_area .review_list li {
-                padding: 8px 0;
-            }
-
-            #product_review_area .review_list p {
-                margin: 0px 0;
-            }
-        }
-    </style>
-
-    <!--▼レビューエリア-->
-    <div id="product_review_area" class="row">
-        <div class="col-sm-10 col-sm-offset-1">
-            <div class="accordion">
-                <dl>
-                    {% set positive_avg_star = avg %}
-                    {% set nagative_avg_star = 5 - positive_avg_star %}
-                    <dt class="heading02 sp">
-                        この商品のレビュー
-
-                        <!--平均の星の数-->
-                        <span class="recommend_average">
+<!--▼レビューエリア-->
+<div id="product_review_area" class="ec-role">
+    <div class="col-sm-12">
+        <dl>
+            {% set positive_avg_star = ProductReviewAvg %}
+            {% set nagative_avg_star = 5 - positive_avg_star %}
+            <h4 class="heading02 sp" data-toggle="collapse" data-target="#reviewContent" aria-expanded="true">
+                {{ 'product_review.front.product_detail.title'|trans }}
+                <!--平均の星の数-->
+                <span class="recommend_average">
                         {{ stars.stars(positive_avg_star, nagative_avg_star) }}
                     </span>
-
-                        <!--レビュー数-->
-                        <span>
-                        ({{ number }})
+                <!--レビュー数-->
+                <span>
+                        ({{ ProductReviewCount }})
                     </span>
-                        <svg class="cb cb-angle-down">
-                            <use xlink:href="#cb-angle-down"/>
-                        </svg>
-                    </dt>
-                    <dt class="heading02 pc active">
-                        この商品のレビュー
-
-                        <!--平均の星の数-->
-                        <span class="recommend_average">
-                        {{ stars.stars(positive_avg_star, nagative_avg_star) }}
+                <span class="chevron pull-right">
+                        <i class="glyphicon glyphicon-chevron-up"></i>
+                        <i class="glyphicon glyphicon-chevron-down"></i>
                     </span>
+            </h4>
+        </dl>
+        <div id="reviewContent" class="collapse in">
+            <dl>
+                <dd>
+                    {% if ProductReviews %}
+                        <ul class="review_list">
+                            {% for ProductReview in ProductReviews %}
+                                <li>
+                                    <p class="review_date">
+                                        <!--投稿日-->
+                                        {{ ProductReview.create_date|date_day }}
 
-                        <svg class="cb cb-angle-down">
-                            <use xlink:href="#cb-angle-down"/>
-                        </svg>
-                    </dt>
-                    <dd>
-                        {% if ProductReviews %}
-                            <ul class="review_list">
-                                {% for ProductReview in ProductReviews %}
-                                    <li>
-                                        <p class="review_date">
-                                            <!--投稿日-->
-                                            {{ ProductReview.create_date|date_format }}
-
-                                            <!--投稿者-->
-                                            <span class="recommend_name">
+                                        <!--投稿者-->
+                                        <span class="recommend_name">
                                             {% if ProductReview.reviewer_url %}
-                                                <a href="{{ ProductReview.reviewer_url }}" target="_blank">{{ ProductReview.reviewer_name }}さん</a>
+                                                <a href="{{ ProductReview.reviewer_url }}"
+                                                   target="_blank">{{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}</a>
                                             {% else %}
-                                                {{ ProductReview.reviewer_name }}さん
+                                                {{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}
                                             {% endif %}
                                         </span>
 
-                                            <!--星の数-->
-                                            {% set positive_star = ProductReview.recommend_level %}
-                                            {% set nagative_star = 5 - positive_star %}
-                                            <span class="recommend_level">
+                                        <!--星の数-->
+                                        {% set positive_star = ProductReview.recommend_level %}
+                                        {% set nagative_star = 5 - positive_star %}
+                                        <span class="recommend_level">
                                             {{ stars.stars(positive_star, nagative_star) }}
                                         </span>
-                                        </p>
+                                    </p>
 
-                                        <!--タイトル-->
-                                        <strong>{{ ProductReview.title }}</strong>
+                                    <!--タイトル-->
+                                    <strong>{{ ProductReview.title }}</strong>
 
-                                        <!--レビューコメント-->
-                                        <p>{{ ProductReview.comment|nl2br }}</p>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </dd>
-                </dl>
-            </div>
-            <div class="review_btn">
-                <a href="{{ url('plugin_products_detail_review', {'id' : id}) }}" class="btn btn-info">レビューを書く</a>
-            </div>
+                                    <!--レビューコメント-->
+                                    <p>{{ ProductReview.comment|nl2br }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>{{ 'product_review.front.product_detail.no_review'|trans }}</p>
+                    {% endif %}
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <a href="{{ url('product_review_index', { id: Product.id }) }}"
+               class="ec-inlineBtn--action">{{ 'product_review.front.product_detail.post_review'|trans }}</a>
         </div>
     </div>
-    <!-- ▲レビューエリア -->
-
-
-{% endblock %}
+</div>
+<!-- ▲レビューエリア -->

@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -46,11 +49,13 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->app->url('plugin_ProductReview_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_ProductReview_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
-        $this->assertContains('レビューの表示件数(1～30)', $crawler->html());
+        $min = $this->eccubeConfig['product_review_regist_min'];
+        $max = $this->eccubeConfig['product_review_regist_max'];
+        $this->assertContains('レビューの表示件数('.$min.'～'.$max.')', $crawler->html());
     }
 
     /**
@@ -58,7 +63,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
      */
     public function testMin()
     {
-        $min = $this->app['config']['ProductReview']['const']['review_regist_min'];
+        $min = $this->eccubeConfig['product_review_regist_min'];
         /**
          * @var Client
          */
@@ -66,13 +71,13 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->app->url('plugin_ProductReview_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_ProductReview_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
         $form = $crawler->selectButton('設定')->form();
 
-        $form['admin_product_review_config[review_max]'] = $this->faker->numberBetween(-10, $min - 1);
+        $form['product_review_config[review_max]'] = $this->faker->numberBetween(-10, $min - 1);
         $crawler = $client->submit($form);
 
         $this->assertContains($min.'以上でなければなりません。', $crawler->html());
@@ -83,7 +88,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
      */
     public function testMax()
     {
-        $max = $this->app['config']['ProductReview']['const']['review_regist_max'];
+        $max = $this->eccubeConfig['product_review_regist_max'];
         /**
          * @var Client
          */
@@ -91,13 +96,13 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->app->url('plugin_ProductReview_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_ProductReview_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
         $form = $crawler->selectButton('設定')->form();
 
-        $form['admin_product_review_config[review_max]'] = $this->faker->numberBetween($max + 1, 100);
+        $form['product_review_config[review_max]'] = $this->faker->numberBetween($max + 1, 100);
         $crawler = $client->submit($form);
 
         $this->assertContains($max.'以下でなければなりません。', $crawler->html());
@@ -108,8 +113,8 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
      */
     public function testSuccess()
     {
-        $min = $this->app['config']['ProductReview']['const']['review_regist_min'];
-        $max = $this->app['config']['ProductReview']['const']['review_regist_max'];
+        $min = $this->eccubeConfig['product_review_regist_min'];
+        $max = $this->eccubeConfig['product_review_regist_max'];
         /**
          * @var Client
          */
@@ -117,13 +122,13 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->app->url('plugin_ProductReview_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('plugin_ProductReview_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
         $form = $crawler->selectButton('設定')->form();
 
-        $form['admin_product_review_config[review_max]'] = $this->faker->numberBetween($min, $max);
+        $form['product_review_config[review_max]'] = $this->faker->numberBetween($min, $max);
         $crawler = $client->submit($form);
 
         $this->assertContains('商品レビュー設定が保存されました。', $crawler->html());

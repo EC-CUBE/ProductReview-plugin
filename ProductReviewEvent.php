@@ -1,32 +1,33 @@
 <?php
 
+/*
+ * This file is part of EC-CUBE
+ *
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Plugin\ProductReview;
 
-use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
-use Eccube\Event\EccubeEvents;
-use Eccube\Event\EventArgs;
 use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Plugin\ProductReview\Entity\ProductReview;
-use Plugin\ProductReview\Entity\ProductReviewConfig;
+use Plugin\ProductReview\Entity\ProductReviewStatus;
 use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProductReviewEvent implements EventSubscriberInterface
 {
-
-
     /**
      * @var ProductReviewConfigRepository
      */
     protected $productReviewConfigRepository;
-
-    /**
-     * @var ProductStatusRepository
-     */
-    protected $productStatusRepository;
 
     /**
      * @var ProductReviewRepository
@@ -40,13 +41,19 @@ class ProductReviewEvent implements EventSubscriberInterface
      * @param ProductStatusRepository $productStatusRepository
      * @param ProductReviewRepository $productReviewRepository
      */
-    public function __construct(ProductReviewConfigRepository $productReviewConfigRepository, ProductStatusRepository $productStatusRepository, ProductReviewRepository $productReviewRepository)
+    public function __construct(
+        ProductReviewConfigRepository $productReviewConfigRepository,
+        ProductStatusRepository $productStatusRepository,
+        ProductReviewRepository $productReviewRepository)
     {
         $this->productReviewConfigRepository = $productReviewConfigRepository;
         $this->productStatusRepository = $productStatusRepository;
         $this->productReviewRepository = $productReviewRepository;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -54,26 +61,34 @@ class ProductReviewEvent implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param TemplateEvent $event
+     */
     public function detail(TemplateEvent $event)
     {
-        /** @var ProductReviewConfig $ProductReviewConfig */
-        $ProductReviewConfig = $this->productReviewConfigRepository->find(1);
+        $event->addSnippet('@ProductReview/default/review.twig');
+
+        $Config = $this->productReviewConfigRepository->get();
+
+        $searchData = [
+            'status' => [ProductReviewStatus::SHOW],
+        ];
+
+        $qb = $this->productReviewRepository->getQueryBuilderBySearchData($searchData);
+        $qb->setMaxResults($Config->getReviewMax());
+        $ProductReviews = $qb->getQuery()->getResult();
 
         /** @var Product $Product */
         $Product = $event->getParameter('Product');
 
-        /** @var ProductReview[] $ProductReviews */
-        $ProductReviews = $Product->getProductReviews()
-            ->slice(0, $ProductReviewConfig->getReviewMax());
-
         $rate = $this->productReviewRepository->getAvgAll($Product);
-        $avgRecommend = round($rate['recommend_avg']);
-        $reviewNumber = intval($rate['review_num']);
+        $avg = round($rate['recommend_avg']);
+        $count = intval($rate['review_count']);
 
         $parameters = $event->getParameters();
         $parameters['ProductReviews'] = $ProductReviews;
-        $parameters['avg'] = $avgRecommend;
-        $parameters['number'] = $reviewNumber;
+        $parameters['ProductReviewAvg'] = $avg;
+        $parameters['ProductReviewCount'] = $count;
         $event->setParameters($parameters);
     }
 }

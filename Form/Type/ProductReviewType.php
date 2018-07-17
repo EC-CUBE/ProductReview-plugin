@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,7 +13,6 @@
 
 namespace Plugin\ProductReview\Form\Type;
 
-use Eccube\Application;
 use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Master\SexType;
 use Symfony\Component\Form\AbstractType;
@@ -41,7 +43,6 @@ class ProductReviewType extends AbstractType
         $this->eccubeConfig = $eccubeConfig;
     }
 
-
     /**
      * build form.
      *
@@ -52,74 +53,65 @@ class ProductReviewType extends AbstractType
     {
         $config = $this->eccubeConfig;
         $builder
-            ->add('reviewer_name', TextType::class, array(
-                'label' => '投稿者名',
-                'required' => true,
-                'constraints' => array(
+            ->add('reviewer_name', TextType::class, [
+                'label' => 'product_review.form.product_review.reviewer_name',
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_stext_len'],
-                ),
-            ))
-            ->add('reviewer_url', TextType::class, array(
-                'label' => '投稿者URL',
+                ],
+            ])
+            ->add('reviewer_url', TextType::class, [
+                'label' => 'product_review.form.product_review.reviewer_url',
                 'required' => false,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\Url(),
-                    new Assert\Length(array('max' => $config['eccube_mltext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_mltext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_mltext_len'],
-                ),
-            ))
-            ->add('sex', SexType::class, array(
+                ],
+            ])
+            ->add('sex', SexType::class, [
                 'required' => false,
-            ))
-            ->add('recommend_level', ChoiceType::class, array(
-                'required' => true,
-                'label' => 'おすすめレベル',
-                'choices' => array(
+            ])
+            ->add('recommend_level', ChoiceType::class, [
+                'label' => 'product_review.form.product_review.recommend_level',
+                'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
                     '3' => '★★★',
                     '2' => '★★',
                     '1' => '★',
-                ),
+                ]),
                 'expanded' => true,
                 'multiple' => false,
                 'placeholder' => false,
-            ))
-            ->add('title', TextType::class, array(
-                'label' => 'タイトル',
-                'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
+                ],
+            ])
+            ->add('title', TextType::class, [
+                'label' => 'product_review.form.product_review.title',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_stext_len'],
-                ),
-            ))
-            ->add('comment', TextareaType::class, array(
-                'label' => 'コメント',
-                'required' => true,
-                'constraints' => array(
+                ],
+            ])
+            ->add('comment', TextareaType::class, [
+                'label' => 'product_review.form.product_review.comment',
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_ltext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_ltext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_ltext_len'],
-                ),
-            ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'product_review';
+                ],
+            ]);
     }
 }

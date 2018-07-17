@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -37,6 +40,16 @@ class ProductReviewConfig extends AbstractEntity
      * @ORM\Column(name="review_max", type="smallint", nullable=true, options={"unsigned":true, "default":5})
      */
     private $review_max;
+
+    /**
+     * @var \Eccube\Entity\Master\CsvType
+     *
+     * @ORM\ManyToOne(targetEntity="Eccube\Entity\Master\CsvType")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="csv_type_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    private $CsvType;
 
     /**
      * @var \DateTime
@@ -96,6 +109,30 @@ class ProductReviewConfig extends AbstractEntity
     public function setReviewMax($max)
     {
         $this->review_max = $max;
+
+        return $this;
+    }
+
+    /**
+     * Get CsvType
+     *
+     * @return \Eccube\Entity\Master\CsvType
+     */
+    public function getCsvType()
+    {
+        return $this->CsvType;
+    }
+
+    /**
+     * Set CsvType
+     *
+     * @param CsvType $CsvType
+     *
+     * @return $this
+     */
+    public function setCsvType(CsvType $CsvType = null)
+    {
+        $this->CsvType = $CsvType;
 
         return $this;
     }

@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,23 +13,19 @@
 
 namespace Plugin\ProductReview\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Eccube\Application;
-use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
-use Eccube\Entity\Master\Disp;
 use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
-use Eccube\Repository\Master\ProductStatusRepository;
 use Plugin\ProductReview\Entity\ProductReview;
+use Plugin\ProductReview\Entity\ProductReviewStatus;
 use Plugin\ProductReview\Form\Type\ProductReviewType;
 use Plugin\ProductReview\Repository\ProductReviewRepository;
+use Plugin\ProductReview\Repository\ProductReviewStatusRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Form\FormFactoryInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -34,104 +33,110 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ProductReviewController extends AbstractController
 {
+    /**
+     * @var ProductReviewStatusRepository
+     */
+    private $productReviewStatusRepository;
 
     /**
-     * @Route("/plugin/products/detail/{id}/review", name="plugin_products_detail_review", requirements={"id" = "\d+"})
+     * @var ProductReviewRepository
+     */
+    private $productReviewRepository;
+
+    /**
+     * ProductReviewController constructor.
+     *
+     * @param ProductReviewStatusRepository $productStatusRepository
+     * @param ProductReviewRepository $productReviewRepository
+     */
+    public function __construct(
+        ProductReviewStatusRepository $productStatusRepository,
+        ProductReviewRepository $productReviewRepository
+    ) {
+        $this->productReviewStatusRepository = $productStatusRepository;
+        $this->productReviewRepository = $productReviewRepository;
+    }
+
+    /**
+     * @Route("/product_review/{id}/review", name="product_review_index", requirements={"id" = "\d+"})
      *
      * @param Request $request
-     * @param Session $session
-     * @param FormFactoryInterface $formFactory
-     * @param ProductStatusRepository $productStatusRepository
-     * @param ProductReviewRepository $productReviewRepository
      * @param Product $Product
+     *
      * @return RedirectResponse|Response
      */
-    public function review(
-        Request $request,
-        Session $session,
-        ProductStatusRepository $productStatusRepository,
-        ProductReviewRepository $productReviewRepository,
-        Product $Product)
+    public function index(Request $request, Product $Product)
     {
-        if (!$session->has('_security_admin') && $Product->getStatus()->getId() !== ProductStatus::DISPLAY_SHOW) {
-            log_info('Product review', array('status' => 'Not permission'));
+        if (!$this->session->has('_security_admin') && $Product->getStatus()->getId() !== ProductStatus::DISPLAY_SHOW) {
+            log_info('Product review', ['status' => 'Not permission']);
 
             throw new NotFoundHttpException();
         }
 
         $ProductReview = new ProductReview();
-        $builder = $this->formFactory->createBuilder(ProductReviewType::class, $ProductReview);
-        $form = $builder->getForm();
+        $form = $this->createForm(ProductReviewType::class, $ProductReview);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var $ProductReview ProductReview */
+            $ProductReview = $form->getData();
+
             switch ($request->get('mode')) {
                 case 'confirm':
-                    log_info('Product review config');
+                    log_info('Product review config confirm');
 
-                    $builder->setAttribute('freeze', true);
-                    $form = $builder->getForm();
-                    $form->handleRequest($request);
-
-                    return $this->render('ProductReview/Resource/template/default/confirm.twig', array(
+                    return $this->render('@ProductReview/default/confirm.twig', [
                         'form' => $form->createView(),
                         'Product' => $Product,
-                    ));
+                        'ProductReview' => $ProductReview,
+                    ]);
                     break;
 
                 case 'complete':
                     log_info('Product review complete');
-                    /** @var $ProductReview ProductReview */
-                    $ProductReview = $form->getData();
                     if ($this->isGranted('ROLE_USER')) {
-                        $Customer = $this->getUser();;
+                        $Customer = $this->getUser();
                         $ProductReview->setCustomer($Customer);
                     }
                     $ProductReview->setProduct($Product);
+                    $ProductReview->setStatus($this->productReviewStatusRepository->find(ProductReviewStatus::HIDE));
+                    $this->entityManager->persist($ProductReview);
+                    $this->entityManager->flush($ProductReview);
 
-                    $ProductReview->setEnabled(true);
-                    // $ProductReview->setDelFlg(Constant::DISABLED);
-                    $status = $productReviewRepository->save($ProductReview);
+                    log_info('Product review complete', ['id' => $Product->getId()]);
 
-                    if (!$status) {
-//                        $app->addError('plugin.front.product_review.system.error');
-                        log_info('Product review complete', array('status' => 'fail'));
-
-                        return $this->redirectToRoute('plugin_products_detail_review_error');
-                    } else {
-                        log_info('Product review complete', array('id' => $Product->getId()));
-
-                        return $this->redirectToRoute(
-                            'plugin_products_detail_review_complete',
-                            array('id' => $Product->getId())
-                        );
-                    }
+                    return $this->redirectToRoute('product_review_complete', ['id' => $Product->getId()]);
                     break;
 
                 case 'back':
+                    // 確認画面から投稿画面へ戻る
+                    break;
+
                 default:
                     // do nothing
                     break;
             }
         }
 
-        return $this->render('ProductReview/Resource/template/default/index.twig', array(
+        return $this->render('@ProductReview/default/index.twig', [
             'Product' => $Product,
+            'ProductReview' => $ProductReview,
             'form' => $form->createView(),
-        ));
+        ]);
     }
 
     /**
      * Complete.
      *
-     * @Route("/plugin/products/detail/{id}/review/complete", name="plugin_products_detail_review_complete", requirements={"id" = "\d+"})
+     * @Route("/product_review/{id}/complete", name="product_review_complete", requirements={"id" = "\d+"})
+     * @Template("@ProductReview/default/complete.twig")
      *
-     * @param int $id
+     * @param $id
      *
-     * @return mixed
+     * @return array
      */
     public function complete($id)
     {
-        return $this->render('ProductReview/Resource/template/default/complete.twig', array('id' => $id));
+        return ['id' => $id];
     }
 }

@@ -1,111 +1,129 @@
 {#
-/*
- * This file is part of the ProductReview plugin
- *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+This file is part of EC-CUBE
+
+Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
 #}
 {% extends 'default_frame.twig' %}
 
-{% set body_class = 'product_review_page' %}
+{% set body_class = 'product_review_confirm' %}
 
-{% block stylesheet %}
-<style>
-    .product_review_page .dl_table {
-        margin: 0 0 16px;
-    }
-    .product_review_page .dl_table dt {
-        margin-bottom: 5px;
-    }
-    .product_review_page .dl_table dt label {
-        font-weight: bold;
-    }
-    .product_review_page textarea {
-        vertical-align: top;
-    }
-    .product_review_page #product_review_sex .radio {
-        display: inline-block;
-        margin-right: 10px;
-    }
-    .product_review_page #product_review_sex .radio input[type="radio"] {
-        margin-right: 10px;
-    }
-</style>
-{% endblock stylesheet %}
+{% form_theme form 'Form/form_div_layout.twig' %}
 
 {% block main %}
-<h1 class="page-heading">レビューを書く</h1>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <p id="confirm_box__message">下記の内容で送信してもよろしいでしょうか？<br/>よろしければ、一番下の「送信する」ボタンをクリックしてください。</p>
-
-            <form method="post" action="{{ url('plugin_products_detail_review', { id : Product.id }) }}">
-                {{ form_widget(form._token) }}
-                <div class="dl_table">
-                    <dl>
-                        <dt><label>商品名</label></dt>
-                        <dd class="form-group">
-                            {{ Product.name }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.reviewer_name) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.reviewer_name) }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.reviewer_url) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.reviewer_url) }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.recommend_level) }}</dt>
-                        <dd class="form-group">
-                            {% for i in 1..form.recommend_level.vars.value %}★{% endfor %}
-                            {{ form_widget(form.recommend_level, {freeze_display_text:false}) }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.sex) }}</dt>
-                        <dd>
-                            <div class="form-group form-inline">
-                                {{ form_widget(form.sex) }}
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.title) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.title) }}
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{{ form_label(form.comment) }}</dt>
-                        <dd class="form-group">
-                            {{ form_widget(form.comment) }}
-                        </dd>
-                    </dl>
-                </div>
-
-                <div class="row no-padding">
-                    <div class="btn_group col-sm-offset-4 col-sm-4">
-                        <p>
-                            <button type="submit" class="btn btn-primary btn-block" name="mode" value="complete">送信する</button>
-                        </p>
-                        <p>
-                            <button type="submit" class="btn btn-info btn-block" name="mode" value="back">戻る</button>
-                        </p>
+    <div class="ec-registerRole">
+        <div class="ec-pageHeader">
+            <h1>{{ 'product_review.front.review.title'|trans }}</h1>
+        </div>
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <form method="post" action="{{ url('product_review_index', { id: Product.id }) }}">
+                    {{ form_widget(form._token) }}
+                    <p class="ec-para-nomal">{{ 'product_review.front.review.confirm.description'|trans|nl2br }}</p>
+                    <div class="ec-borderedDefs">
+                        {# 商品名 #}
+                        <dl>
+                            <dt>
+                                <label class="">{{ 'product_review.front.review.product_name'|trans }}</label>
+                            </dt>
+                            <dd>
+                                <div class="ec-input">
+                                    {{ Product.name }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 投稿者名 #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.reviewer_name) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.reviewer_name) ? ' error' }}">
+                                    {{ form.reviewer_name.vars.data }}
+                                    {{ form_widget(form.reviewer_name, { type: 'hidden' }) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 投稿者URL #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.reviewer_url) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.reviewer_url) ? ' error' }}">
+                                    {{ form.reviewer_url.vars.data }}
+                                    {{ form_widget(form.reviewer_url, { type: 'hidden' }) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 性別 #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.sex) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-radio{{ has_errors(form.sex) ? ' error' }}">
+                                    {{ form.sex.vars.data }}
+                                    {{ form_widget(form.sex, { type: 'hidden' }) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# おすすめレベル #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.recommend_level) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-radio{{ has_errors(form.recommend_level) ? ' error' }}">
+                                    {% for child in form.recommend_level.children if child.vars.checked %}
+                                        {{ child.vars.label }}
+                                    {% endfor %}
+                                    {{ form_widget(form.recommend_level, { type: 'hidden' }) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# タイトル #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.title) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.title) ? ' error' }}">
+                                    {{ form.title.vars.data }}
+                                    {{ form_widget(form.title, { type: 'hidden' }) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# コメント #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.comment) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.comment) ? ' error' }}">
+                                    {{ form.comment.vars.data }}
+                                    {{ form_widget(form.comment, { type: 'hidden' }) }}
+                                </div>
+                            </dd>
+                        </dl>
                     </div>
-                </div>
-            </form>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</div>
+                    <div class="ec-registerRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <button class="ec-blockBtn--action" type="submit" name="mode"
+                                        value="complete">{{ 'product_review.front.review.comfirm.post'|trans }}</button>
+                                <button class="ec-blockBtn--cancel" type="submit" name="mode"
+                                        value="back">{{ 'product_review.front.review.back'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

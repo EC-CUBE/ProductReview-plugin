@@ -1,8 +1,11 @@
 <?php
-/**
- * This file is part of the ProductReview plugin.
+
+/*
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,13 +14,11 @@
 namespace Plugin\ProductReview\Form\Type\Admin;
 
 use Eccube\Common\EccubeConfig;
-use Eccube\Entity\Master\ProductStatus;
-use Eccube\Form\Type\Master\ProductStatusType;
 use Eccube\Form\Type\Master\SexType;
-use Eccube\Form\Type\Master\StatusType;
+use Plugin\ProductReview\Entity\ProductReviewStatus;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,7 +30,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProductReviewType extends AbstractType
 {
-
     /**
      * @var EccubeConfig
      */
@@ -45,7 +45,6 @@ class ProductReviewType extends AbstractType
         $this->eccubeConfig = $eccubeConfig;
     }
 
-
     /**
      * Build form.
      *
@@ -56,84 +55,65 @@ class ProductReviewType extends AbstractType
     {
         $config = $this->eccubeConfig;
         $builder
-            ->add('id', HiddenType::class)
-            ->add('create_date', HiddenType::class, array(
-                'label' => '投稿日',
-                'mapped' => false,
-            ))
-            ->add('status', ProductStatusType::class, array(
-                'required' => true,
-                'constraints' => array(
+            ->add('Status', EntityType::class, [
+                'class' => ProductReviewStatus::class,
+                'constraints' => [
                     new Assert\NotBlank(),
-                ),
-            ))
-            ->add('reviewer_name', TextType::class, array(
-                'label' => '投稿者名',
-                'required' => true,
-                'constraints' => array(
+                ],
+            ])
+            ->add('reviewer_name', TextType::class, [
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_stext_len'],
-                ),
-            ))
-            ->add('reviewer_url', TextType::class, array(
-                'label' => '投稿者URL',
+                ],
+            ])
+            ->add('reviewer_url', TextType::class, [
                 'required' => false,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\Url(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
-                    'maxlength' => $config['eccube_stext_len'],
-                ),
-            ))
-            ->add('sex', SexType::class, array(
+                    new Assert\Length(['max' => $config['eccube_url_len']]),
+                ],
+                'attr' => [
+                    'maxlength' => $config['eccube_url_len'],
+                ],
+            ])
+            ->add('sex', SexType::class, [
                 'required' => false,
-            ))
-            ->add('recommend_level', ChoiceType::class, array(
-                'label' => 'おすすめレベル',
-                'choices' => array(
+            ])
+            ->add('recommend_level', ChoiceType::class, [
+                'choices' => array_flip([
                     '5' => '★★★★★',
                     '4' => '★★★★',
                     '3' => '★★★',
                     '2' => '★★',
                     '1' => '★',
-                ),
+                ]),
                 'expanded' => false,
                 'multiple' => false,
-                'required' => true,
-            ))
-            ->add('title', TextType::class, array(
-                'label' => 'タイトル',
-                'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
+                ],
+            ])
+            ->add('title', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_stext_len'],
-                ),
-            ))
-            ->add('comment', TextareaType::class, array(
-                'label' => 'コメント',
-                'required' => true,
-                'constraints' => array(
+                ],
+            ])
+            ->add('comment', TextareaType::class, [
+                'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-                'attr' => array(
+                    new Assert\Length(['max' => $config['eccube_ltext_len']]),
+                ],
+                'attr' => [
                     'maxlength' => $config['eccube_ltext_len'],
-                ),
-            ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'admin_product_review';
+                ],
+            ]);
     }
 }
