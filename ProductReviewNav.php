@@ -21,9 +21,12 @@ class ProductReviewNav implements EccubeNav
     {
         return [
             'product' => [
-                'id' => 'product_review',
-                'name' => 'product_review.admin.product_review.title',
-                'url' => 'product_review_admin_product_review',
+                'children' => [
+                    'product_review' => [
+                        'name' => 'product_review.admin.product_review.title',
+                        'url' => 'product_review_admin_product_review',
+                    ],
+                ],
             ],
         ];
     }
