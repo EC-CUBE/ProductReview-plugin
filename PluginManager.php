@@ -76,16 +76,18 @@ class PluginManager extends AbstractPluginManager
         }
 
         $Config = $em->find(ProductReviewConfig::class, 1);
-        $CsvType = $Config->getCsvType();
+        if ($Config) {
+            $CsvType = $Config->getCsvType();
 
-        // CSV出力項目設定を削除
-        $this->removeCsvData($em, $CsvType);
+            // CSV出力項目設定を削除
+            $this->removeCsvData($em, $CsvType);
 
-        $Config->setCsvType(null);
-        $em->flush($Config);
+            $Config->setCsvType(null);
+            $em->flush($Config);
 
-        $em->remove($CsvType);
-        $em->flush($CsvType);
+            $em->remove($CsvType);
+            $em->flush($CsvType);
+        }
     }
 
     protected function createConfig(EntityManagerInterface $em)
