@@ -37,7 +37,7 @@ class PluginManager extends AbstractPluginManager
         'product_review_complete' => 'レビューを投稿(完了)',
     ];
 
-    public function enable($meta = null, Application $app = null, ContainerInterface $container)
+    public function enable(array $meta, ContainerInterface $container)
     {
         $em = $container->get('doctrine.orm.entity_manager');
 
@@ -66,7 +66,7 @@ class PluginManager extends AbstractPluginManager
         }
     }
 
-    public function uninstall($meta = null, Application $app = null, ContainerInterface $container)
+    public function uninstall(array $meta, ContainerInterface $container)
     {
         $em = $container->get('doctrine.orm.entity_manager');
 
