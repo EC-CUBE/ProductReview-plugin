@@ -18,7 +18,6 @@ use Eccube\Application;
 use Eccube\Entity\Csv;
 use Eccube\Entity\Layout;
 use Eccube\Entity\Master\CsvType;
-use Eccube\Entity\Master\DeviceType;
 use Eccube\Entity\Page;
 use Eccube\Entity\PageLayout;
 use Eccube\Plugin\AbstractPluginManager;
@@ -153,9 +152,7 @@ class PluginManager extends AbstractPluginManager
 
     protected function createPage(EntityManagerInterface $em, $name, $url)
     {
-        $DeviceType = $em->find(DeviceType::class, DeviceType::DEVICE_TYPE_PC);
         $Page = new Page();
-        $Page->setDeviceType($DeviceType);
         $Page->setEditType(Page::EDIT_TYPE_DEFAULT);
         $Page->setName($name);
         $Page->setUrl($url);
