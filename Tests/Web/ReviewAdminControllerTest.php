@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Tests\Web;
+namespace Plugin\ProductReview4\Tests\Web;
 
 use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
@@ -20,8 +20,8 @@ use Eccube\Repository\Master\SexRepository;
 use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
 use Faker\Generator;
-use Plugin\ProductReview\Entity\ProductReview;
-use Plugin\ProductReview\Repository\ProductReviewRepository;
+use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Repository\ProductReviewRepository;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpKernel\Client;
 

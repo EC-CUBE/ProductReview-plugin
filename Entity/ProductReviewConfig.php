@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Entity;
+namespace Plugin\ProductReview4\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
@@ -21,7 +21,7 @@ use Eccube\Entity\Master\CsvType;
  * ProductReviewConfig
  *
  * @ORM\Table(name="plg_product_review_config")
- * @ORM\Entity(repositoryClass="Plugin\ProductReview\Repository\ProductReviewConfigRepository")
+ * @ORM\Entity(repositoryClass="Plugin\ProductReview4\Repository\ProductReviewConfigRepository")
  */
 class ProductReviewConfig extends AbstractEntity
 {

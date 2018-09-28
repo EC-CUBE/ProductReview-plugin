@@ -11,11 +11,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Form\Type\Admin;
+namespace Plugin\ProductReview4\Form\Type\Admin;
 
 use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Master\SexType;
-use Plugin\ProductReview\Entity\ProductReviewStatus;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

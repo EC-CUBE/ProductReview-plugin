@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Repository;
+namespace Plugin\ProductReview4\Repository;
 
 use Eccube\Repository\AbstractRepository;
-use Plugin\ProductReview\Entity\ProductReviewStatus;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**

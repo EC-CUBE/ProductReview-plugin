@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Entity;
+namespace Plugin\ProductReview4\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\Master\AbstractMasterEntity;
@@ -20,7 +20,7 @@ use Eccube\Entity\Master\AbstractMasterEntity;
  * ProductReviewStatus
  *
  * @ORM\Table(name="plg_product_review_status")
- * @ORM\Entity(repositoryClass="Plugin\ProductReview\Repository\ProductReviewStatusRepository")
+ * @ORM\Entity(repositoryClass="Plugin\ProductReview4\Repository\ProductReviewStatusRepository")
  */
 class ProductReviewStatus extends AbstractMasterEntity
 {

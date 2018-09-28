@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Controller\Admin;
+namespace Plugin\ProductReview4\Controller\Admin;
 
-use Plugin\ProductReview\Form\Type\Admin\ProductReviewConfigType;
-use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
+use Plugin\ProductReview4\Form\Type\Admin\ProductReviewConfigType;
+use Plugin\ProductReview4\Repository\ProductReviewConfigRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +26,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
 {
     /**
      * @Route("/%eccube_admin_route%/product_review/config", name="product_review_admin_config")
-     * @Template("@ProductReview/admin/config.twig")
+     * @Template("@ProductReview4/admin/config.twig")
      *
      * @param Request $request
      * @param ProductReviewConfigRepository $configRepository

@@ -1,11 +1,11 @@
 {
-    "name": "ec-cube/ProductReview",
+    "name": "ec-cube/ProductReview4",
     "version": "4.0.0",
     "type": "eccube-plugin",
     "require": {
         "ec-cube/plugin-installer": "~0.0.3"
     },
     "extra": {
-        "code": "ProductReview"
+        "code": "ProductReview4"
     }
 }

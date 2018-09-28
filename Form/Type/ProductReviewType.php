@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Form\Type;
+namespace Plugin\ProductReview4\Form\Type;
 
 use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Master\SexType;

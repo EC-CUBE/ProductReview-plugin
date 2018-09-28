@@ -11,15 +11,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview;
+namespace Plugin\ProductReview4;
 
 use Eccube\Entity\Product;
 use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
-use Plugin\ProductReview\Entity\ProductReview;
-use Plugin\ProductReview\Entity\ProductReviewStatus;
-use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
-use Plugin\ProductReview\Repository\ProductReviewRepository;
+use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
+use Plugin\ProductReview4\Repository\ProductReviewConfigRepository;
+use Plugin\ProductReview4\Repository\ProductReviewRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProductReviewEvent implements EventSubscriberInterface
@@ -66,7 +66,7 @@ class ProductReviewEvent implements EventSubscriberInterface
      */
     public function detail(TemplateEvent $event)
     {
-        $event->addSnippet('@ProductReview/default/review.twig');
+        $event->addSnippet('@ProductReview4/default/review.twig');
 
         $Config = $this->productReviewConfigRepository->get();
 

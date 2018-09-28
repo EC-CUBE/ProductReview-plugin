@@ -19,7 +19,7 @@ EC-CUBE 3.n でのプラグインのインストール方法については、EC
 ### 記述する表示用コード
 
 ```Twig
-{{ include('@ProductReview/default/product_review.twig', ignore_missing = true) }}
+{{ include('@ProductReview4/default/product_review.twig', ignore_missing = true) }}
 ```
 ### 記述する場所
 
@@ -36,7 +36,7 @@ EC-CUBE 3.n でのプラグインのインストール方法については、EC
         {% endif %}
         
         {# 商品レビューの表示 #}
-        {{ include('@ProductReview/default/product_review.twig', ignore_missing = true) }}
+        {{ include('@ProductReview4/default/product_review.twig', ignore_missing = true) }}
         
     </div>
 {% endblock %}
