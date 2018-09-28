@@ -16,7 +16,7 @@ env:
   # plugin code
   global:
     PLUGIN_CODE=ProductReview4
-    BRANCH=experimental/sf
+    BRANCH=4.0
   matrix:
     - DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9
     - DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9
