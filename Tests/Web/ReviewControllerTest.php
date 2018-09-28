@@ -21,6 +21,7 @@ use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\AbstractWebTestCase;
 use Faker\Generator;
 use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -222,7 +223,7 @@ class ReviewControllerTest extends AbstractWebTestCase
             $Product = $this->productRepo->find($product);
         }
 
-        $Display = $this->productStatusRepo->find(ProductStatus::DISPLAY_SHOW);
+        $Display = $this->entityManager->find(ProductReviewStatus::class, ProductReviewStatus::SHOW);
         $Sex = $this->sexMasterRepo->find(1);
         $Customer = $this->createCustomer();
 
@@ -235,7 +236,6 @@ class ReviewControllerTest extends AbstractWebTestCase
         $Review->setReviewerUrl($this->faker->url);
         $Review->setStatus($Display);
         $Review->setSex($Sex);
-        $Review->setEnabled(true);
         $Review->setCustomer($Customer);
 
         $this->entityManager->persist($Review);
