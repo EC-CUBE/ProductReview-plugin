@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ConfigController extends \Eccube\Controller\AbstractController
 {
     /**
-     * @Route("/%eccube_admin_route%/product_review/config", name="product_review_admin_config")
+     * @Route("/%eccube_admin_route%/product_review/config", name="product_review4_admin_config")
      * @Template("@ProductReview4/admin/config.twig")
      *
      * @param Request $request
@@ -47,7 +47,7 @@ class ConfigController extends \Eccube\Controller\AbstractController
             log_info('Product review config', ['status' => 'Success']);
             $this->addSuccess('product_review.admin.save.complete', 'admin');
 
-            return $this->redirectToRoute('product_review_admin_config');
+            return $this->redirectToRoute('product_review4_admin_config');
         }
 
         return [
