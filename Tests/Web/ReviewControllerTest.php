@@ -71,7 +71,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $productId = 1;
         $crawler = $this->client->request(
             'POST',
-            $this->generateUrl('plugin_products_detail_review', ['id' => $productId]),
+            $this->generateUrl('product_review_index', ['id' => $productId]),
             [
                 'product_review' => [
                     'comment' => $this->faker->text(2999),
@@ -85,20 +85,20 @@ class ReviewControllerTest extends AbstractWebTestCase
                 'mode' => 'confirm',
             ]
         );
-        $this->assertContains('送信する', $crawler->html());
+        $this->assertContains('投稿する', $crawler->html());
 
         // Complete
-        $form = $crawler->selectButton('送信する')->form();
+        $form = $crawler->selectButton('投稿する')->form();
         $this->client->submit($form);
 
-        $this->assertTrue($this->client->getResponse()->isRedirect($this->generateUrl('plugin_products_detail_review_complete', ['id' => $productId])));
+        $this->assertTrue($this->client->getResponse()->isRedirect($this->generateUrl('product_review_complete', ['id' => $productId])));
 
         // Verify back to product detail link.
         /**
          * @var Crawler
          */
         $crawler = $this->client->followRedirect();
-        $link = $crawler->selectLink('商品ページに戻る')->link();
+        $link = $crawler->selectLink('商品ページへ戻る')->link();
 
         $this->actual = $link->getUri();
 
@@ -123,18 +123,18 @@ class ReviewControllerTest extends AbstractWebTestCase
         ];
         $crawler = $this->client->request(
             'POST',
-            $this->generateUrl('plugin_products_detail_review', ['id' => $productId]),
+            $this->generateUrl('product_review_index', ['id' => $productId]),
             ['product_review' => $inputForm,
                 'mode' => 'confirm',
             ]
         );
-        $this->assertContains('送信する', $crawler->html());
+        $this->assertContains('投稿する', $crawler->html());
 
         // Back click
         $form = $crawler->selectButton('戻る')->form();
         $crawlerConfirm = $this->client->submit($form);
         $html = $crawlerConfirm->html();
-        $this->assertContains('確認ページヘ', $html);
+        $this->assertContains('確認ページへ', $html);
 
         // Verify data
         $this->assertContains($inputForm['comment'], $html);
