@@ -95,8 +95,10 @@ class ProductReviewController extends AbstractController
         $searchForm = $builder->getForm();
 
         $pageMaxis = $this->pageMaxRepository->findAll();
-        $pageCount = $this->session->get('product_review.admin.product_review.search.page_count',
-            $this->eccubeConfig['eccube_default_page_count']);
+        $pageCount = $this->session->get(
+            'product_review.admin.product_review.search.page_count',
+            $this->eccubeConfig['eccube_default_page_count']
+        );
         $pageCountParam = $request->get('page_count');
         if ($pageCountParam && is_numeric($pageCountParam)) {
             foreach ($pageMaxis as $pageMax) {
@@ -195,8 +197,10 @@ class ProductReviewController extends AbstractController
 
             $this->addSuccess('product_review.admin.save.complete', 'admin');
 
-            return $this->redirectToRoute('product_review_admin_product_review_edit',
-                ['id' => $ProductReview->getId()]);
+            return $this->redirectToRoute(
+                'product_review_admin_product_review_edit',
+                ['id' => $ProductReview->getId()]
+            );
         }
 
         return [

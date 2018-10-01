@@ -14,7 +14,6 @@
 namespace Plugin\ProductReview4;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Eccube\Application;
 use Eccube\Entity\Csv;
 use Eccube\Entity\Layout;
 use Eccube\Entity\Master\CsvType;

@@ -44,8 +44,8 @@ class ProductReviewEvent implements EventSubscriberInterface
     public function __construct(
         ProductReviewConfigRepository $productReviewConfigRepository,
         ProductStatusRepository $productStatusRepository,
-        ProductReviewRepository $productReviewRepository)
-    {
+        ProductReviewRepository $productReviewRepository
+    ) {
         $this->productReviewConfigRepository = $productReviewConfigRepository;
         $this->productStatusRepository = $productStatusRepository;
         $this->productReviewRepository = $productReviewRepository;

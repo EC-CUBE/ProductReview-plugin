@@ -23,7 +23,6 @@ use Plugin\ProductReview4\Entity\ProductReview;
 use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Plugin\ProductReview4\Repository\ProductReviewRepository;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -91,7 +90,8 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
      */
     public function testReviewDeleteIdNotFound()
     {
-        $this->client->request('DELETE',
+        $this->client->request(
+            'DELETE',
             $this->generateUrl('product_review_admin_product_review_delete', ['id' => 99999])
         );
 
@@ -105,7 +105,8 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     {
         $Review = $this->createProductReviewData();
         $productReviewId = $Review->getId();
-        $this->client->request('DELETE',
+        $this->client->request(
+            'DELETE',
             $this->generateUrl('product_review_admin_product_review_delete', ['id' => $productReviewId])
         );
         $this->assertTrue($this->client->getResponse()->isRedirection());

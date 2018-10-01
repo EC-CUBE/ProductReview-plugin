@@ -13,7 +13,6 @@
 
 namespace Plugin\ProductReview4\Tests\Web;
 
-use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Eccube\Repository\Master\SexRepository;
