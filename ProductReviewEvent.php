@@ -16,7 +16,7 @@ namespace Plugin\ProductReview4;
 use Eccube\Entity\Product;
 use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
-use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Plugin\ProductReview4\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview4\Repository\ProductReviewRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -72,7 +72,7 @@ class ProductReviewEvent implements EventSubscriberInterface
         /** @var Product $Product */
         $Product = $event->getParameter('Product');
 
-        $ProductReviews = $this->productReviewRepository->findBy(['Status' => 1, 'Product' => $Product], ['id' => 'DESC'], $Config->getReviewMax());
+        $ProductReviews = $this->productReviewRepository->findBy(['Status' => ProductReviewStatus::SHOW, 'Product' => $Product], ['id' => 'DESC'], $Config->getReviewMax());
 
         $rate = $this->productReviewRepository->getAvgAll($Product);
         $avg = round($rate['recommend_avg']);
