@@ -11,13 +11,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Repository;
+namespace Plugin\ProductReview4\Repository;
 
 use Doctrine\ORM\QueryBuilder;
 use Eccube\Entity\Product;
 use Eccube\Repository\AbstractRepository;
 use Eccube\Util\StringUtil;
-use Plugin\ProductReview\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReview;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**

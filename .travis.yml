@@ -9,13 +9,17 @@ cache:
       - bin/.phpunit
 
 php:
+  - 7.1
   - 7.2
 
 env:
   # plugin code
   global:
-    PLUGIN_CODE=ProductReview
-    BRANCH=experimental/sf
+    PLUGIN_CODE=ProductReview4
+    BRANCH=4.0
+  matrix:
+    - DATABASE_URL=mysql://root:@localhost/cube4_dev DATABASE_SERVER_VERSION=5
+    - DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9
 
 before_install: &php_setup |
   phpenv config-rm xdebug.ini || true
@@ -39,6 +43,22 @@ eccube_setup: &eccube_setup |
   bin/console eccube:plugin:install --path=${HOME}/${PLUGIN_CODE}.tar.gz
   bin/console eccube:plugin:enable --code=${PLUGIN_CODE}
 
+install:
+  - *install_eccube
+  - *eccube_setup
+
+script:
+  - ./bin/phpunit app/Plugin/${PLUGIN_CODE}/Tests
+after_script:
+  # disable plugin
+  - bin/console eccube:plugin:disable --code=${PLUGIN_CODE}
+  # uninstall plugin
+  - bin/console eccube:plugin:uninstall --code=${PLUGIN_CODE}
+  # re install plugin
+  - bin/console eccube:plugin:install --code=${PLUGIN_CODE}
+  # re enable plugin
+  - bin/console eccube:plugin:enable --code=${PLUGIN_CODE}
+
 jobs:
   fast_finish: true
   include:
@@ -49,31 +69,6 @@ jobs:
         - *install_eccube
         - *eccube_setup
       script: vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run app/Plugin/${PLUGIN_CODE}
-    - &unit_test
-      stage: Unit Test
-      env: DATABASE_URL=mysql://root:@localhost/cube4_dev DATABASE_SERVER_VERSION=5
-      before_install:
-        - *php_setup
-        - gem install mime-types -v 2.99.1
-        - gem install mailcatcher
-      install:
-        - *install_eccube
-        - *eccube_setup
-        # mail catcher
-        - mailcatcher
-      script:
-        - ./bin/phpunit app/Plugin/${PLUGIN_CODE}/Tests
-      after_script:
-        # disable plugin
-        - bin/console eccube:plugin:disable --code=${PLUGIN_CODE}
-        # uninstall plugin
-        - bin/console eccube:plugin:uninstall --code=${PLUGIN_CODE}
-        # re install plugin
-        - bin/console eccube:plugin:install --code=${PLUGIN_CODE}
-        # re enable plugin
-        - bin/console eccube:plugin:enable --code=${PLUGIN_CODE}
-    - <<: *unit_test
-      env: DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9
     - &coverage
       stage: Code Coverage
       env: DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9 COVERAGE=1
@@ -87,6 +82,6 @@ jobs:
         # mail catcher
         - mailcatcher
       script:
-        - ./bin/phpunit -c app/Plugin/${PLUGIN_CODE}/phpunit.xml.dist --coverage-clover=coverage.clover
+        - phpdbg -qrr ./vendor/bin/phpunit -c app/Plugin/${PLUGIN_CODE}/phpunit.xml.dist --coverage-clover=coverage.clover
       after_success:
         - php vendor/bin/php-coveralls -v -x coverage.clover

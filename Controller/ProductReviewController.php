@@ -11,16 +11,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Controller;
+namespace Plugin\ProductReview4\Controller;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
-use Plugin\ProductReview\Entity\ProductReview;
-use Plugin\ProductReview\Entity\ProductReviewStatus;
-use Plugin\ProductReview\Form\Type\ProductReviewType;
-use Plugin\ProductReview\Repository\ProductReviewRepository;
-use Plugin\ProductReview\Repository\ProductReviewStatusRepository;
+use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
+use Plugin\ProductReview4\Form\Type\ProductReviewType;
+use Plugin\ProductReview4\Repository\ProductReviewRepository;
+use Plugin\ProductReview4\Repository\ProductReviewStatusRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -85,7 +85,7 @@ class ProductReviewController extends AbstractController
                 case 'confirm':
                     log_info('Product review config confirm');
 
-                    return $this->render('@ProductReview/default/confirm.twig', [
+                    return $this->render('@ProductReview4/default/confirm.twig', [
                         'form' => $form->createView(),
                         'Product' => $Product,
                         'ProductReview' => $ProductReview,
@@ -118,7 +118,7 @@ class ProductReviewController extends AbstractController
             }
         }
 
-        return $this->render('@ProductReview/default/index.twig', [
+        return $this->render('@ProductReview4/default/index.twig', [
             'Product' => $Product,
             'ProductReview' => $ProductReview,
             'form' => $form->createView(),
@@ -129,7 +129,7 @@ class ProductReviewController extends AbstractController
      * Complete.
      *
      * @Route("/product_review/{id}/complete", name="product_review_complete", requirements={"id" = "\d+"})
-     * @Template("@ProductReview/default/complete.twig")
+     * @Template("@ProductReview4/default/complete.twig")
      *
      * @param $id
      *

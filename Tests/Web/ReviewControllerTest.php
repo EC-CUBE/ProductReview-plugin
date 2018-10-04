@@ -11,16 +11,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Tests\Web;
+namespace Plugin\ProductReview4\Tests\Web;
 
-use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Eccube\Repository\Master\SexRepository;
 use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\AbstractWebTestCase;
 use Faker\Generator;
-use Plugin\ProductReview\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -71,7 +71,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $productId = 1;
         $crawler = $this->client->request(
             'POST',
-            $this->generateUrl('plugin_products_detail_review', ['id' => $productId]),
+            $this->generateUrl('product_review_index', ['id' => $productId]),
             [
                 'product_review' => [
                     'comment' => $this->faker->text(2999),
@@ -85,20 +85,20 @@ class ReviewControllerTest extends AbstractWebTestCase
                 'mode' => 'confirm',
             ]
         );
-        $this->assertContains('送信する', $crawler->html());
+        $this->assertContains('投稿する', $crawler->html());
 
         // Complete
-        $form = $crawler->selectButton('送信する')->form();
+        $form = $crawler->selectButton('投稿する')->form();
         $this->client->submit($form);
 
-        $this->assertTrue($this->client->getResponse()->isRedirect($this->generateUrl('plugin_products_detail_review_complete', ['id' => $productId])));
+        $this->assertTrue($this->client->getResponse()->isRedirect($this->generateUrl('product_review_complete', ['id' => $productId])));
 
         // Verify back to product detail link.
         /**
          * @var Crawler
          */
         $crawler = $this->client->followRedirect();
-        $link = $crawler->selectLink('商品ページに戻る')->link();
+        $link = $crawler->selectLink('商品ページへ戻る')->link();
 
         $this->actual = $link->getUri();
 
@@ -123,18 +123,18 @@ class ReviewControllerTest extends AbstractWebTestCase
         ];
         $crawler = $this->client->request(
             'POST',
-            $this->generateUrl('plugin_products_detail_review', ['id' => $productId]),
+            $this->generateUrl('product_review_index', ['id' => $productId]),
             ['product_review' => $inputForm,
                 'mode' => 'confirm',
             ]
         );
-        $this->assertContains('送信する', $crawler->html());
+        $this->assertContains('投稿する', $crawler->html());
 
         // Back click
         $form = $crawler->selectButton('戻る')->form();
         $crawlerConfirm = $this->client->submit($form);
         $html = $crawlerConfirm->html();
-        $this->assertContains('確認ページヘ', $html);
+        $this->assertContains('確認ページへ', $html);
 
         // Verify data
         $this->assertContains($inputForm['comment'], $html);
@@ -222,7 +222,7 @@ class ReviewControllerTest extends AbstractWebTestCase
             $Product = $this->productRepo->find($product);
         }
 
-        $Display = $this->productStatusRepo->find(ProductStatus::DISPLAY_SHOW);
+        $Display = $this->entityManager->find(ProductReviewStatus::class, ProductReviewStatus::SHOW);
         $Sex = $this->sexMasterRepo->find(1);
         $Customer = $this->createCustomer();
 
@@ -235,7 +235,6 @@ class ReviewControllerTest extends AbstractWebTestCase
         $Review->setReviewerUrl($this->faker->url);
         $Review->setStatus($Display);
         $Review->setSex($Sex);
-        $Review->setEnabled(true);
         $Review->setCustomer($Customer);
 
         $this->entityManager->persist($Review);

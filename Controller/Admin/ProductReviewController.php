@@ -11,19 +11,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview\Controller\Admin;
+namespace Plugin\ProductReview4\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Service\CsvExportService;
 use Eccube\Util\FormUtil;
 use Knp\Component\Pager\PaginatorInterface;
-use Plugin\ProductReview\Entity\ProductReview;
-use Plugin\ProductReview\Entity\ProductReviewConfig;
-use Plugin\ProductReview\Form\Type\Admin\ProductReviewSearchType;
-use Plugin\ProductReview\Form\Type\Admin\ProductReviewType;
-use Plugin\ProductReview\Repository\ProductReviewConfigRepository;
-use Plugin\ProductReview\Repository\ProductReviewRepository;
+use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReviewConfig;
+use Plugin\ProductReview4\Form\Type\Admin\ProductReviewSearchType;
+use Plugin\ProductReview4\Form\Type\Admin\ProductReviewType;
+use Plugin\ProductReview4\Repository\ProductReviewConfigRepository;
+use Plugin\ProductReview4\Repository\ProductReviewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -79,7 +79,7 @@ class ProductReviewController extends AbstractController
      *
      * @Route("/%eccube_admin_route%/product_review/", name="product_review_admin_product_review")
      * @Route("/%eccube_admin_route%/product_review/page/{page_no}", requirements={"page_no" = "\d+"}, name="product_review_admin_product_review_page")
-     * @Template("@ProductReview/admin/index.twig")
+     * @Template("@ProductReview4/admin/index.twig")
      *
      * @param Request $request
      * @param null $page_no
@@ -95,8 +95,10 @@ class ProductReviewController extends AbstractController
         $searchForm = $builder->getForm();
 
         $pageMaxis = $this->pageMaxRepository->findAll();
-        $pageCount = $this->session->get('product_review.admin.product_review.search.page_count',
-            $this->eccubeConfig['eccube_default_page_count']);
+        $pageCount = $this->session->get(
+            'product_review.admin.product_review.search.page_count',
+            $this->eccubeConfig['eccube_default_page_count']
+        );
         $pageCountParam = $request->get('page_count');
         if ($pageCountParam && is_numeric($pageCountParam)) {
             foreach ($pageMaxis as $pageMax) {
@@ -167,7 +169,7 @@ class ProductReviewController extends AbstractController
      * 編集.
      *
      * @Route("%eccube_admin_route%/product_review/{id}/edit", name="product_review_admin_product_review_edit")
-     * @Template("@ProductReview/admin/edit.twig")
+     * @Template("@ProductReview4/admin/edit.twig")
      *
      * @param Request $request
      * @param $id
@@ -195,8 +197,10 @@ class ProductReviewController extends AbstractController
 
             $this->addSuccess('product_review.admin.save.complete', 'admin');
 
-            return $this->redirectToRoute('product_review_admin_product_review_edit',
-                ['id' => $ProductReview->getId()]);
+            return $this->redirectToRoute(
+                'product_review_admin_product_review_edit',
+                ['id' => $ProductReview->getId()]
+            );
         }
 
         return [
