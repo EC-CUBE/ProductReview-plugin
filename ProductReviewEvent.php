@@ -16,7 +16,6 @@ namespace Plugin\ProductReview4;
 use Eccube\Entity\Product;
 use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
-use Plugin\ProductReview4\Entity\ProductReview;
 use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Plugin\ProductReview4\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview4\Repository\ProductReviewRepository;
@@ -70,16 +69,10 @@ class ProductReviewEvent implements EventSubscriberInterface
 
         $Config = $this->productReviewConfigRepository->get();
 
-        $searchData = [
-            'status' => [ProductReviewStatus::SHOW],
-        ];
-
-        $qb = $this->productReviewRepository->getQueryBuilderBySearchData($searchData);
-        $qb->setMaxResults($Config->getReviewMax());
-        $ProductReviews = $qb->getQuery()->getResult();
-
         /** @var Product $Product */
         $Product = $event->getParameter('Product');
+
+        $ProductReviews = $this->productReviewRepository->findBy(['Status' => ProductReviewStatus::SHOW, 'Product' => $Product], ['id' => 'DESC'], $Config->getReviewMax());
 
         $rate = $this->productReviewRepository->getAvgAll($Product);
         $avg = round($rate['recommend_avg']);
