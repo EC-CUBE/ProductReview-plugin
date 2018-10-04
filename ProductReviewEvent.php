@@ -17,7 +17,6 @@ use Eccube\Entity\Product;
 use Eccube\Event\TemplateEvent;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Plugin\ProductReview4\Entity\ProductReview;
-use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Plugin\ProductReview4\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview4\Repository\ProductReviewRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
