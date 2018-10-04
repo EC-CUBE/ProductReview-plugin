@@ -70,16 +70,10 @@ class ProductReviewEvent implements EventSubscriberInterface
 
         $Config = $this->productReviewConfigRepository->get();
 
-        $searchData = [
-            'status' => [ProductReviewStatus::SHOW],
-        ];
-
-        $qb = $this->productReviewRepository->getQueryBuilderBySearchData($searchData);
-        $qb->setMaxResults($Config->getReviewMax());
-        $ProductReviews = $qb->getQuery()->getResult();
-
         /** @var Product $Product */
         $Product = $event->getParameter('Product');
+
+        $ProductReviews = $this->productReviewRepository->findBy(['Status' => 1, 'Product' => $Product], ['id' => 'DESC'], $Config->getReviewMax());
 
         $rate = $this->productReviewRepository->getAvgAll($Product);
         $avg = round($rate['recommend_avg']);
