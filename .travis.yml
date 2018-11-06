@@ -57,7 +57,7 @@ before_script:
   - git clone https://github.com/EC-CUBE/ec-cube.git
   - cd ec-cube
   # checkout version
-  - sh -c "if [ ! '${ECCUBE_VERSION}' = '3.0' ]; then  git checkout -b ${ECCUBE_VERSION} refs/tags/${ECCUBE_VERSION}; fi"
+  - git checkout -b ${ECCUBE_VERSION} origin/${ECCUBE_VERSION}
   # update composer
   - composer selfupdate
   - composer global require hirak/prestissimo
