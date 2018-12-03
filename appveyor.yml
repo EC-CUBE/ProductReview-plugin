@@ -37,7 +37,7 @@ install:
   - git clone https://github.com/EC-CUBE/ec-cube.git %BASE_DIR%
   - cd %BASE_DIR%
   # checkout version
-  #- sh -c "if [ ! '%ECCUBE_VERSION%' = 'master' ]; then  git checkout -b %ECCUBE_VERSION% refs/tags/%ECCUBE_VERSION%; fi"
+  - git checkout origin/3.1
   # Set MySQL.
   - cp tests/my.cnf c:\
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.7\bin\;%PATH%
@@ -54,6 +54,7 @@ install:
   - echo extension=php_pdo_pgsql.dll >> C:\tools\php56\php.ini
   - echo extension=php_curl.dll >> C:\tools\php56\php.ini
   - echo extension=php_fileinfo.dll >> C:\tools\php56\php.ini
+  - echo extension=php_intl.dll >> C:\tools\php56\php.ini
   - echo output_buffering = Off >> C:\tools\php56\php.ini
   - echo default_charset = UTF-8 >> C:\tools\php56\php.ini
   - echo mbstring.language = Japanese >> C:\tools\php56\php.ini
