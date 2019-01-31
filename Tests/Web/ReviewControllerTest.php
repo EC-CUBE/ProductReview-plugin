@@ -187,7 +187,7 @@ class ReviewControllerTest extends AbstractWebTestCase
         $reviewArea = $crawler->filter('#product_review_area');
 
         // review total
-        $totalHtml = $reviewArea->filter('.heading02')->html();
+        $totalHtml = $reviewArea->filter('.ec-rectHeading')->html();
         $this->assertContains((string) $max, $totalHtml);
     }
 
