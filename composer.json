@@ -1,6 +1,6 @@
 {
     "name": "ec-cube/ProductReview4",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "description": "商品レビュー管理プラグイン",
     "type": "eccube-plugin",
     "require": {
