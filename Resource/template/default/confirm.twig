@@ -28,7 +28,7 @@ file that was distributed with this source code.
                         {# 商品名 #}
                         <dl>
                             <dt>
-                                <label class="">{{ 'product_review.front.review.product_name'|trans }}</label>
+                                <label class="ec-label">{{ 'product_review.front.review.product_name'|trans }}</label>
                             </dt>
                             <dd>
                                 <div class="ec-input">
@@ -39,7 +39,7 @@ file that was distributed with this source code.
                         {# 投稿者名 #}
                         <dl>
                             <dt>
-                                {{ form_label(form.reviewer_name) }}
+                                {{ form_label(form.reviewer_name, '', {'label_attr': {'class': 'ec-label'}}) }}
                             </dt>
                             <dd>
                                 <div class="ec-input{{ has_errors(form.reviewer_name) ? ' error' }}">
@@ -51,7 +51,7 @@ file that was distributed with this source code.
                         {# 投稿者URL #}
                         <dl>
                             <dt>
-                                {{ form_label(form.reviewer_url) }}
+                                {{ form_label(form.reviewer_url, '', {'label_attr': {'class': 'ec-label'}}) }}
                             </dt>
                             <dd>
                                 <div class="ec-input{{ has_errors(form.reviewer_url) ? ' error' }}">
@@ -63,7 +63,7 @@ file that was distributed with this source code.
                         {# 性別 #}
                         <dl>
                             <dt>
-                                {{ form_label(form.sex) }}
+                                {{ form_label(form.sex, 'common.gender', {'label_attr': {'class': 'ec-label'}}) }}
                             </dt>
                             <dd>
                                 <div class="ec-radio{{ has_errors(form.sex) ? ' error' }}">
@@ -75,7 +75,7 @@ file that was distributed with this source code.
                         {# おすすめレベル #}
                         <dl>
                             <dt>
-                                {{ form_label(form.recommend_level) }}
+                                {{ form_label(form.recommend_level, '', {'label_attr': {'class': 'ec-label'}}) }}
                             </dt>
                             <dd>
                                 <div class="ec-radio{{ has_errors(form.recommend_level) ? ' error' }}">
@@ -89,7 +89,7 @@ file that was distributed with this source code.
                         {# タイトル #}
                         <dl>
                             <dt>
-                                {{ form_label(form.title) }}
+                                {{ form_label(form.title, '', {'label_attr': {'class': 'ec-label'}}) }}
                             </dt>
                             <dd>
                                 <div class="ec-input{{ has_errors(form.title) ? ' error' }}">
@@ -101,7 +101,7 @@ file that was distributed with this source code.
                         {# コメント #}
                         <dl>
                             <dt>
-                                {{ form_label(form.comment) }}
+                                {{ form_label(form.comment, '', {'label_attr': {'class': 'ec-label'}}) }}
                             </dt>
                             <dd>
                                 <div class="ec-input{{ has_errors(form.comment) ? ' error' }}">
