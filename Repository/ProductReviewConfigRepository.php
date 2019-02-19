@@ -38,7 +38,7 @@ class ProductReviewConfigRepository extends AbstractRepository
     /**
      * @param int $id
      *
-     * @return null|ProductReviewConfig
+     * @return ProductReviewConfig|null
      */
     public function get($id = 1)
     {
