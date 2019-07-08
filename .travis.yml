@@ -11,23 +11,24 @@ php:
   - 5.5
   - 5.6
   - 7.0
+  - 7.1
 
 env:
   # plugin code
   global:
     PLUGIN_CODE=ProductReview
   matrix:
-    # ec-cube master
+    # ec-cube 3.1
     - ECCUBE_VERSION=3.1 DB=mysql USER=root DBNAME=myapp_test DBPASS=' ' DBUSER=root
     - ECCUBE_VERSION=3.1 DB=pgsql USER=postgres DBNAME=myapp_test DBPASS=password DBUSER=postgres
     - ECCUBE_VERSION=3.1 DB=sqlite
-    # ec-cube 3.0.13
-    - ECCUBE_VERSION=3.0.13 DB=mysql USER=root DBNAME=myapp_test DBPASS=' ' DBUSER=root
-    - ECCUBE_VERSION=3.0.13 DB=pgsql USER=postgres DBNAME=myapp_test DBPASS=password DBUSER=postgres
     # ec-cube 3.0.17
     - ECCUBE_VERSION=3.0.17 DB=mysql USER=root DBNAME=myapp_test DBPASS=' ' DBUSER=root
     - ECCUBE_VERSION=3.0.17 DB=pgsql USER=postgres DBNAME=myapp_test DBPASS=password DBUSER=postgres
-    # ec-cube 3.0.x
+    # ec-cube 3.0.18
+    - ECCUBE_VERSION=3.0.18 DB=mysql USER=root DBNAME=myapp_test DBPASS=' ' DBUSER=root
+    - ECCUBE_VERSION=3.0.18 DB=pgsql USER=postgres DBNAME=myapp_test DBPASS=password DBUSER=postgres
+    # ec-cube 3.0
     - ECCUBE_VERSION=3.0 DB=mysql USER=root DBNAME=myapp_test DBPASS=' ' DBUSER=root
     - ECCUBE_VERSION=3.0 DB=pgsql USER=postgres DBNAME=myapp_test DBPASS=password DBUSER=postgres
 matrix:
@@ -46,6 +47,8 @@ matrix:
     - php: 5.6
       env: ECCUBE_VERSION=3.1 DB=sqlite
     - php: 7.0
+      env: ECCUBE_VERSION=3.1 DB=sqlite
+    - php: 7.1
       env: ECCUBE_VERSION=3.1 DB=sqlite
 
 install:
