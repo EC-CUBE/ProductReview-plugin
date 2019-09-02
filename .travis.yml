@@ -2,6 +2,10 @@ language: php
 
 dist: xenial
 
+services:
+  - mysql
+  - postgresql
+
 cache:
   directories:
       - vendor
@@ -26,8 +30,7 @@ env:
 
   # plugin code
   global:
-    - PLUGIN_CODE=ProductReview4
-    - BRANCH=4.0
+    PLUGIN_CODE=ProductReview4
 
 before_install: &php_setup |
   phpenv config-rm xdebug.ini || true
