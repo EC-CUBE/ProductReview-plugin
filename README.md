@@ -1,6 +1,9 @@
-# 商品レビュー EC-CUBE 3.n 用サンプルプラグイン
+# 商品レビュー EC-CUBE 4系
 
-EC-CUBE 3.n プラグイン実装参考用のサンプルプラグインです。  
+[![Build Status](https://travis-ci.org/EC-CUBE/ProductReview-plugin.svg?branch=feature%2F1.0.0)](https://travis-ci.org/EC-CUBE/ProductReview-plugin)
+[![Build status](https://ci.appveyor.com/api/projects/status/oni9ptnqfs37uqdb?svg=true)](https://ci.appveyor.com/project/ECCUBE/ProductReview-plugin-9n48w)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5c61b4f6-edad-4908-9a9a-6b4f38574a93/mini.png)](https://insight.sensiolabs.com/projects/5c61b4f6-edad-4908-9a9a-6b4f38574a93)
+[![Coverage Status](https://coveralls.io/repos/github/EC-CUBE/ProductReview-plugin/badge.svg)](https://coveralls.io/github/EC-CUBE/ProductReview-plugin)
 
 ## 機能概要
 - フロントページへの表示の追加
@@ -9,7 +12,7 @@ EC-CUBE 3.n プラグイン実装参考用のサンプルプラグインです�
 
 ## インストール方法
 
-EC-CUBE 3.n でのプラグインのインストール方法については、EC-CUBE 3.n 開発ドキュメントのプラグインのインストールの項を参考にしてください。
+EC-CUBE4系でのプラグインのインストール方法については、EC-CUBE4系開発ドキュメントのプラグインのインストールの項を参考にしてください。
 
 ## カスタマイズの詳細
 
