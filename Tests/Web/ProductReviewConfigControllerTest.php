@@ -64,6 +64,8 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
     public function testMin()
     {
         $min = $this->eccubeConfig['product_review_display_count_min'];
+        $max = $this->eccubeConfig['product_review_display_count_max'];
+
         /**
          * @var Client
          */
@@ -80,7 +82,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         $form['product_review_config[review_max]'] = $this->faker->numberBetween(-10, $min - 1);
         $crawler = $client->submit($form);
 
-        $this->assertContains($min.'以上でなければなりません。', $crawler->html());
+        $this->assertContains($min.'以上'.$max.'以下でなければなりません。', $crawler->html());
     }
 
     /**
