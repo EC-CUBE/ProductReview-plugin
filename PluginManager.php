@@ -57,7 +57,7 @@ class PluginManager extends AbstractPluginManager
 
         // ページを追加
         foreach ($this->urls as $url => $name) {
-            $Page = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
+            $Page = $em->getRepository(Page::class)->findOneBy(['url' => $url]);
             if (null === $Page) {
                 $this->createPage($em, $name, $url);
             }
