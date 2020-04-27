@@ -58,9 +58,9 @@ class ReviewControllerTest extends AbstractWebTestCase
         $this->faker = $this->getFaker();
         $this->deleteAllRows(['plg_product_review']);
 
-        $this->productRepo = $this->container->get(ProductRepository::class);
-        $this->sexMasterRepo = $this->container->get(SexRepository::class);
-        $this->productStatusRepo = $this->container->get(ProductStatusRepository::class);
+        $this->productRepo = self::$container->get(ProductRepository::class);
+        $this->sexMasterRepo = self::$container->get(SexRepository::class);
+        $this->productStatusRepo = self::$container->get(ProductStatusRepository::class);
     }
 
     /**
