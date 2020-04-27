@@ -12,7 +12,7 @@ product_review.common.required: 必須
 product_review.admin.config.title: レビュー設定
 product_review.admin.config.sub_title: プラグイン一覧
 product_review.admin.config.config_title: 設定
-product_review.admin.config.review_max: レビューの表示件数(%min%〜%max%)
+product_review.admin.config.review_max: 'レビューの表示件数(%min%〜%max%)'
 product_review.admin.config.conversion.save: 登録
 product_review.admin.config.conversion.back: プラグイン一覧
 
@@ -22,7 +22,7 @@ product_review.admin.product_review.sub_title: 商品管理
 product_review.admin.product_review.search_detail: 詳細検索
 product_review.admin.product_review.search_button: 検索
 product_review.admin.product_review.search_clear: 検索条件をクリア
-product_review.admin.product_review.search_result_count: 検索結果：%count%件が該当しました。
+product_review.admin.product_review.search_result_count: '検索結果：%count%件が該当しました。'
 product_review.admin.product_review.search_multi: 投稿者名・投稿者URL
 product_review.admin.product_review.search_product_name: 商品名
 product_review.admin.product_review.search_product_code: 商品コード
@@ -36,7 +36,7 @@ product_review.admin.product_review.search_no_result: 検索条件に合致す�
 product_review.admin.product_review.search_invalid_condition: 検索条件に誤りがあります
 product_review.admin.product_review.search_change_condition_and_retry: 検索条件を変えて、再度検索をお試しください。
 product_review.admin.product_review.search_try_detail_condition: '[詳細検索]も試してみましょう。'
-product_review.admin.product_review.diaply_count: %count%件
+product_review.admin.product_review.diaply_count: '%count%件'
 product_review.admin.product_review.csv_download: CSVダウンロード
 product_review.admin.product_review.csv_download_setting: CSV出力項目設定
 product_review.admin.product_review.th_posted_date: 投稿日
@@ -90,7 +90,7 @@ product_review.form.product_review.recommend_level: おすすめレベル
 product_review.front.product_detail.title: この商品のレビュー
 product_review.front.product_detail.no_review: レビューはありません。
 product_review.front.product_detail.post_review: レビューを投稿
-product_review.front.product_detail.name: %name% さん
+product_review.front.product_detail.name: '%name% さん'
 
 
 
