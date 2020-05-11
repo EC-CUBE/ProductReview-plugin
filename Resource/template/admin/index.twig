@@ -208,7 +208,11 @@
                                 <tr>
                                     <td class="text-center">{{ Review.id }}</td>
                                     <td>{{ Review.create_date|date_min }}</td>
-                                    <td>{{ Review.reviewer_name }}</td>
+                                    <td>
+                                        {{ Review.reviewer_name }}<br>
+{#                                        <a href="{{ url('admin_customer_edit', { 'id': Customer.id}) }}">{{ Customer.name01 }}&nbsp;{{ Customer.name02 }}</a><br>#}
+                                        <a href="{{ url('admin_customer_edit', { 'id': Review.Customer.id}) }}">{{ Review.Customer.name01 }}&nbsp;{{ Review.Customer.name02 }}</a><br>
+                                    </td>
                                     <td>{{ Review.Product.name }}</td>
                                     <td>
                                         <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a>
