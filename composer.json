@@ -1,10 +1,10 @@
 {
-    "name": "ec-cube/ProductReview4",
+    "name": "ec-cube/productreview4",
     "version": "4.0.1",
     "description": "商品レビュー管理プラグイン",
     "type": "eccube-plugin",
     "require": {
-        "ec-cube/plugin-installer": "~0.0.6"
+        "ec-cube/plugin-installer": "~0.0.6 || ^2.0@dev"
     },
     "extra": {
         "code": "ProductReview4"
