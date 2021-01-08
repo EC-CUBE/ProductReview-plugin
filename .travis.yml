@@ -66,7 +66,7 @@ matrix:
       env: ECCUBE_VERSION=4.0.3 DATABASE_URL=mysql://root:@localhost/cube4_dev DATABASE_SERVER_VERSION=5
     - php: 7.4
       env: ECCUBE_VERSION=4.0.3 DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9
-    
+
 before_install: &php_setup |
   phpenv config-rm xdebug.ini || true
   echo "opcache.enable_cli=1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -79,7 +79,7 @@ install_eccube: &install_eccube |
   cd ec-cube
   sh -c "if [ '${ECCUBE_VERSION}' = '4.0' ];   then git checkout origin/${ECCUBE_VERSION}; fi"
   sh -c "if [ ! '${ECCUBE_VERSION}' = '4.0' ]; then git checkout refs/tags/${ECCUBE_VERSION}; fi"
-  composer selfupdate
+  composer selfupdate --1
   composer install --dev --no-interaction -o --apcu-autoloader
 
 eccube_setup: &eccube_setup |
