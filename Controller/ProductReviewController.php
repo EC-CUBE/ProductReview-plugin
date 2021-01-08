@@ -59,6 +59,7 @@ class ProductReviewController extends AbstractController
 
     /**
      * @Route("/product_review/{id}/review", name="product_review_index", requirements={"id" = "\d+"})
+     * @Route("/product_review/{id}/review", name="product_review_confirm", requirements={"id" = "\d+"})
      *
      * @param Request $request
      * @param Product $Product
@@ -85,7 +86,7 @@ class ProductReviewController extends AbstractController
                 case 'confirm':
                     log_info('Product review config confirm');
 
-                    return $this->render('@ProductReview4/default/confirm.twig', [
+                    return $this->render('ProductReview4/Resource/template/default/confirm.twig', [
                         'form' => $form->createView(),
                         'Product' => $Product,
                         'ProductReview' => $ProductReview,
@@ -118,7 +119,7 @@ class ProductReviewController extends AbstractController
             }
         }
 
-        return $this->render('@ProductReview4/default/index.twig', [
+        return $this->render('ProductReview4/Resource/template/default/index.twig', [
             'Product' => $Product,
             'ProductReview' => $ProductReview,
             'form' => $form->createView(),
@@ -129,7 +130,7 @@ class ProductReviewController extends AbstractController
      * Complete.
      *
      * @Route("/product_review/{id}/complete", name="product_review_complete", requirements={"id" = "\d+"})
-     * @Template("@ProductReview4/default/complete.twig")
+     * @Template("ProductReview4/Resource/template/default/complete.twig")
      *
      * @param $id
      *
@@ -138,5 +139,15 @@ class ProductReviewController extends AbstractController
     public function complete($id)
     {
         return ['id' => $id];
+    }
+
+    /**
+     * ページ管理表示用のダミールーティング.
+     *
+     * @Route("/product_review/display", name="product_review_display")
+     */
+    public function display()
+    {
+        return new Response();
     }
 }
