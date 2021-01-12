@@ -66,12 +66,18 @@ matrix:
       env: ECCUBE_VERSION=4.0.3 DATABASE_URL=mysql://root:@localhost/cube4_dev DATABASE_SERVER_VERSION=5
     - php: 7.4
       env: ECCUBE_VERSION=4.0.3 DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9
-    
+
 before_install: &php_setup |
   phpenv config-rm xdebug.ini || true
   echo "opcache.enable_cli=1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   echo "apc.enable_cli=1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
+# composer.jsonが存在しないディレクトリで実行
+setup_composer: &setup_composer |
+  cd ..
+  composer selfupdate --1
+  cd -
 
 install_eccube: &install_eccube |
   tar cvzf ${HOME}/${PLUGIN_CODE}.tar.gz ./*
@@ -79,7 +85,6 @@ install_eccube: &install_eccube |
   cd ec-cube
   sh -c "if [ '${ECCUBE_VERSION}' = '4.0' ];   then git checkout origin/${ECCUBE_VERSION}; fi"
   sh -c "if [ ! '${ECCUBE_VERSION}' = '4.0' ]; then git checkout refs/tags/${ECCUBE_VERSION}; fi"
-  composer selfupdate
   composer install --dev --no-interaction -o --apcu-autoloader
 
 eccube_setup: &eccube_setup |
@@ -91,6 +96,7 @@ eccube_setup: &eccube_setup |
   bin/console eccube:plugin:enable --code=${PLUGIN_CODE}
 
 install:
+  - *setup_composer
   - *install_eccube
   - *eccube_setup
 
