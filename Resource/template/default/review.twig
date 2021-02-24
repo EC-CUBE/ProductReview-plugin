@@ -88,12 +88,12 @@
 <div id="product_review_area">
     <div class="ec-role">
         {% set positive_avg_star = ProductReviewAvg %}
-        {% set nagative_avg_star = 5 - positive_avg_star %}
+        {% set negative_avg_star = 5 - positive_avg_star %}
 
         <div class="ec-rectHeading is_active">
             <h4>{{ 'product_review.front.product_detail.title'|trans }}
                 <!--平均の星の数-->
-                <span class="recommend_average">{{ stars.stars(positive_avg_star, nagative_avg_star) }}</span>
+                <span class="recommend_average">{{ stars.stars(positive_avg_star, negative_avg_star) }}</span>
                 <!--レビュー数-->
                 <span>({{ ProductReviewCount }})</span>
                 <span class="chevron pull-right">
@@ -122,9 +122,9 @@
 
                                 <!--星の数-->
                                 {% set positive_star = ProductReview.recommend_level %}
-                                {% set nagative_star = 5 - positive_star %}
+                                {% set negative_star = 5 - positive_star %}
                                 <span class="recommend_level">
-                                            {{ stars.stars(positive_star, nagative_star) }}
+                                            {{ stars.stars(positive_star, negative_star) }}
                                         </span>
                             </p>
 
