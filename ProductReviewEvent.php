@@ -27,6 +27,11 @@ class ProductReviewEvent implements EventSubscriberInterface
      * @var ProductReviewConfigRepository
      */
     protected $productReviewConfigRepository;
+    
+    /**
+     * @var ProductStatusRepository
+     */
+    protected $productStatusRepository;
 
     /**
      * @var ProductReviewRepository
