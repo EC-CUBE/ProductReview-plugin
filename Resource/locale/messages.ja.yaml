@@ -45,6 +45,8 @@ product_review.admin.product_review.th_product_name: 商品名
 product_review.admin.product_review.th_title: タイトル
 product_review.admin.product_review.th_level: おすすめレベル
 product_review.admin.product_review.th_status: 公開・非公開
+product_review.admin.product_review.status_show: 公開
+product_review.admin.product_review.status_hide: 非公開
 product_review.admin.product_review.delete: 削除
 product_review.admin.product_review.delete_cancel: キャンセル
 product_review.admin.product_review.delete_confirm_title: レビューを削除します
