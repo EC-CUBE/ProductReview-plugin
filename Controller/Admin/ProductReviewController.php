@@ -220,14 +220,20 @@ class ProductReviewController extends AbstractController
      * @param Request $request
      * @param int $id
      *
-     * @return RedirectResponse
      */
-    public function delete(ProductReview $ProductReview)
+    public function delete(Request $request, ProductReview $ProductReview)
     {
         $this->isTokenValid();
 
         $this->entityManager->remove($ProductReview);
         $this->entityManager->flush($ProductReview);
+
+        if ($request->isXmlHttpRequest()) {
+            $message = trans('product_review.admin.delete.complete');
+            $success = true;
+            return $this->json(['success' => $success, 'message' => $message]);
+        };
+        
         $this->addSuccess('product_review.admin.delete.complete', 'admin');
 
         log_info('Product review delete', ['id' => $ProductReview->getId()]);

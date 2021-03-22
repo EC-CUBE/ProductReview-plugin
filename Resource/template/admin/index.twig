@@ -97,6 +97,75 @@
                 form.attr('action', $(this).data('action')).submit();
                 return false;
             });
+
+            $('#bulkDelete').on('click', function() {
+
+                var modal = $('#bulkDeleteModal');
+
+                // 削除中のUI変更処理
+                modal.find('button').attr('disabled', 'disabled');
+                $('.modal-body p', modal).text("{{ 'admin.product.permanently_delete__in_progress'|trans }}");
+                $('.progress', modal).show();
+
+                var checkedList = $('input[type=checkbox][data-delete-url]:checked');
+                var totalCount = checkedList.length;
+                var currentCount = 0;
+
+                {# var promises = checkedList.map(function() {
+                    return $.ajax({
+                        'url': $(this).data('delete-url'),
+                        'type': 'delete',
+                        'data': {'_token': $(this).attr('token-for-anchor')}
+                    }).always(function() {
+                        $('.progress-bar', modal).css('width', (++currentCount / totalCount * 100) + '%');
+                    });
+                }); #}
+
+                var promises = checkedList.map(function() {
+                    {# for (let i = 0; i < 1000000000; i++) {
+                        let tmp = 0
+                    }; #}
+                    return $.ajax({
+                        'url': $(this).data('delete-url'),
+                        'type': 'delete',
+                        'data': {'_token': $(this).attr('token-for-anchor')}
+                    }).always(function() {
+                        $('.progress-bar', modal).css('width', (++currentCount / totalCount * 100) + '%');
+                    });
+                });
+
+                var addError = function(errorMessage) {
+                    $('<li><span class="badge badge-danger">ERROR</span> </li>')
+                        .append($('<span></span>').text(errorMessage))
+                        .appendTo('#bulkErrors');
+                };
+
+                $.when.apply($, promises)
+                    .done(function() {
+                        // 削除できなかった場合はエラーメッセージを表示
+                        var args = promises.length === 1 ? [arguments[0]] : [].slice.call(arguments).map(function(result) {
+                            return result[0];
+                        });
+                        args.filter(function(result) {
+                            return result.success === false;
+                        }).forEach(function(result) {
+                            addError(result.message);
+                        });
+                    })
+                    .fail(function() {
+                        // システムエラー
+                        addError("{{ 'admin.product.permanently_delete__system_error'|trans }}");
+                    })
+                    .always(function() {
+                        $('.progress', modal).hide();
+                        $('.modal-body p', modal).text("{{ 'product_review.admin.delete.complete'|trans }}");
+                        modal.find('button').removeAttr('disabled').toggle();
+                    })
+            });
+            $('#bulkDeleteDone').on('click', function() {
+                location.reload(true);
+            });
+            
         });
     </script>
 {% endblock javascript %}
@@ -202,6 +271,7 @@
                                         <span>{{ 'product_review.admin.product_review.status_hide'|trans }}</span>
                                     </button>
                                 </div>
+                                <button type="button" data-toggle="modal" data-target="#bulkDeleteModal" class="btn btn-ec-delete">{{ 'product_review.admin.product_review.delete'|trans }}</button>
                             </div>
                         </div>
                         <div class="col-5 text-right">
@@ -343,6 +413,28 @@
                         {% endif %}
                     </div>
                 </form>
+            </div>
+        </div>
+        <div class="modal fade" id="bulkDeleteModal" tabindex="-1" role="dialog" aria-labelledby="discontinuance" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold">{{ 'product_review.admin.product_review.delete_confirm_title'|trans }}</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body text-left">
+                        <p class="text-left">{{ 'product_review.admin.product_review.delete_confirm_message'|trans }}</p>
+                        <ul id="bulkErrors"></ul>
+                        <div class="progress" style="display: none">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ec-sub" type="button" data-dismiss="modal">{{ 'admin.common.cancel'|trans }}</button>
+                        <button class="btn btn-ec-delete" type="button" id="bulkDelete">{{ 'product_review.admin.product_review.delete' | trans }}</button>
+                        <button class="btn btn-ec-regular" id="bulkDeleteDone" style="display: none" type="button" data-dismiss="modal">{{ 'admin.product.permanently_delete__complete'|trans }}</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
