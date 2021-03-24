@@ -111,20 +111,7 @@
                 var totalCount = checkedList.length;
                 var currentCount = 0;
 
-                {# var promises = checkedList.map(function() {
-                    return $.ajax({
-                        'url': $(this).data('delete-url'),
-                        'type': 'delete',
-                        'data': {'_token': $(this).attr('token-for-anchor')}
-                    }).always(function() {
-                        $('.progress-bar', modal).css('width', (++currentCount / totalCount * 100) + '%');
-                    });
-                }); #}
-
                 var promises = checkedList.map(function() {
-                    {# for (let i = 0; i < 1000000000; i++) {
-                        let tmp = 0
-                    }; #}
                     return $.ajax({
                         'url': $(this).data('delete-url'),
                         'type': 'delete',
