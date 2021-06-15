@@ -68,25 +68,16 @@ class ProductReviewEventLegacy extends CommonEvent
 
             $response = $event->getResponse();
 
-            // Source
-            $html = $response->getContent();
+            // insert dom
+            $document = \DOMDocument::loadHTML($response->getContent());
+            $xpath = new \DOMXPath($document);
+            $itemDetail = $xpath->query('//div[@id="item_detail"]', $document)->item(0);
 
-            // Crawler
-            $crawler = new Crawler($html);
-            $oldElement = $crawler
-                ->filter('#item_detail')->last();
+            $newNode = \DOMDocument::loadHTML('<?xml encoding="utf-8" ?><html>'.$twig.'</html>')->getElementsByTagName('html')->item(0);
+            $itemDetail->appendChild($document->importNode($newNode, true));
 
-            $oldHtml = $oldElement->html();
-
-            $oldHtml = html_entity_decode($oldHtml, ENT_NOQUOTES, 'UTF-8');
-
-            $newHtml = $oldHtml.$twig;
-
-            $html = $this->getHtml($crawler);
-
-            $html = str_replace($oldHtml, $newHtml, $html);
-
-            $response->setContent($html);
+            $crawler = new Crawler($document);
+            $response->setContent('<!doctype html>'.$crawler->html());
             $event->setResponse($response);
         }
 
