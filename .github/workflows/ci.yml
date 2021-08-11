@@ -143,6 +143,8 @@ jobs:
       working-directory: 'ec-cube'
       run: |
         bin/console eccube:plugin:install --code=${PLUGIN_CODE} --path=${GITHUB_WORKSPACE}/${PLUGIN_CODE}.tar.gz
+        bin/console cache:clear --no-warmup
+        bin/console cache:warmup
         bin/console eccube:plugin:enable --code=${PLUGIN_CODE}
         rm codeception/_support/*Tester.php
 
