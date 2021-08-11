@@ -27,6 +27,11 @@ class ProductReviewEvent implements EventSubscriberInterface
      * @var ProductReviewConfigRepository
      */
     protected $productReviewConfigRepository;
+    
+    /**
+     * @var ProductStatusRepository
+     */
+    protected $productStatusRepository;
 
     /**
      * @var ProductReviewRepository
@@ -65,7 +70,7 @@ class ProductReviewEvent implements EventSubscriberInterface
      */
     public function detail(TemplateEvent $event)
     {
-        $event->addSnippet('@ProductReview4/default/review.twig');
+        $event->addSnippet('ProductReview4/Resource/template/default/review.twig');
 
         $Config = $this->productReviewConfigRepository->get();
 

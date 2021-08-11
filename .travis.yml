@@ -75,6 +75,12 @@ before_install: &php_setup |
   echo "apc.enable_cli=1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
+# composer.jsonが存在しないディレクトリで実行
+setup_composer: &setup_composer |
+  cd ..
+  composer selfupdate --1
+  cd -
+
 install_eccube: &install_eccube |
   sh -c "if [ ! '${ECCUBE_VERSION}' = '4.1' ]; then  composer selfupdate --1; fi"
   sh -c "if [ '${ECCUBE_VERSION}' = '4.1' ]; then  composer selfupdate; fi"
@@ -94,6 +100,7 @@ eccube_setup: &eccube_setup |
   bin/console eccube:plugin:enable --code=${PLUGIN_CODE}
 
 install:
+  - *setup_composer
   - *install_eccube
   - *eccube_setup
   - composer require --dev kiy0taka/eccube4-test-fixer
