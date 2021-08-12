@@ -54,7 +54,7 @@ class PluginManager extends AbstractPluginManager
 
     public function enable(array $meta, ContainerInterface $container)
     {
-        $em = $container->get('doctrine.orm.entity_manager');
+        $em = $container->get('doctrine')->getManager();
 
         // プラグイン設定を追加
         $Config = $this->createConfig($em);
@@ -74,7 +74,7 @@ class PluginManager extends AbstractPluginManager
 
         // ページを追加
         foreach ($this->pages as $pageInfo) {
-            $Page = $container->get(PageRepository::class)->findOneBy(['url' => $pageInfo['url']]);
+            $Page = $em->getRepository(Page::class)->findOneBy(['url' => $pageInfo['url']]);
             if (null === $Page) {
                 $this->createPage($em, $pageInfo['name'], $pageInfo['url'], $pageInfo['filename']);
             }
@@ -95,7 +95,7 @@ class PluginManager extends AbstractPluginManager
 
     public function uninstall(array $meta, ContainerInterface $container)
     {
-        $em = $container->get('doctrine.orm.entity_manager');
+        $em = $container->get('doctrine')->getManager();
 
         // ページを削除
         foreach ($this->pages as $pageInfo) {
