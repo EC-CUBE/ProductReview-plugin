@@ -211,7 +211,12 @@
                                     <td>{{ Review.reviewer_name }}</td>
                                     <td>{{ Review.Product.name }}</td>
                                     <td>
-                                        <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a>
+                                        <a
+                                            data-toggle="modal"
+                                            data-target="#contentModal-{{ Review.id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            >{{ Review.title }}</a>
                                     </td>
                                     <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
                                     <td>{{ Review.status }}</td>
@@ -266,6 +271,34 @@
                                             </div>
                                         </div>
                                     </td>
+                                    <div class="modal fade ReviewContentModal" id="contentModal-{{ Review.id }}" tabindex="-1"
+                                            role="dialog"
+                                            aria-labelledby="contentModal-{{ Review.id }}" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title font-weight-bold">
+                                                            {{ 'product_review.admin.product_review_edit.review_detail' |trans }}
+                                                        </h5>
+                                                        <button class="close" type="button"
+                                                                data-dismiss="modal"
+                                                                aria-label="Close"><span
+                                                                    aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body text-left">
+                                                        <p class="text-left">
+                                                            {{ Review.comment }}
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-ec-sub" type="button"
+                                                                data-dismiss="modal">{{ 'product_review.front.review.back'|trans }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                 </tr>
                             {% endfor %}
                             </tbody>
