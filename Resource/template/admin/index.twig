@@ -65,6 +65,94 @@
                     });
                 });
             }
+
+            toggleBtnBulk('input[id^="check_"]', '#btn_bulk');
+            $('input[id^="check_"]').on('change', function() {
+                $('#trigger_check_all').prop('checked', false);
+                toggleBtnBulk('input[id^="check_"]', '#btn_bulk');
+            });
+
+            $('#trigger_check_all').on('change', function() {
+                var checked = $(this).prop('checked');
+                if (checked) {
+                    $('input[id^="check_"]').prop('checked', true);
+                } else {
+                    $('input[id^="check_"]').prop('checked', false);
+                }
+                toggleBtnBulk('input[id^="check_"]', '#btn_bulk');
+            });
+
+            $('#form_bulk').find('.action-submit').on('click', function(event) {
+                event.preventDefault();
+                var form = $(this).closest('form');
+                if (!form.find('input:checkbox[name^="ids"]:checked').length) {
+                    {# TODO: should use modal instead of alert #}
+                    alert('please check');
+                    return false;
+                }
+
+                $('<input />').attr('type', 'hidden').attr('name', '{{ constant('Eccube\\Common\\Constant::TOKEN_NAME') }}')
+                    .val($(this).attr('token-for-anchor'))
+                    .appendTo(form);
+                form.attr('action', $(this).data('action')).submit();
+                return false;
+            });
+
+            $('#bulkDelete').on('click', function() {
+
+                var modal = $('#bulkDeleteModal');
+
+                // 削除中のUI変更処理
+                modal.find('button').attr('disabled', 'disabled');
+                $('.modal-body p', modal).text("{{ 'admin.product.permanently_delete__in_progress'|trans }}");
+                $('.progress', modal).show();
+
+                var checkedList = $('input[type=checkbox][data-delete-url]:checked');
+                var totalCount = checkedList.length;
+                var currentCount = 0;
+
+                var promises = checkedList.map(function() {
+                    return $.ajax({
+                        'url': $(this).data('delete-url'),
+                        'type': 'delete',
+                        'data': {'_token': $(this).attr('token-for-anchor')}
+                    }).always(function() {
+                        $('.progress-bar', modal).css('width', (++currentCount / totalCount * 100) + '%');
+                    });
+                });
+
+                var addError = function(errorMessage) {
+                    $('<li><span class="badge badge-danger">ERROR</span> </li>')
+                        .append($('<span></span>').text(errorMessage))
+                        .appendTo('#bulkErrors');
+                };
+
+                $.when.apply($, promises)
+                    .done(function() {
+                        // 削除できなかった場合はエラーメッセージを表示
+                        var args = promises.length === 1 ? [arguments[0]] : [].slice.call(arguments).map(function(result) {
+                            return result[0];
+                        });
+                        args.filter(function(result) {
+                            return result.success === false;
+                        }).forEach(function(result) {
+                            addError(result.message);
+                        });
+                    })
+                    .fail(function() {
+                        // システムエラー
+                        addError("{{ 'admin.product.permanently_delete__system_error'|trans }}");
+                    })
+                    .always(function() {
+                        $('.progress', modal).hide();
+                        $('.modal-body p', modal).text("{{ 'product_review.admin.delete.complete'|trans }}");
+                        modal.find('button').removeAttr('disabled').toggle();
+                    })
+            });
+            $('#bulkDeleteDone').on('click', function() {
+                location.reload(true);
+            });
+            
         });
     </script>
 {% endblock javascript %}
@@ -157,142 +245,182 @@
         <div class="c-contentsArea__primaryCol">
             <div class="c-primaryCol">
                 {% if pagination and pagination.totalItemCount %}
-
-                <div class="row justify-content-between mb-2">
-                    <div class="col-6">
-                        &nbsp;
-                    </div>
-                    <div class="col-5 text-right">
-                        <div class="d-inline-block mr-2">
-                            <div>
-                                <select class="custom-select" onchange="location = this.value;">
-                                    {% for pageMax in pageMaxis %}
-                                        <option {% if pageMax.name == page_count %}selected=""{% endif %}
-                                                value="{{ path('product_review_admin_product_review_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{ 'product_review.admin.product_review.diaply_count'|trans({'%count%' : pageMax.name}) }}</option>
-                                    {% endfor %}
-                                </select>
+                <form id="form_bulk" method="POST" action="">
+                    <div class="row justify-content-between mb-2">
+                        <div class="col-6">
+                            <div id="btn_bulk" class="d-none">
+                                <label class="mr-2">{{ 'admin.common.bulk_actions'|trans }}</label>
+                                <div class="btn-group mr-2" role="group">
+                                    <button {{ csrf_token_for_anchor() }} data-action="{{ url('product_review_admin_product_review_bulkstatus', {id: constant('Plugin\\ProductReview4\\Entity\\ProductReviewStatus::SHOW')}) }}" class="btn btn-ec-regular action-submit" type="button">
+                                        <span>{{ 'product_review.admin.product_review.status_show'|trans }}</span>
+                                    </button>
+                                    <button {{ csrf_token_for_anchor() }} data-action="{{ url('product_review_admin_product_review_bulkstatus', {id: constant('Plugin\\ProductReview4\\Entity\\ProductReviewStatus::HIDE')}) }}" class="btn btn-ec-regular action-submit" type="button">
+                                        <span>{{ 'product_review.admin.product_review.status_hide'|trans }}</span>
+                                    </button>
+                                </div>
+                                <button type="button" data-toggle="modal" data-target="#bulkDeleteModal" class="btn btn-ec-delete">{{ 'product_review.admin.product_review.delete'|trans }}</button>
                             </div>
                         </div>
-                        <div class="d-inline-block">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-ec-regular" type="button"
-                                        onclick='location.href="{{ url('product_review_admin_product_review_download') }}"'>
-                                    <i
-                                            class="fa fa-cloud-download mr-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download'|trans }}</span>
-                                </button>
-                                <button class="btn btn-ec-regular" type="button"
-                                        onclick='location.href="{{ url('admin_setting_shop_csv', { id : CsvType.id }) }}"'>
-                                    <i class="fa fa-cog mr-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download_setting'|trans }}</span>
-                                </button>
+                        <div class="col-5 text-right">
+                            <div class="d-inline-block mr-2">
+                                <div>
+                                    <select class="custom-select" onchange="location = this.value;">
+                                        {% for pageMax in pageMaxis %}
+                                            <option {% if pageMax.name == page_count %}selected=""{% endif %}
+                                                    value="{{ path('product_review_admin_product_review_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{ 'product_review.admin.product_review.diaply_count'|trans({'%count%' : pageMax.name}) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-inline-block">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-ec-regular" type="button"
+                                            onclick='location.href="{{ url('product_review_admin_product_review_download') }}"'>
+                                        <i
+                                                class="fa fa-cloud-download mr-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download'|trans }}</span>
+                                    </button>
+                                    <button class="btn btn-ec-regular" type="button"
+                                            onclick='location.href="{{ url('admin_setting_shop_csv', { id : CsvType.id }) }}"'>
+                                        <i class="fa fa-cog mr-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download_setting'|trans }}</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card rounded border-0 mb-4">
-                    <div class="card-body p-0">
-                        <table class="table table-sm">
-                            <thead>
-                            <tr>
-                                <th class="text-center">ID</th>
-                                <th>{{ 'product_review.admin.product_review.th_posted_date'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_contributor'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_product_name'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_title'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_level'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_status'|trans }}</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for Review in pagination %}
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-body p-0">
+                            <table class="table table-sm">
+                                <thead>
                                 <tr>
-                                    <td class="text-center">{{ Review.id }}</td>
-                                    <td>{{ Review.create_date|date_min }}</td>
-                                    <td>{{ Review.reviewer_name }}</td>
-                                    <td>{{ Review.Product.name }}</td>
-                                    <td>
-                                        <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a>
-                                    </td>
-                                    <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
-                                    <td>{{ Review.status }}</td>
-                                    <td class="icon_edit">
-                                        <div class="col-auto text-right">
-                                            <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}"
-                                               class="btn btn-ec-actionIcon mr-3 action-edit"
-                                               data-toggle="tooltip"
-                                               data-placement="top" title=""
-                                               data-original-title=""><i class="fa fa-pencil fa-lg text-secondary"></i></a>
+                                    <th class="text-center">
+                                        <input type="checkbox" name="filter" value="open" id="trigger_check_all">
+                                    </th>
+                                    <th class="text-center">ID</th>
+                                    <th>{{ 'product_review.admin.product_review.th_posted_date'|trans }}</th>
+                                    <th>{{ 'product_review.admin.product_review.th_contributor'|trans }}</th>
+                                    <th>{{ 'product_review.admin.product_review.th_product_name'|trans }}</th>
+                                    <th>{{ 'product_review.admin.product_review.th_title'|trans }}</th>
+                                    <th>{{ 'product_review.admin.product_review.th_level'|trans }}</th>
+                                    <th>{{ 'product_review.admin.product_review.th_status'|trans }}</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for Review in pagination %}
+                                    <tr>
+                                        <td class="text-center">
+                                            <input type="checkbox" name="ids[]" value="{{ Review.id }}" id="check_{{ Review.id }}" data-delete-url="{{ url('product_review_admin_product_review_delete', { id: Review.id }) }}">
+                                        </td>
+                                        <td class="text-center">{{ Review.id }}</td>
+                                        <td>{{ Review.create_date|date_min }}</td>
+                                        <td>{{ Review.reviewer_name }}</td>
+                                        <td>{{ Review.Product.name }}</td>
+                                        <td>
+                                            <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a>
+                                        </td>
+                                        <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
+                                        <td>{{ Review.status }}</td>
+                                        <td class="icon_edit">
+                                            <div class="col-auto text-right">
+                                                <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}"
+                                                class="btn btn-ec-actionIcon mr-3 action-edit"
+                                                data-toggle="tooltip"
+                                                data-placement="top" title=""
+                                                data-original-title=""><i class="fa fa-pencil fa-lg text-secondary"></i></a>
 
-                                            <a
-                                                    class="btn btn-ec-actionIcon mr-3"
-                                                    data-toggle="modal"
-                                                    data-target="#confirmModal-{{ Review.id }}"
-                                                    data-toggle="tooltip"
-                                                    data-placement="top"><i
-                                                        class="fa fa-close fa-lg text-secondary"></i></a>
-                                        </div>
-                                        <div class="modal fade" id="confirmModal-{{ Review.id }}" tabindex="-1"
-                                             role="dialog"
-                                             aria-labelledby="confirmModal-{{ Review.id }}" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title font-weight-bold">
-                                                            {{ 'product_review.admin.product_review.delete_confirm_title'|trans }}</h5>
-                                                        <button class="close" type="button"
-                                                                data-dismiss="modal"
-                                                                aria-label="Close"><span
-                                                                    aria-hidden="true">×</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-left">
-                                                        <p class="text-left">
-                                                            {{ 'product_review.admin.product_review.delete_confirm_message'|trans }}</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button class="btn btn-ec-sub" type="button"
-                                                                data-dismiss="modal">{{ 'product_review.admin.product_review.delete_cancel'|trans }}
-                                                        </button>
-                                                        <a
-                                                                href="{{ url('product_review_admin_product_review_delete', { id : Review.id }) }}"
-                                                                class="btn btn-ec-delete"
-                                                                data-confirm="false"
-                                                                {{ csrf_token_for_anchor() }}
-                                                                data-method="delete">
-                                                            {{ 'product_review.admin.product_review.delete'|trans }}
-                                                        </a>
+                                                <a
+                                                        class="btn btn-ec-actionIcon mr-3"
+                                                        data-toggle="modal"
+                                                        data-target="#confirmModal-{{ Review.id }}"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"><i
+                                                            class="fa fa-close fa-lg text-secondary"></i></a>
+                                            </div>
+                                            <div class="modal fade" id="confirmModal-{{ Review.id }}" tabindex="-1"
+                                                role="dialog"
+                                                aria-labelledby="confirmModal-{{ Review.id }}" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title font-weight-bold">
+                                                                {{ 'product_review.admin.product_review.delete_confirm_title'|trans }}</h5>
+                                                            <button class="close" type="button"
+                                                                    data-dismiss="modal"
+                                                                    aria-label="Close"><span
+                                                                        aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-left">
+                                                            <p class="text-left">
+                                                                {{ 'product_review.admin.product_review.delete_confirm_message'|trans }}</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-ec-sub" type="button"
+                                                                    data-dismiss="modal">{{ 'product_review.admin.product_review.delete_cancel'|trans }}
+                                                            </button>
+                                                            <a
+                                                                    href="{{ url('product_review_admin_product_review_delete', { id : Review.id }) }}"
+                                                                    class="btn btn-ec-delete"
+                                                                    data-confirm="false"
+                                                                    {{ csrf_token_for_anchor() }}
+                                                                    data-method="delete">
+                                                                {{ 'product_review.admin.product_review.delete'|trans }}
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <div class="row justify-content-md-center mb-4">
-                        {% if pagination|length > 0 %}
-                            {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'product_review_admin_product_review_page' } %}
+                        <div class="row justify-content-md-center mb-4">
+                            {% if pagination|length > 0 %}
+                                {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'product_review_admin_product_review_page' } %}
+                            {% endif %}
+                        </div>
+                        {% elseif has_errors %}
+                            <div class="card rounded border-0">
+                                <div class="card-body p-4">
+                                    <div class="text-center text-muted mb-4 h5">{{ 'product_review.admin.product_review.search_invalid_condition'|trans }}</div>
+                                    <div class="text-center text-muted">{{ 'product_review.admin.product_review.search_change_condition_and_retry'|trans }}</div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="card rounded border-0">
+                                <div class="card-body p-4">
+                                    <div class="text-center text-muted mb-4 h5">{{ 'product_review.admin.product_review.search_no_result'|trans }}</div>
+                                    <div class="text-center text-muted">{{ 'product_review.admin.product_review.search_change_condition_and_retry'|trans }}</div>
+                                    <div class="text-center text-muted">{{ 'product_review.admin.product_review.search_try_detail_condition'|trans }}</div>
+                                </div>
+                            </div>
                         {% endif %}
                     </div>
-                    {% elseif has_errors %}
-                        <div class="card rounded border-0">
-                            <div class="card-body p-4">
-                                <div class="text-center text-muted mb-4 h5">{{ 'product_review.admin.product_review.search_invalid_condition'|trans }}</div>
-                                <div class="text-center text-muted">{{ 'product_review.admin.product_review.search_change_condition_and_retry'|trans }}</div>
-                            </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal fade" id="bulkDeleteModal" tabindex="-1" role="dialog" aria-labelledby="discontinuance" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold">{{ 'product_review.admin.product_review.delete_confirm_title'|trans }}</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body text-left">
+                        <p class="text-left">{{ 'product_review.admin.product_review.delete_confirm_message'|trans }}</p>
+                        <ul id="bulkErrors"></ul>
+                        <div class="progress" style="display: none">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                    {% else %}
-                        <div class="card rounded border-0">
-                            <div class="card-body p-4">
-                                <div class="text-center text-muted mb-4 h5">{{ 'product_review.admin.product_review.search_no_result'|trans }}</div>
-                                <div class="text-center text-muted">{{ 'product_review.admin.product_review.search_change_condition_and_retry'|trans }}</div>
-                                <div class="text-center text-muted">{{ 'product_review.admin.product_review.search_try_detail_condition'|trans }}</div>
-                            </div>
-                        </div>
-                    {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ec-sub" type="button" data-dismiss="modal">{{ 'admin.common.cancel'|trans }}</button>
+                        <button class="btn btn-ec-delete" type="button" id="bulkDelete">{{ 'product_review.admin.product_review.delete' | trans }}</button>
+                        <button class="btn btn-ec-regular" id="bulkDeleteDone" style="display: none" type="button" data-dismiss="modal">{{ 'admin.product.permanently_delete__complete'|trans }}</button>
+                    </div>
                 </div>
             </div>
         </div>

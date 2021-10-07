@@ -19,6 +19,7 @@ use Eccube\Service\CsvExportService;
 use Eccube\Util\FormUtil;
 use Knp\Component\Pager\PaginatorInterface;
 use Plugin\ProductReview4\Entity\ProductReview;
+use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Plugin\ProductReview4\Entity\ProductReviewConfig;
 use Plugin\ProductReview4\Form\Type\Admin\ProductReviewSearchType;
 use Plugin\ProductReview4\Form\Type\Admin\ProductReviewType;
@@ -219,20 +220,67 @@ class ProductReviewController extends AbstractController
      * @param Request $request
      * @param int $id
      *
-     * @return RedirectResponse
      */
-    public function delete(ProductReview $ProductReview)
+    public function delete(Request $request, ProductReview $ProductReview)
     {
         $this->isTokenValid();
 
         $this->entityManager->remove($ProductReview);
         $this->entityManager->flush($ProductReview);
+
+        if ($request->isXmlHttpRequest()) {
+            $message = trans('product_review.admin.delete.complete');
+            $success = true;
+            return $this->json(['success' => $success, 'message' => $message]);
+        };
+        
         $this->addSuccess('product_review.admin.delete.complete', 'admin');
 
         log_info('Product review delete', ['id' => $ProductReview->getId()]);
 
         return $this->redirect($this->generateUrl('product_review_admin_product_review_page', ['resume' => 1]));
     }
+
+    /**
+     * 商品レビューのステータス一括操作
+     * 
+     * @Route("%eccube_admin_route%/product_review/bulk/productreview-status/{id}", requirements={"id" = "\d+"}, name="product_review_admin_product_review_bulkstatus", methods={"POST"})
+     * 
+     * @param Request $request
+     * @param ProductReviewStatus $ProductStatus
+     * @return RedirectResponse
+     */
+    public function bulkstatus(Request $request, ProductReviewStatus $ProductStatus)
+    {
+        $this->isTokenValid();
+
+        /** @var ProductReview[] $Products */
+        $Products = $this->productReviewRepository->findBy(['id' => $request->get('ids')]);
+        $count = 0;
+        foreach ($Products as $Product) {
+            try {
+                $Product->setStatus($ProductStatus);
+                $this->productReviewRepository->save($Product);
+                $count++;
+            } catch (\Exception $e) {
+                $this->addError($e->getMessage(), 'admin');
+            }
+        }
+        try {
+            if ($count) {
+                $this->entityManager->flush();
+                $msg = $this->translator->trans('admin.product.bulk_change_status_complete', [
+                    '%count%' => $count,
+                    '%status%' => $ProductStatus->getName(),
+                ]);
+                $this->addSuccess($msg, 'admin');
+            }
+        } catch (\Exception $e) {
+            $this->addError($e->getMessage(), 'admin');
+        }
+
+        return $this->redirect($this->generateUrl('product_review_admin_product_review_page', ['resume' => 1]));
+    } 
 
     /**
      * 商品レビューCSVの出力.
