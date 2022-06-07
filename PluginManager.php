@@ -14,6 +14,7 @@
 namespace Plugin\ProductReview4;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Eccube\Common\EccubeConfig;
 use Eccube\Entity\Csv;
 use Eccube\Entity\Layout;
 use Eccube\Entity\Master\CsvType;
@@ -24,20 +25,36 @@ use Eccube\Repository\PageRepository;
 use Plugin\ProductReview4\Entity\ProductReviewConfig;
 use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class PluginManager extends AbstractPluginManager
 {
-    /**
-     * @var array
-     */
-    private $urls = [
-        'product_review_index' => 'レビューを投稿',
-        'product_review_complete' => 'レビューを投稿(完了)',
+    private $pages = [
+        [
+            'name' => 'レビューを表示',
+            'url' => 'product_review_display',
+            'filename' => 'ProductReview4/Resource/template/default/review',
+        ],
+        [
+            'name' => 'レビューを投稿',
+            'url' => 'product_review_index',
+            'filename' => 'ProductReview4/Resource/template/default/index',
+        ],
+        [
+            'name' => 'レビューを投稿(確認)',
+            'url' => 'product_review_confirm',
+            'filename' => 'ProductReview4/Resource/template/default/confirm',
+        ],
+        [
+            'name' => 'レビューを投稿(完了)',
+            'url' => 'product_review_complete',
+            'filename' => 'ProductReview4/Resource/template/default/complete',
+        ],
     ];
 
     public function enable(array $meta, ContainerInterface $container)
     {
-        $em = $container->get('doctrine.orm.entity_manager');
+        $em = $container->get('doctrine')->getManager();
 
         // プラグイン設定を追加
         $Config = $this->createConfig($em);
@@ -56,22 +73,36 @@ class PluginManager extends AbstractPluginManager
         }
 
         // ページを追加
-        foreach ($this->urls as $url => $name) {
-            $Page = $container->get(PageRepository::class)->findOneBy(['url' => $url]);
+        foreach ($this->pages as $pageInfo) {
+            $Page = $em->getRepository(Page::class)->findOneBy(['url' => $pageInfo['url']]);
             if (null === $Page) {
-                $this->createPage($em, $name, $url);
+                $this->createPage($em, $pageInfo['name'], $pageInfo['url'], $pageInfo['filename']);
             }
+        }
+
+        $this->copyTwigFiles($container);
+    }
+
+    public function disable(array $meta, ContainerInterface $container)
+    {
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        // ページを削除
+        foreach ($this->pages as $pageInfo) {
+            $this->removePage($em, $pageInfo['url']);
         }
     }
 
     public function uninstall(array $meta, ContainerInterface $container)
     {
-        $em = $container->get('doctrine.orm.entity_manager');
+        $em = $container->get('doctrine')->getManager();
 
         // ページを削除
-        foreach ($this->urls as $url) {
-            $this->removePage($em, $url);
+        foreach ($this->pages as $pageInfo) {
+            $this->removePage($em, $pageInfo['url']);
         }
+
+        $this->removeTwigFiles($container);
 
         $Config = $em->find(ProductReviewConfig::class, 1);
         if ($Config) {
@@ -149,13 +180,13 @@ class PluginManager extends AbstractPluginManager
         return $CsvType;
     }
 
-    protected function createPage(EntityManagerInterface $em, $name, $url)
+    protected function createPage(EntityManagerInterface $em, $name, $url, $filename)
     {
         $Page = new Page();
         $Page->setEditType(Page::EDIT_TYPE_DEFAULT);
         $Page->setName($name);
         $Page->setUrl($url);
-        $Page->setFileName('@ProductReview4/default/index');
+        $Page->setFileName($filename);
 
         // DB登録
         $em->persist($Page);
@@ -169,6 +200,18 @@ class PluginManager extends AbstractPluginManager
             ->setSortNo(0);
         $em->persist($PageLayout);
         $em->flush($PageLayout);
+    }
+
+    protected function copyTwigFiles(ContainerInterface $container)
+    {
+        $templatePath = $container->getParameter('eccube_theme_front_dir')
+            .'/ProductReview4/Resource/template/default';
+        $fs = new Filesystem();
+        if ($fs->exists($templatePath)) {
+            return;
+        }
+        $fs->mkdir($templatePath);
+        $fs->mirror(__DIR__.'/Resource/template/default', $templatePath);
     }
 
     protected function createCsvData(EntityManagerInterface $em, CsvType $CsvType)
@@ -289,6 +332,14 @@ class PluginManager extends AbstractPluginManager
 
         $em->remove($Page);
         $em->flush($Page);
+    }
+
+    protected function removeTwigFiles(ContainerInterface $container)
+    {
+        $templatePath = $container->getParameter('eccube_theme_front_dir')
+            .'/ProductReview4';
+        $fs = new Filesystem();
+        $fs->remove($templatePath);
     }
 
     protected function removeCsvData(EntityManagerInterface $em, CsvType $CsvType)

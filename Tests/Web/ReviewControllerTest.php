@@ -13,6 +13,7 @@
 
 namespace Plugin\ProductReview4\Tests\Web;
 
+use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 use Eccube\Repository\Master\ProductStatusRepository;
 use Eccube\Repository\Master\SexRepository;
@@ -23,6 +24,7 @@ use Plugin\ProductReview4\Entity\ProductReview;
 use Plugin\ProductReview4\Entity\ProductReviewStatus;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 
 /**
  * Class ReviewControllerTest front.
@@ -58,9 +60,9 @@ class ReviewControllerTest extends AbstractWebTestCase
         $this->faker = $this->getFaker();
         $this->deleteAllRows(['plg_product_review']);
 
-        $this->productRepo = $this->container->get(ProductRepository::class);
-        $this->sexMasterRepo = $this->container->get(SexRepository::class);
-        $this->productStatusRepo = $this->container->get(ProductStatusRepository::class);
+        $this->productRepo = $this->entityManager->getRepository(Product::class);
+        $this->sexMasterRepo = $this->entityManager->getRepository(Sex::class);
+        $this->productReviewRepo = $this->entityManager->getRepository(ProductReview::class);
     }
 
     /**
