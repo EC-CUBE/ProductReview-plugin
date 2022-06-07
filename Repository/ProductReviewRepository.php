@@ -48,8 +48,9 @@ class ProductReviewRepository extends AbstractRepository
     public function getQueryBuilderBySearchData($searchData)
     {
         $qb = $this->createQueryBuilder('r')
-            ->select('r, p, pc')
+            ->select('r, p, pc, c')
             ->innerJoin('r.Product', 'p')
+            ->innerJoin('r.Customer', 'c')
             ->innerJoin('p.ProductClasses', 'pc');
 
         // 投稿者名・投稿者URL
