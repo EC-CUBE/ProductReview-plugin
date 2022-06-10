@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Tests\Web;
+namespace Plugin\ProductReview42\Tests\Web;
 
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
@@ -20,8 +20,8 @@ use Eccube\Repository\Master\SexRepository;
 use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\AbstractWebTestCase;
 use Faker\Generator;
-use Plugin\ProductReview4\Entity\ProductReview;
-use Plugin\ProductReview4\Entity\ProductReviewStatus;
+use Plugin\ProductReview42\Entity\ProductReview;
+use Plugin\ProductReview42\Entity\ProductReviewStatus;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -54,7 +54,7 @@ class ReviewControllerTest extends AbstractWebTestCase
     /**
      * Setup method.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->faker = $this->getFaker();

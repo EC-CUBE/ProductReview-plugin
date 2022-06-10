@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4;
+namespace Plugin\ProductReview42;
 
 use Eccube\Common\EccubeNav;
 

@@ -11,16 +11,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Controller;
+namespace Plugin\ProductReview42\Controller;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\ProductStatus;
 use Eccube\Entity\Product;
-use Plugin\ProductReview4\Entity\ProductReview;
-use Plugin\ProductReview4\Entity\ProductReviewStatus;
-use Plugin\ProductReview4\Form\Type\ProductReviewType;
-use Plugin\ProductReview4\Repository\ProductReviewRepository;
-use Plugin\ProductReview4\Repository\ProductReviewStatusRepository;
+use Plugin\ProductReview42\Entity\ProductReview;
+use Plugin\ProductReview42\Entity\ProductReviewStatus;
+use Plugin\ProductReview42\Form\Type\ProductReviewType;
+use Plugin\ProductReview42\Repository\ProductReviewRepository;
+use Plugin\ProductReview42\Repository\ProductReviewStatusRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -86,7 +86,7 @@ class ProductReviewController extends AbstractController
                 case 'confirm':
                     log_info('Product review config confirm');
 
-                    return $this->render('ProductReview4/Resource/template/default/confirm.twig', [
+                    return $this->render('ProductReview42/Resource/template/default/confirm.twig', [
                         'form' => $form->createView(),
                         'Product' => $Product,
                         'ProductReview' => $ProductReview,
@@ -119,7 +119,7 @@ class ProductReviewController extends AbstractController
             }
         }
 
-        return $this->render('ProductReview4/Resource/template/default/index.twig', [
+        return $this->render('ProductReview42/Resource/template/default/index.twig', [
             'Product' => $Product,
             'ProductReview' => $ProductReview,
             'form' => $form->createView(),
@@ -130,7 +130,7 @@ class ProductReviewController extends AbstractController
      * Complete.
      *
      * @Route("/product_review/{id}/complete", name="product_review_complete", requirements={"id" = "\d+"})
-     * @Template("ProductReview4/Resource/template/default/complete.twig")
+     * @Template("ProductReview42/Resource/template/default/complete.twig")
      *
      * @param $id
      *

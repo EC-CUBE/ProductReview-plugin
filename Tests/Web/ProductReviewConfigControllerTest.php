@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Tests\Web;
+namespace Plugin\ProductReview42\Tests\Web;
 
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
 use Faker\Generator;
@@ -31,7 +31,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
     /**
      * Setup method.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->faker = $this->getFaker();
@@ -49,7 +49,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->generateUrl('product_review4_admin_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('product_review42_admin_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
@@ -71,7 +71,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->generateUrl('product_review4_admin_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('product_review42_admin_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
@@ -96,7 +96,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->generateUrl('product_review4_admin_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('product_review42_admin_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
@@ -122,7 +122,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         /**
          * @var Crawler
          */
-        $crawler = $this->client->request('GET', $this->generateUrl('product_review4_admin_config'));
+        $crawler = $this->client->request('GET', $this->generateUrl('product_review42_admin_config'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
@@ -131,7 +131,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         $form['product_review_config[review_max]'] = $this->faker->numberBetween($min, $max);
         $crawler = $client->submit($form);
 
-        $this->assertTrue($client->getResponse()->isRedirection($this->generateUrl('product_review4_admin_config')));
+        $this->assertTrue($client->getResponse()->isRedirection($this->generateUrl('product_review42_admin_config')));
 
         $crawler = $client->followRedirect();
         $this->assertContains('登録しました。', $crawler->html());

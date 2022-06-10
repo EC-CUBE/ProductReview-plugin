@@ -79,7 +79,7 @@ file that was distributed with this source code.
                             </dt>
                             <dd>
                                 <div class="ec-radio{{ has_errors(form.recommend_level) ? ' error' }}">
-                                    {% for child in form.recommend_level.children if child.vars.checked %}
+                                    {% for child in form.recommend_level.children|filter(child => child.vars.checked) %}
                                         {{ child.vars.label }}
                                     {% endfor %}
                                     {{ form_widget(form.recommend_level, { type: 'hidden' }) }}
