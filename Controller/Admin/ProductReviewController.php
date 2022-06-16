@@ -86,7 +86,7 @@ class ProductReviewController extends AbstractController
      *
      * @return array
      */
-    public function index(Request $request, $page_no = null, PaginatorInterface $paginator)
+    public function index(Request $request, PaginatorInterface $paginator, $page_no = null)
     {
         $CsvType = $this->productReviewConfigRepository
             ->get()
