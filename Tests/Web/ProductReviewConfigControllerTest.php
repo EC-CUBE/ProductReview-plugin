@@ -55,7 +55,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
 
         $min = $this->eccubeConfig['product_review_display_count_min'];
         $max = $this->eccubeConfig['product_review_display_count_max'];
-        $this->assertContains('レビューの表示件数('.$min.'〜'.$max.')', $crawler->html());
+        $this->assertStringContainsString('レビューの表示件数('.$min.'〜'.$max.')', $crawler->html());
     }
 
     /**
@@ -80,7 +80,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         $form['product_review_config[review_max]'] = $this->faker->numberBetween(-10, $min - 1);
         $crawler = $client->submit($form);
 
-        $this->assertContains($min.'以上', $crawler->html());
+        $this->assertStringContainsString($min.'以上', $crawler->html());
     }
 
     /**
@@ -105,7 +105,7 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         $form['product_review_config[review_max]'] = $this->faker->numberBetween($max + 1, 100);
         $crawler = $client->submit($form);
 
-        $this->assertContains($max.'以下でなければなりません。', $crawler->html());
+        $this->assertStringContainsString($max.'以下でなければなりません。', $crawler->html());
     }
 
     /**
@@ -134,6 +134,6 @@ class ProductReviewConfigControllerTest extends AbstractAdminWebTestCase
         $this->assertTrue($client->getResponse()->isRedirection($this->generateUrl('product_review42_admin_config')));
 
         $crawler = $client->followRedirect();
-        $this->assertContains('登録しました。', $crawler->html());
+        $this->assertStringContainsString('登録しました。', $crawler->html());
     }
 }
