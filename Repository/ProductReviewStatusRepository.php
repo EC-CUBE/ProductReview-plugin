@@ -11,11 +11,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Repository;
+namespace Plugin\ProductReview42\Repository;
 
 use Eccube\Repository\AbstractRepository;
-use Plugin\ProductReview4\Entity\ProductReviewStatus;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Plugin\ProductReview42\Entity\ProductReviewStatus;
+use Doctrine\Persistence\ManagerRegistry; 
 
 /**
  * ProductReview Status.
@@ -28,9 +28,9 @@ class ProductReviewStatusRepository extends AbstractRepository
     /**
      * ProductReviewStatusRepository constructor.
      *
-     * @param RegistryInterface $registry
+     * @param ManagerRegistry $registry
      */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ProductReviewStatus::class);
     }

@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Entity;
+namespace Plugin\ProductReview42\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
@@ -23,7 +23,7 @@ use Eccube\Entity\Product;
  * ProductReview
  *
  * @ORM\Table(name="plg_product_review")
- * @ORM\Entity(repositoryClass="Plugin\ProductReview4\Repository\ProductReviewRepository")
+ * @ORM\Entity(repositoryClass="Plugin\ProductReview42\Repository\ProductReviewRepository")
  */
 class ProductReview extends AbstractEntity
 {
@@ -116,9 +116,9 @@ class ProductReview extends AbstractEntity
     private $update_date;
 
     /**
-     * @var \Plugin\ProductReview4\Entity\ProductReviewStatus
+     * @var \Plugin\ProductReview42\Entity\ProductReviewStatus
      *
-     * @ORM\ManyToOne(targetEntity="Plugin\ProductReview4\Entity\ProductReviewStatus")
+     * @ORM\ManyToOne(targetEntity="Plugin\ProductReview42\Entity\ProductReviewStatus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      * })
@@ -328,7 +328,7 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * @return \Plugin\ProductReview4\Entity\ProductReviewStatus
+     * @return \Plugin\ProductReview42\Entity\ProductReviewStatus
      */
     public function getStatus()
     {
@@ -336,9 +336,9 @@ class ProductReview extends AbstractEntity
     }
 
     /**
-     * @param \Plugin\ProductReview4\Entity\ProductReviewStatus $status
+     * @param \Plugin\ProductReview42\Entity\ProductReviewStatus $status
      */
-    public function setStatus(\Plugin\ProductReview4\Entity\ProductReviewStatus $Status)
+    public function setStatus(\Plugin\ProductReview42\Entity\ProductReviewStatus $Status)
     {
         $this->Status = $Status;
     }

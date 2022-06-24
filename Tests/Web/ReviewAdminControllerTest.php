@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Tests\Web;
+namespace Plugin\ProductReview42\Tests\Web;
 
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
@@ -20,9 +20,9 @@ use Eccube\Repository\Master\SexRepository;
 use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
 use Faker\Generator;
-use Plugin\ProductReview4\Entity\ProductReview;
-use Plugin\ProductReview4\Entity\ProductReviewStatus;
-use Plugin\ProductReview4\Repository\ProductReviewRepository;
+use Plugin\ProductReview42\Entity\ProductReview;
+use Plugin\ProductReview42\Entity\ProductReviewStatus;
+use Plugin\ProductReview42\Repository\ProductReviewRepository;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -55,7 +55,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     /**
      * Setup method.
      */
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
         $this->faker = $this->getFaker();
@@ -74,17 +74,17 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $number = 5;
         $this->createProductReviewByNumber($number);
         $crawler = $this->client->request('GET', $this->generateUrl('product_review_admin_product_review'));
-        $this->assertContains('レビュー管理', $crawler->html());
+        $this->assertStringContainsString('レビュー管理', $crawler->html());
         $form = $crawler->selectButton('検索')->form();
         $crawlerSearch = $this->client->submit($form);
-        $this->assertContains('検索結果', $crawlerSearch->html());
+        $this->assertStringContainsString('検索結果', $crawlerSearch->html());
         /* @var $crawlerSearch Crawler */
         $actual = $crawlerSearch->filter('form#search_form span#search-result')->html();
 
         $this->actual = preg_replace('/\D/', '', $actual);
         $this->expected = $number;
 
-        $this->assertContains((string) $this->expected, $this->actual);
+        $this->assertStringContainsString((string) $this->expected, $this->actual);
     }
 
     /**
@@ -173,7 +173,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         // check message.
         $this->expected = '登録しました。';
         $this->actual = $crawler->filter('.alert')->html();
-        $this->assertContains($this->expected, $this->actual);
+        $this->assertStringContainsString($this->expected, $this->actual);
 
         // Check entity
         $this->expected = $fakeTitle;
@@ -181,7 +181,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $this->verify();
 
         // Stay in edit page
-        $this->assertContains('レビュー管理', $crawler->html());
+        $this->assertStringContainsString('レビュー管理', $crawler->html());
     }
 
     /**
@@ -198,15 +198,15 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             ['product_review_search' => $form]
         );
 
-        $this->assertContains('検索', $crawler->html());
+        $this->assertStringContainsString('検索', $crawler->html());
 
         $numberResult = $crawler->filter('#search_form #search-result')->html();
 
         $numberResult = preg_replace('/\D/', '', $numberResult);
-        $this->assertContains('1', $numberResult);
+        $this->assertStringContainsString('1', $numberResult);
 
         $table = $crawler->filter('.table tbody');
-        $this->assertContains($review->getReviewerName(), $table->html());
+        $this->assertStringContainsString($review->getReviewerName(), $table->html());
     }
 
     /**
@@ -218,13 +218,13 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $this->createProductReviewByNumber($number);
 
         $crawler = $this->client->request('GET', $this->generateUrl('product_review_admin_product_review'));
-        $this->assertContains('検索', $crawler->html());
+        $this->assertStringContainsString('検索', $crawler->html());
         $form = $crawler->selectButton('検索')->form();
         $crawlerSearch = $this->client->submit($form);
 
         $numberResult = $crawlerSearch->filter('form#search_form #search-result');
         $numberResult = preg_replace('/\D/', '', $numberResult->html());
-        $this->assertContains((string) $number, $numberResult);
+        $this->assertStringContainsString((string) $number, $numberResult);
 
         /* @var $crawler Crawler */
         $crawler = $this->client->request('GET', $this->generateUrl('product_review_admin_product_review_page', ['page_no' => 2]));
@@ -233,7 +233,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $paging = $crawler->filter('ul.pagination .page-item')->last();
 
         // Current active on page 2.
-        $this->assertContains('active', $paging->parents()->html());
+        $this->assertStringContainsString('active', $paging->parents()->html());
         $this->expected = 2;
         $this->actual = intval($paging->text());
         $this->verify();
@@ -253,15 +253,15 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             ['product_review_search' => $form]
         );
 
-        $this->assertContains('検索', $crawler->html());
+        $this->assertStringContainsString('検索', $crawler->html());
         $numberResult = $crawler->filter('form#search_form span#search-result')->html();
 
         $numberResult = preg_replace('/\D/', '', $numberResult);
-        $this->assertContains('1', $numberResult);
+        $this->assertStringContainsString('1', $numberResult);
 
         $table = $crawler->filter('.table tbody');
 
-        $this->assertContains($review->getReviewerName(), $table->html());
+        $this->assertStringContainsString($review->getReviewerName(), $table->html());
 
         $this->expectOutputRegex("/{$review->getTitle()}/");
 

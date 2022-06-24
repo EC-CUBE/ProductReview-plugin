@@ -11,19 +11,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Controller\Admin;
+namespace Plugin\ProductReview42\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Service\CsvExportService;
 use Eccube\Util\FormUtil;
 use Knp\Component\Pager\PaginatorInterface;
-use Plugin\ProductReview4\Entity\ProductReview;
-use Plugin\ProductReview4\Entity\ProductReviewConfig;
-use Plugin\ProductReview4\Form\Type\Admin\ProductReviewSearchType;
-use Plugin\ProductReview4\Form\Type\Admin\ProductReviewType;
-use Plugin\ProductReview4\Repository\ProductReviewConfigRepository;
-use Plugin\ProductReview4\Repository\ProductReviewRepository;
+use Plugin\ProductReview42\Entity\ProductReview;
+use Plugin\ProductReview42\Entity\ProductReviewConfig;
+use Plugin\ProductReview42\Form\Type\Admin\ProductReviewSearchType;
+use Plugin\ProductReview42\Form\Type\Admin\ProductReviewType;
+use Plugin\ProductReview42\Repository\ProductReviewConfigRepository;
+use Plugin\ProductReview42\Repository\ProductReviewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -79,14 +79,14 @@ class ProductReviewController extends AbstractController
      *
      * @Route("/%eccube_admin_route%/product_review/", name="product_review_admin_product_review")
      * @Route("/%eccube_admin_route%/product_review/page/{page_no}", requirements={"page_no" = "\d+"}, name="product_review_admin_product_review_page")
-     * @Template("@ProductReview4/admin/index.twig")
+     * @Template("@ProductReview42/admin/index.twig")
      *
      * @param Request $request
      * @param null $page_no
      *
      * @return array
      */
-    public function index(Request $request, $page_no = null, PaginatorInterface $paginator)
+    public function index(Request $request, PaginatorInterface $paginator, $page_no = null)
     {
         $CsvType = $this->productReviewConfigRepository
             ->get()
@@ -169,7 +169,7 @@ class ProductReviewController extends AbstractController
      * 編集.
      *
      * @Route("%eccube_admin_route%/product_review/{id}/edit", name="product_review_admin_product_review_edit")
-     * @Template("@ProductReview4/admin/edit.twig")
+     * @Template("@ProductReview42/admin/edit.twig")
      *
      * @param Request $request
      * @param $id

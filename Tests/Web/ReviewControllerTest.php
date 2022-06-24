@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ProductReview4\Tests\Web;
+namespace Plugin\ProductReview42\Tests\Web;
 
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
@@ -20,8 +20,8 @@ use Eccube\Repository\Master\SexRepository;
 use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\AbstractWebTestCase;
 use Faker\Generator;
-use Plugin\ProductReview4\Entity\ProductReview;
-use Plugin\ProductReview4\Entity\ProductReviewStatus;
+use Plugin\ProductReview42\Entity\ProductReview;
+use Plugin\ProductReview42\Entity\ProductReviewStatus;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -54,7 +54,7 @@ class ReviewControllerTest extends AbstractWebTestCase
     /**
      * Setup method.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->faker = $this->getFaker();
@@ -87,7 +87,7 @@ class ReviewControllerTest extends AbstractWebTestCase
                 'mode' => 'confirm',
             ]
         );
-        $this->assertContains('投稿する', $crawler->html());
+        $this->assertStringContainsString('投稿する', $crawler->html());
 
         // Complete
         $form = $crawler->selectButton('投稿する')->form();
@@ -130,16 +130,16 @@ class ReviewControllerTest extends AbstractWebTestCase
                 'mode' => 'confirm',
             ]
         );
-        $this->assertContains('投稿する', $crawler->html());
+        $this->assertStringContainsString('投稿する', $crawler->html());
 
         // Back click
         $form = $crawler->selectButton('戻る')->form();
         $crawlerConfirm = $this->client->submit($form);
         $html = $crawlerConfirm->html();
-        $this->assertContains('確認ページへ', $html);
+        $this->assertStringContainsString('確認ページへ', $html);
 
         // Verify data
-        $this->assertContains($inputForm['comment'], $html);
+        $this->assertStringContainsString($inputForm['comment'], $html);
     }
 
 //    /**
@@ -157,15 +157,15 @@ class ReviewControllerTest extends AbstractWebTestCase
         $codeStatus = $this->client->getResponse()->getStatusCode();
 
         // review area
-        $this->assertContains('id="product_review_area"', $crawler->html());
+        $this->assertStringContainsString('id="product_review_area"', $crawler->html());
 
         // review content
         $reviewArea = $crawler->filter('#product_review_area');
-        $this->assertContains($ProductReview->getComment(), $reviewArea->html());
+        $this->assertStringContainsString($ProductReview->getComment(), $reviewArea->html());
 
         // review total
         $totalNum = $reviewArea->filter('.heading02')->html();
-        $this->assertContains('1', $totalNum);
+        $this->assertStringContainsString('1', $totalNum);
     }*/
 
     /**
@@ -183,14 +183,14 @@ class ReviewControllerTest extends AbstractWebTestCase
         );
 
         // review area
-        $this->assertContains('id="product_review_area"', $crawler->html());
+        $this->assertStringContainsString('id="product_review_area"', $crawler->html());
 
         // review content
         $reviewArea = $crawler->filter('#product_review_area');
 
         // review total
         $totalHtml = $reviewArea->filter('.ec-rectHeading')->html();
-        $this->assertContains((string) $max, $totalHtml);
+        $this->assertStringContainsString((string) $max, $totalHtml);
     }
 
     /**
