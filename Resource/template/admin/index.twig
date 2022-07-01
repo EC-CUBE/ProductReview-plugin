@@ -82,7 +82,7 @@
                             {{ form_widget(searchForm.multi) }}
                             {{ form_errors(searchForm.multi) }}
                         </div>
-                        <div class="d-inline-block mb-3" data-toggle="collapse" href="#searchDetail"
+                        <div class="d-inline-block mb-3" data-bs-toggle="collapse" href="#searchDetail"
                              aria-expanded="false" aria-controls="searchDetail"><a><i
                                         class="fa fa-plus-square-o font-weight-bold mr-1"></i><span
                                         class="font-weight-bold">{{ 'product_review.admin.product_review.search_detail'|trans }}</span></a>
@@ -219,16 +219,16 @@
                                         <div class="col-auto text-right">
                                             <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}"
                                                class="btn btn-ec-actionIcon mr-3 action-edit"
-                                               data-toggle="tooltip"
-                                               data-placement="top" title=""
-                                               data-original-title=""><i class="fa fa-pencil fa-lg text-secondary"></i></a>
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="top" title=""
+                                               data-bs-original-title=""><i class="fa fa-pencil fa-lg text-secondary"></i></a>
 
                                             <a
                                                     class="btn btn-ec-actionIcon mr-3"
-                                                    data-toggle="modal"
-                                                    data-target="#confirmModal-{{ Review.id }}"
-                                                    data-toggle="tooltip"
-                                                    data-placement="top"><i
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal-{{ Review.id }}"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"><i
                                                         class="fa fa-close fa-lg text-secondary"></i></a>
                                         </div>
                                         <div class="modal fade" id="confirmModal-{{ Review.id }}" tabindex="-1"
@@ -239,10 +239,9 @@
                                                     <div class="modal-header">
                                                         <h5 class="modal-title font-weight-bold">
                                                             {{ 'product_review.admin.product_review.delete_confirm_title'|trans }}</h5>
-                                                        <button class="close" type="button"
-                                                                data-dismiss="modal"
-                                                                aria-label="Close"><span
-                                                                    aria-hidden="true">×</span>
+                                                        <button class="btn-close" type="button"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close">
                                                         </button>
                                                     </div>
                                                     <div class="modal-body text-left">
@@ -251,7 +250,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button class="btn btn-ec-sub" type="button"
-                                                                data-dismiss="modal">{{ 'product_review.admin.product_review.delete_cancel'|trans }}
+                                                                data-bs-dismiss="modal">{{ 'product_review.admin.product_review.delete_cancel'|trans }}
                                                         </button>
                                                         <a
                                                                 href="{{ url('product_review_admin_product_review_delete', { id : Review.id }) }}"
