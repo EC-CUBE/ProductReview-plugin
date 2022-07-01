@@ -21,12 +21,12 @@ use Plugin\ProductReview42\Entity\ProductReviewStatus;
 use Plugin\ProductReview42\Form\Type\ProductReviewType;
 use Plugin\ProductReview42\Repository\ProductReviewRepository;
 use Plugin\ProductReview42\Repository\ProductReviewStatusRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ProductReviewController front.

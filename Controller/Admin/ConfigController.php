@@ -15,9 +15,9 @@ namespace Plugin\ProductReview42\Controller\Admin;
 
 use Plugin\ProductReview42\Form\Type\Admin\ProductReviewConfigType;
 use Plugin\ProductReview42\Repository\ProductReviewConfigRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ConfigController.

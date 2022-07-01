@@ -104,8 +104,8 @@ class ProductReviewSearchType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => [
                     'class' => 'datetimepicker-input',
-                    'data-target' => '#'.$this->getBlockPrefix().'_review_start',
-                    'data-toggle' => 'datetimepicker',
+                    'data-bs-target' => '#'.$this->getBlockPrefix().'_review_start',
+                    'data-bs-toggle' => 'datetimepicker',
                 ],
             ])
             ->add('review_end', DateType::class, [
@@ -115,8 +115,8 @@ class ProductReviewSearchType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => [
                     'class' => 'datetimepicker-input',
-                    'data-target' => '#'.$this->getBlockPrefix().'_review_end',
-                    'data-toggle' => 'datetimepicker',
+                    'data-bs-target' => '#'.$this->getBlockPrefix().'_review_end',
+                    'data-bs-toggle' => 'datetimepicker',
                 ],
             ])
             ->add('status', EntityType::class, [

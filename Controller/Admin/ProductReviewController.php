@@ -24,12 +24,11 @@ use Plugin\ProductReview42\Form\Type\Admin\ProductReviewSearchType;
 use Plugin\ProductReview42\Form\Type\Admin\ProductReviewType;
 use Plugin\ProductReview42\Repository\ProductReviewConfigRepository;
 use Plugin\ProductReview42\Repository\ProductReviewRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ProductReviewController admin.
@@ -213,8 +212,7 @@ class ProductReviewController extends AbstractController
     /**
      * Product review delete function.
      *
-     * @Method("DELETE")
-     * @Route("%eccube_admin_route%/product_review/{id}/delete", name="product_review_admin_product_review_delete")
+     * @Route("%eccube_admin_route%/product_review/{id}/delete", name="product_review_admin_product_review_delete", methods={"DELETE"})
      *
      * @param Request $request
      * @param int $id
