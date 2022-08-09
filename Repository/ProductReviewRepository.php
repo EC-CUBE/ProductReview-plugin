@@ -18,7 +18,8 @@ use Eccube\Entity\Product;
 use Eccube\Repository\AbstractRepository;
 use Eccube\Util\StringUtil;
 use Plugin\ProductReview42\Entity\ProductReview;
-use Doctrine\Persistence\ManagerRegistry; 
+use Plugin\ProductReview42\Entity\ProductReviewStatus;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * ProductReview.
@@ -138,6 +139,8 @@ class ProductReviewRepository extends AbstractRepository
                 ->leftJoin('r.Product', 'p')
                 ->where('r.Product = :Product')
                 ->setParameter('Product', $Product)
+                ->andWhere('r.Status = :Status')
+                ->setParameter('Status', ProductReviewStatus::SHOW)
                 ->groupBy('r.Product');
 
             return $qb->getQuery()->getSingleResult();
