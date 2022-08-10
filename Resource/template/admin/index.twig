@@ -163,9 +163,9 @@
                         &nbsp;
                     </div>
                     <div class="col-5 text-right">
-                        <div class="d-inline-block mr-2">
+                        <div class="d-inline-block mr-2 align-bottom">
                             <div>
-                                <select class="custom-select" onchange="location = this.value;">
+                                <select class="form-select" onchange="location = this.value;">
                                     {% for pageMax in pageMaxis %}
                                         <option {% if pageMax.name == page_count %}selected=""{% endif %}
                                                 value="{{ path('product_review_admin_product_review_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{ 'product_review.admin.product_review.diaply_count'|trans({'%count%' : pageMax.name}) }}</option>
