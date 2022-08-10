@@ -84,8 +84,8 @@
                         </div>
                         <div class="d-inline-block mb-3" data-bs-toggle="collapse" href="#searchDetail"
                              aria-expanded="false" aria-controls="searchDetail"><a><i
-                                        class="fa fa-plus-square-o font-weight-bold mr-1"></i><span
-                                        class="font-weight-bold">{{ 'product_review.admin.product_review.search_detail'|trans }}</span></a>
+                                        class="fa fa-plus-square-o fw-bold mr-1"></i><span
+                                        class="fw-bold">{{ 'product_review.admin.product_review.search_detail'|trans }}</span></a>
                         </div>
                     </div>
                 </div>
@@ -144,7 +144,7 @@
                         type="submit">{{ 'product_review.admin.product_review.search_button'|trans }}</button>
                 {% if pagination %}
                     <span id="search-result"
-                          class="font-weight-bold ml-2">{{ 'product_review.admin.product_review.search_result_count'|trans({"%count%":pagination.totalItemCount}) }}</span>
+                          class="fw-bold ml-2">{{ 'product_review.admin.product_review.search_result_count'|trans({"%count%":pagination.totalItemCount}) }}</span>
                 {% endif %}
             </div>
             <div class="c-outsideBlock__contents mb-5">
@@ -193,28 +193,28 @@
                         <table class="table table-sm">
                             <thead>
                             <tr>
-                                <th class="text-center">ID</th>
-                                <th>{{ 'product_review.admin.product_review.th_posted_date'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_contributor'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_product_name'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_title'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_level'|trans }}</th>
-                                <th>{{ 'product_review.admin.product_review.th_status'|trans }}</th>
+                                <th class="border-top-0 ps-3 pt-2 pb-2">ID</th>
+                                <th class="border-top-0 pt-2 pb-2">{{ 'product_review.admin.product_review.th_posted_date'|trans }}</th>
+                                <th class="border-top-0 pt-2 pb-2">{{ 'product_review.admin.product_review.th_contributor'|trans }}</th>
+                                <th class="border-top-0 pt-2 pb-2">{{ 'product_review.admin.product_review.th_product_name'|trans }}</th>
+                                <th class="border-top-0 pt-2 pb-2">{{ 'product_review.admin.product_review.th_title'|trans }}</th>
+                                <th class="border-top-0 pt-2 pb-2">{{ 'product_review.admin.product_review.th_level'|trans }}</th>
+                                <th class="border-top-0 pt-2 pb-2">{{ 'product_review.admin.product_review.th_status'|trans }}</th>
                                 <th>&nbsp;</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for Review in pagination %}
                                 <tr>
-                                    <td class="text-center">{{ Review.id }}</td>
-                                    <td>{{ Review.create_date|date_min }}</td>
-                                    <td>{{ Review.reviewer_name }}</td>
-                                    <td>{{ Review.Product.name }}</td>
-                                    <td>
+                                    <td class="align-middle ps-3">{{ Review.id }}</td>
+                                    <td class="align-middle">{{ Review.create_date|date_min }}</td>
+                                    <td class="align-middle">{{ Review.reviewer_name }}</td>
+                                    <td class="align-middle">{{ Review.Product.name }}</td>
+                                    <td class="align-middle">
                                         <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}">{{ Review.title }}</a>
                                     </td>
-                                    <td>{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
-                                    <td>{{ Review.status }}</td>
+                                    <td class="align-middle">{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
+                                    <td class="align-middle">{{ Review.status }}</td>
                                     <td class="icon_edit">
                                         <div class="col-auto text-right">
                                             <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}"
@@ -237,7 +237,7 @@
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title font-weight-bold">
+                                                        <h5 class="modal-title fw-bold">
                                                             {{ 'product_review.admin.product_review.delete_confirm_title'|trans }}</h5>
                                                         <button class="btn-close" type="button"
                                                                 data-bs-dismiss="modal"
