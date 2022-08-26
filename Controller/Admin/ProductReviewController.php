@@ -296,7 +296,6 @@ class ProductReviewController extends AbstractController
         $filename = 'product_review_'.$now->format('YmdHis').'.csv';
         $response->headers->set('Content-Type', 'application/octet-stream');
         $response->headers->set('Content-Disposition', 'attachment; filename='.$filename);
-        $response->send();
 
         log_info('商品レビューCSV出力ファイル名', [$filename]);
 
