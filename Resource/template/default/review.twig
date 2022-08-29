@@ -113,7 +113,7 @@
                                 <!--投稿者-->
                                 <span class="recommend_name">
                                             {% if ProductReview.reviewer_url %}
-                                                <a href="{{ ProductReview.reviewer_url }}"
+                                                <a href="{{ ProductReview.reviewer_url }}" rel="ugc nofollow"
                                                    target="_blank">{{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}</a>
                                             {% else %}
                                                 {{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}
