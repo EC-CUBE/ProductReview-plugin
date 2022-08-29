@@ -92,7 +92,7 @@
                                         <span>{{ '性別'|trans }}</span>
                                     </div>
                                     <div class="col">
-                                        {{ form_widget(form.sex) }}
+                                        {{ form_widget(form.sex,  {'label_attr': {'class': 'radio-inline'}}) }}
                                         {{ form_errors(form.sex) }}
                                     </div>
                                 </div>
