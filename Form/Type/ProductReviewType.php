@@ -97,7 +97,7 @@ class ProductReviewType extends AbstractType
                 'label' => 'product_review.form.product_review.title',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                    new Assert\Length(['max' => 50]),
                 ],
                 'attr' => [
                     'maxlength' => $config['eccube_stext_len'],

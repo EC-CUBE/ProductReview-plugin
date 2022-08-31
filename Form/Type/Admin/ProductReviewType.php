@@ -100,7 +100,7 @@ class ProductReviewType extends AbstractType
             ->add('title', TextType::class, [
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                    new Assert\Length(['max' => 50]),
                 ],
                 'attr' => [
                     'maxlength' => $config['eccube_stext_len'],
