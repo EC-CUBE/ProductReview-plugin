@@ -13,6 +13,7 @@
 
 namespace Plugin\ProductReview42\Tests\Web;
 
+use Eccube\Common\Constant;
 use Eccube\Entity\Master\Sex;
 use Eccube\Entity\Product;
 use Eccube\Repository\Master\ProductStatusRepository;
@@ -233,7 +234,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $paging = $crawler->filter('ul.pagination .page-item')->last();
 
         // Current active on page 2.
-        $this->assertStringContainsString('active', $paging->parents()->html());
+        $this->assertStringContainsString('active', $paging->ancestors()->html());
         $this->expected = 2;
         $this->actual = intval($paging->text());
         $this->verify();
@@ -263,7 +264,9 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
 
         $this->assertStringContainsString($review->getReviewerName(), $table->html());
 
-        $this->expectOutputRegex("/{$review->getTitle()}/");
+        if (version_compare(Constant::VERSION, '4.3', '<')) {
+            $this->expectOutputRegex("/{$review->getTitle()}/");
+        }
 
         $this->client->request(
             'POST',
@@ -271,6 +274,12 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         );
 
         $this->assertTrue($this->client->getResponse()->isSuccessful());
+
+        if (version_compare(Constant::VERSION, '4.3', '>=')) {
+            $content = $this->client->getInternalResponse()->getContent();
+            $content = mb_convert_encoding($content, 'UTF-8', 'SJIS-win');
+            $this->assertMatchesRegularExpression("/{$review->getTitle()}/", $content);
+        }
     }
 
     /**
@@ -341,7 +350,7 @@ class ReviewAdminControllerTest extends AbstractAdminWebTestCase
         $Review->setCustomer($Customer);
 
         $this->entityManager->persist($Review);
-        $this->entityManager->flush($Review);
+        $this->entityManager->flush();
 
         return $Review;
     }
