@@ -151,7 +151,7 @@ jobs:
         working-directory: 'ec-cube'
         run: |
           bin/console cache:clear --no-warmup
-          bin/phpunit -c app/Plugin/${PLUGIN_CODE}/phpunit.xml.dist app/Plugin/${PLUGIN_CODE}/Tests
+          vendor/bin/phpunit -c app/Plugin/${PLUGIN_CODE}/phpunit.xml.dist app/Plugin/${PLUGIN_CODE}/Tests
 
       - name: Disable Plugin
         working-directory: 'ec-cube'
