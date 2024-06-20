@@ -162,7 +162,7 @@
                     <div class="col-6">
                         &nbsp;
                     </div>
-                    <div class="col-5 text-right">
+                    <div class="col-5 text-end">
                         <div class="d-inline-block mr-2 align-bottom">
                             <div>
                                 <select class="form-select" onchange="location = this.value;">
@@ -216,7 +216,7 @@
                                     <td class="align-middle">{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
                                     <td class="align-middle">{{ Review.status }}</td>
                                     <td class="icon_edit">
-                                        <div class="col-auto text-right">
+                                        <div class="col-auto text-end">
                                             <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}"
                                                class="btn btn-ec-actionIcon mr-3 action-edit"
                                                data-bs-toggle="tooltip"
