@@ -270,7 +270,7 @@ class ProductReviewController extends AbstractController
             $session = $request->getSession();
             $searchForm = $this->createForm(ProductReviewSearchType::class);
 
-            $viewData = $session->get('eccube.admin.product.search', []);
+            $viewData = $session->get('product_review.admin.product_review.search', []);
             $searchData = FormUtil::submitAndGetData($searchForm, $viewData);
 
             $qb = $repo->getQueryBuilderBySearchData($searchData);
