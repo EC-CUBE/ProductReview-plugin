@@ -107,7 +107,6 @@ class ProductReviewController extends AbstractController
                     log_info('Product review complete', ['id' => $Product->getId()]);
 
                     return $this->redirectToRoute('product_review_complete', ['id' => $Product->getId()]);
-                    break;
 
                 case 'back':
                     // 確認画面から投稿画面へ戻る
