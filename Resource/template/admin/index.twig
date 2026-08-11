@@ -84,7 +84,7 @@
                         </div>
                         <div class="d-inline-block mb-3" data-bs-toggle="collapse" href="#searchDetail"
                              aria-expanded="false" aria-controls="searchDetail"><a><i
-                                        class="fa fa-plus-square-o fw-bold mr-1"></i><span
+                                        class="fa fa-plus-square-o fw-bold me-1"></i><span
                                         class="fw-bold">{{ 'product_review.admin.product_review.search_detail'|trans }}</span></a>
                         </div>
                     </div>
@@ -94,41 +94,41 @@
                 <div class="row mb-2">
                     <div class="col-6 col-sm-4">
                         <label>{{ form_label(searchForm.product_name) }}</label>
-                        <div class="form-group">
+                        <div class="mb-3">
                             {{ form_widget(searchForm.product_name) }}
                             {{ form_errors(searchForm.product_name) }}
                         </div>
                     </div>
                     <div class="col-6 col-sm-4">
                         <label>{{ form_label(searchForm.product_code) }}</label>
-                        <div class="form-group">
+                        <div class="mb-3">
                             {{ form_widget(searchForm.product_code) }}
                             {{ form_errors(searchForm.product_code) }}
                         </div>
                     </div>
                     <div class="col-6 col-sm-4">
                         <label>{{ form_label(searchForm.recommend_level) }}</label>
-                        <div class="form-group">
+                        <div class="mb-3">
                             {{ form_widget(searchForm.recommend_level) }}
                             {{ form_errors(searchForm.recommend_level) }}
                         </div>
                     </div>
                     <div class="col-6 col-sm-4">
                         <label>{{ 'product_review.admin.product_review.search_posted_date'|trans }}</label>
-                        <div class="form-group range">
+                        <div class="mb-3 range">
                             {{ form_widget(searchForm.review_start) }}{{ form_errors(searchForm.review_start) }} ～ {{ form_widget(searchForm.review_end) }}{{ form_errors(searchForm.review_end) }}
                         </div>
                     </div>
                     <div class="col-6 col-sm-4">
                         <label>{{ form_label(searchForm.sex) }}</label>
-                        <div class="form-group">
+                        <div class="mb-3">
                             {{ form_widget(searchForm.sex) }}
                             {{ form_errors(searchForm.sex) }}
                         </div>
                     </div>
                     <div class="col-6 col-sm-4">
                         <label>{{ form_label(searchForm.status) }}</label>
-                        <div class="form-group">
+                        <div class="mb-3">
                             {{ form_widget(searchForm.status) }}
                             {{ form_errors(searchForm.status) }}
                         </div>
@@ -144,7 +144,7 @@
                         type="submit">{{ 'product_review.admin.product_review.search_button'|trans }}</button>
                 {% if pagination %}
                     <span id="search-result"
-                          class="fw-bold ml-2">{{ 'product_review.admin.product_review.search_result_count'|trans({"%count%":pagination.totalItemCount}) }}</span>
+                          class="fw-bold ms-2">{{ 'product_review.admin.product_review.search_result_count'|trans({"%count%":pagination.totalItemCount}) }}</span>
                 {% endif %}
             </div>
             <div class="c-outsideBlock__contents mb-5">
@@ -162,8 +162,8 @@
                     <div class="col-6">
                         &nbsp;
                     </div>
-                    <div class="col-5 text-right">
-                        <div class="d-inline-block mr-2 align-bottom">
+                    <div class="col-5 text-end">
+                        <div class="d-inline-block me-2 align-bottom">
                             <div>
                                 <select class="form-select" onchange="location = this.value;">
                                     {% for pageMax in pageMaxis %}
@@ -179,11 +179,11 @@
                                     <button class="btn btn-ec-regular" type="button"
                                             onclick='location.href="{{ url('product_review_admin_product_review_download') }}"'>
                                         <i
-                                                class="fa fa-cloud-download mr-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download'|trans }}</span>
+                                                class="fa fa-cloud-download me-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download'|trans }}</span>
                                     </button>
                                     <button class="btn btn-ec-regular" type="button"
                                             onclick='location.href="{{ url('admin_setting_shop_csv', { id : CsvType.id }) }}"'>
-                                        <i class="fa fa-cog mr-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download_setting'|trans }}</span>
+                                        <i class="fa fa-cog me-1 text-secondary"></i><span>{{ 'product_review.admin.product_review.csv_download_setting'|trans }}</span>
                                     </button>
                                 </div>
                             </div>
@@ -218,15 +218,15 @@
                                     <td class="align-middle">{% for i in 1..Review.recommend_level %}★{% endfor %}</td>
                                     <td class="align-middle">{{ Review.status }}</td>
                                     <td class="icon_edit">
-                                        <div class="col-auto text-right">
+                                        <div class="col-auto text-end">
                                             <a href="{{ url('product_review_admin_product_review_edit', { id : Review.id }) }}"
-                                               class="btn btn-ec-actionIcon mr-3 action-edit"
+                                               class="btn btn-ec-actionIcon me-3 action-edit"
                                                data-bs-toggle="tooltip"
                                                data-bs-placement="top" title=""
                                                data-bs-original-title=""><i class="fa fa-pencil fa-lg text-secondary"></i></a>
 
                                             <a
-                                                    class="btn btn-ec-actionIcon mr-3"
+                                                    class="btn btn-ec-actionIcon me-3"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#confirmModal-{{ Review.id }}"
                                                     data-bs-toggle="tooltip"
@@ -246,8 +246,8 @@
                                                                 aria-label="Close">
                                                         </button>
                                                     </div>
-                                                    <div class="modal-body text-left">
-                                                        <p class="text-left">
+                                                    <div class="modal-body text-start">
+                                                        <p class="text-start">
                                                             {{ 'product_review.admin.product_review.delete_confirm_message'|trans }}</p>
                                                     </div>
                                                     <div class="modal-footer">
