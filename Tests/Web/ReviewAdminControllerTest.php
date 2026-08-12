@@ -311,8 +311,9 @@ final class ReviewAdminControllerTest extends AbstractAdminWebTestCase
             'product_code' => $review->getProduct()->getCodeMax(),
             'sex' => [$review->getSex()->getId()],
             'recommend_level' => $review->getRecommendLevel(),
-            'review_start' => $review->getCreateDate()->modify('-2 days')->format('Y-m-d'),
-            'review_end' => $review->getCreateDate()->modify('+2 days')->format('Y-m-d'),
+            // getCreateDate() は同一インスタンスを返すため、modify で共有状態を壊さないよう clone する
+            'review_start' => (clone $review->getCreateDate())->modify('-2 days')->format('Y-m-d'),
+            'review_end' => (clone $review->getCreateDate())->modify('+2 days')->format('Y-m-d'),
         ];
     }
 
