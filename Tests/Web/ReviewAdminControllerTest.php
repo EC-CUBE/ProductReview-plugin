@@ -233,6 +233,20 @@ final class ReviewAdminControllerTest extends AbstractAdminWebTestCase
     }
 
     /**
+     * 検索フォームを送らない POST は, 500 にせず入力エラーの画面を表示する.
+     */
+    public function testReviewSearchWithoutSearchForm(): void
+    {
+        $this->client->request(
+            Request::METHOD_POST,
+            $this->generateUrl('product_review_admin_product_review'),
+            ['other' => 'value']
+        );
+
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
      * Search test.
      */
     public function testReviewSearchWithPaging(): void

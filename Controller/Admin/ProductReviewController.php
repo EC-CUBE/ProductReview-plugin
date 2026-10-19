@@ -86,7 +86,7 @@ class ProductReviewController extends AbstractController
 
         if ('POST' === $request->getMethod()) {
             $searchForm->handleRequest($request);
-            if ($searchForm->isValid()) {
+            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
                 $searchData = $searchForm->getData();
                 $page_no = 1;
 
